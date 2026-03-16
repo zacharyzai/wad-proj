@@ -28,7 +28,7 @@ const eventSchema = new mongoose.Schema({
         default: 'General'
     },
     // Field 6: The user who created the event (Links to User schema)
-    organizer: {
+    organiser: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true
@@ -40,4 +40,10 @@ const eventSchema = new mongoose.Schema({
     }]
 }, { timestamps: true });
 
-module.exports = mongoose.model('Event', eventSchema);
+module.exports = mongoose.model('Event', eventSchema, 'events');
+
+// Methods here
+
+exports.addEvents = function(newEvent) {
+    return Event.create(newEvent);
+};
