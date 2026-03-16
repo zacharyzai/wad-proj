@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const path = require('path');
+const fs = require('fs');
 
 // Load environment variables from config.env
 dotenv.config({ path: './config.env' });
@@ -17,9 +18,16 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Database Connection
-mongoose.connect(process.env.MONGO_URI)
-    .then(() => console.log('MongoDB connection successful!'))
-    .catch((err) => console.error('MongoDB connection error:', err));
+async function connectDB() {
+    try {
+      // connecting to Database with our config.env file and DB is constant in config.env
+        await mongoose.connect(process.env.DB);
+        console.log("MongoDB connected successfully");
+    } catch (error) {
+        console.error("MongoDB connection failed:", error.message);
+        process.exit(1);
+    }
+  };
 
 // ==========================================
 // ROUTE MOUNTING (Placeholders for your team)
@@ -42,3 +50,6 @@ const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
+
+// Call connectDB then start the server
+connectDB().then(startServer);
