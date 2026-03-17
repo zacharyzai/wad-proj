@@ -33,11 +33,11 @@ async function connectDB() {
 // ROUTE MOUNTING (Placeholders for your team)
 // ==========================================
 // const authRoutes = require('./routes/auth-routes');
-// const eventRoutes = require('./routes/event-routes');
+const eventRoutes = require('./routes/event-routes');
 // const profileRoutes = require('./routes/profile-routes');
 
 // app.use('/auth', authRoutes);
-// app.use('/events', eventRoutes);
+app.use('/events', eventRoutes);
 // app.use('/profile', profileRoutes);
 
 // Temporary Home Page Route

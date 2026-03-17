@@ -8,6 +8,21 @@ const Event = require("../models/event-models");
 
 // Create Event (Have a button visible to admins only to create an event)
 
+exports.createEventPage = (req,res) => {
+    try {
+        res.render("create-event", {
+            title: "",
+            description: "",
+            date: "",
+            location: "",
+            category: ""
+        })
+    } catch (err) {
+        console.error(err)
+        res.send("Error creating event. Please try again");
+    };
+}
+
 exports.createEvent = async (req, res) => {
     let title = req.body.title;
     let description = req.body.description;
