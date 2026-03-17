@@ -33,7 +33,7 @@ async function connectDB() {
 // ROUTE MOUNTING (Placeholders for your team)
 // ==========================================
 // const authRoutes = require('./routes/auth-routes');
-const eventRoutes = require('./routes/event-routes');
+const eventRoutes = require('./routes/events-routes');
 // const profileRoutes = require('./routes/profile-routes');
 
 // app.use('/auth', authRoutes);
@@ -42,14 +42,15 @@ app.use('/events', eventRoutes);
 
 // Temporary Home Page Route
 app.get('/', (req, res) => {
-    res.render('index'); 
+    res.render('/'); 
 });
 
 // Start Server
 const PORT = process.env.PORT || 8000;
-app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
-});
 
 // Call connectDB then start the server
-connectDB().then(startServer);
+connectDB().then(() => {
+    app.listen(PORT, () => {
+        console.log(`Server is running on http://localhost:${PORT}`);
+    });
+});
