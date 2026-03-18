@@ -4,16 +4,19 @@ const eventController = require("./../controller/events-controller");
 
 const router = express.Router();
 
+
+
 // Create Event
 router.get("/create-event", eventController.createEventPage);
 router.post("/create-event", eventController.createEvent);
 
 // Update Event
 router.get("/update-event", eventController.updateEventPage);
-router.post("update-event", eventController.updateEvent);
+router.post("/update-event", eventController.updateEvent);
 
 // Delete Event
-router.post("/delete-event", eventController.deleteEvent);
+router.get("/delete-event", eventController.renderDeletePage); // To view the table of events that may be deleted
+router.post("/delete-event", eventController.deleteEvent); // To show the success of the deletion of the page and back to Events Home Page button
 
 
 module.exports = router;
