@@ -89,6 +89,21 @@ exports.updateEventPage = async (req,res) => {
 }
 
 
-// Delete Event (Have a button visible to admins only to allow them to DELETE an event) 
+// Delete Event (Have a button visible to admins only to allow them to DELETE an event)
+
+exports.deleteEvent = async (req,res) => {
+    try {
+        let targetId = req.body.eventid;
+        let deleteEvent = req.body.delete || [];
+
+        if (typeof(deleteEvent) === "string") {
+            deleteEvent = [deleteEvent];
+        };
+
+
+    } catch (err) {
+        console.log(err)
+    }
+}
 
 

@@ -13,7 +13,7 @@ router.get("/update-event", eventController.updateEventPage);
 router.post("update-event", eventController.updateEvent);
 
 // Delete Event
-
+router.post("/delete-event", eventController.deleteEvent);
 
 
 module.exports = router;
