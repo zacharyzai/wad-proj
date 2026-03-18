@@ -6,25 +6,24 @@
     <title>Create an Event!</title>
 </head>
 <body>
-    <center>
-        <form action="/events/create", method="post">
+    <h1>Create an Event</h1>
+        <form action="/events/create-event", method="post">
             Title:<br>
             <input type="text" name="title" value="<%= title ? title : "" %>">
-            <br>
+            <br><br>
             Description: <br>
             <input type="text" name="description" value="<%= description ? description : "" %>">
-            <br>
+            <br><br>
             Date:<br>
             <input type="text" name="date">
-            <br>
+            <br><br>
             Location:<br>
             <input type="text" name="location">
-            <br>
+            <br><br>
             Category:<br>
             <input type="text" name="category">
-            <br>
+            <br><br>
             <button type="submit">Confirm</button>
         </form>
-    </center>
 </body>
 </html>
