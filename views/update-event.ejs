@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create an Event!</title>
+    <title>Update Event</title>
 </head>
 <body>
     <center>
-        <form action="/events/create", method="post">
+        <form action="/events/update" method="post">
             Title:<br>
             <input type="text" name="title" value="<%= title ? title : "" %>">
             <br>
@@ -15,16 +15,17 @@
             <input type="text" name="description" value="<%= description ? description : "" %>">
             <br>
             Date:<br>
-            <input type="text" name="date">
+            <input type="text" name="date" value="<%= date ? date : "" %>">
             <br>
             Location:<br>
-            <input type="text" name="location">
+            <input type="text" name="location" value="<%= location ? location : "" %>">
             <br>
             Category:<br>
-            <input type="text" name="category">
+            <input type="text" name="category" value="<%= category ? category : "" %>">
             <br>
-            <button type="submit">Confirm</button>
+            <button type="submit">Confirm the update</button>
         </form>
     </center>
+    
 </body>
 </html>

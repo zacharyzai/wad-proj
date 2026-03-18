@@ -62,10 +62,31 @@ exports.createEvent = async (req, res) => {
 };
 
 
-
 // Update Event (Have a button visible to admins only to allow them to UPDATE an event)
+exports.updateEventPage = async (req,res) => {
+    try {
+        let targetId = req.query.eventid; // need to get from events viewing page when use click the specific event
+        let title = req.query.title;
+        let description = req.query.description;
+        let date = req.query.date;
+        let location = req.query.location;
+        let category = req.query.category;
+        let organiser = req.query.organiser;
 
-
+        res.render("/events-update", {
+            targetId,
+            title,
+            description,
+            date,
+            location,
+            category,
+            organiser
+        })
+    } catch (err) {
+        console.error("Error:", err);
+        res.send("Error updating the event. Please try again.")
+    }
+}
 
 
 // Delete Event (Have a button visible to admins only to allow them to DELETE an event) 
