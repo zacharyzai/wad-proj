@@ -9,7 +9,35 @@
     <center>
         <form action="/events/delete" method="post">
             <!-- Delete an event. Make it with checkbox so admin can delete multiple events easily -->
+            <table border="1">
+                <thead>
+                    <td>
+                        <th>Events</th>
+                        <th>Delete?</th>
+                    </td>
+                </thead>
+
+                <tbody>
+                    <td>
+                    <% events.forEach(event => { %>
+                        <tr>
+                            <%= event.title %>
+                        </tr>
+
+                        <tr>
+                            <input type="checkbox" name="deleteEvent" value="<%= event._id %>">
+                        </tr>
+                    <% }) %>
+                    </td>
+                </tbody>
+            </table>
+            <br>
+            <button type="submit">Confirm Delete Event</button>
         </form>
+    </center>
+
+    <center>
+        
     </center>
 </body>
 </html>

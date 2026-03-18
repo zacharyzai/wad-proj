@@ -47,3 +47,4 @@ module.exports = mongoose.model('Event', eventSchema, 'events');
 exports.addEvents = function(newEvent) {
     return Event.create(newEvent);
 };
+

@@ -81,7 +81,6 @@ exports.createEvent = async (req, res) => {
 
 };
 
-
 // Update Event (Have a button visible to admins only to allow them to UPDATE an event)
 exports.updateEventPage = async (req,res) => {
     try {
@@ -111,18 +110,31 @@ exports.updateEventPage = async (req,res) => {
 
 // Delete Event (Have a button visible to admins only to allow them to DELETE an event)
 
+exports.renderDeletePage = async (req,res) => {
+    try {
+        let allEvents = await Event.find()
+        res.render("delete-events", {events: AllEvents})
+    } catch (err) {
+        console.error(err)
+        res.send("Error loading the delete page.")
+    }
+}
+
+
 exports.deleteEvent = async (req,res) => {
     try {
-        let targetId = req.body.eventid;
-        let deleteEvent = req.body.delete || [];
+        let deleteEvent = req.body.deleteEvent   || [];
 
         if (typeof(deleteEvent) === "string") {
             deleteEvent = [deleteEvent];
         };
 
+        await Event.deleteMany({ _id : { $in: deleteEvent}})
 
+        res.render("delete-success")
     } catch (err) {
         console.log(err)
+        res.send("An error occurred while trying to delete the event(s).")
     }
 }
 
