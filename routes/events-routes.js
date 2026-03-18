@@ -10,7 +10,7 @@ router.post("/create-event", eventController.createEvent);
 
 // Update Event
 router.get("/update-event", eventController.updateEventPage);
-router.post("update-event", eventController.updateEvent);
+// router.post("update-event", eventController.updateEvent);
 
 // Delete Event
 router.post("/delete-event", eventController.deleteEvent);
