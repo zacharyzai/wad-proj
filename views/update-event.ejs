@@ -7,7 +7,10 @@
 </head>
 <body>
     <center>
-        <form action="/events/update" method="post">
+        <form action="/events/update-event" method="post">
+            <input type="hidden" name="eventId" value="<%= targetId %>">
+
+
             Title:<br>
             <input type="text" name="title" value="<%= title ? title : "" %>">
             <br>
