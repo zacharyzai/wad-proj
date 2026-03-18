@@ -48,7 +48,4 @@ exports.addEvents = function(newEvent) {
     return Event.create(newEvent);
 };
 
-exports.findById = function(id) {
-    return Event.find(id)
-};
 

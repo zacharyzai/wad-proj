@@ -64,13 +64,13 @@ exports.createEvent = async (req, res) => {
             date: date,
             location: location,
             category: category,
-            organiser: req.user._id // check on this, assign admin as organiser
+            organiser: "65f1a2b3c4d5e6f7a8b9c0d1" // temporary hardcoded ID for testing. once login ready swap to req.user._id, || check on this, assign admin as organiser
         };
 
         let result = await Event.addEvents(newEvent);
         console.log("My Log:", result);
 
-        res.redirect("/events")
+        res.redirect("/events/create-event")
 
     } catch (err) {
         console.error("Database error:", err);
@@ -85,35 +85,50 @@ exports.createEvent = async (req, res) => {
 exports.updateEventPage = async (req,res) => {
     try {
         let targetId = req.query.eventId; // need to get from events viewing page when use click the specific event
-        let title = req.query.title;
-        let description = req.query.description;
-        let date = req.query.date;
-        let location = req.query.location;
-        let category = req.query.category;
-        let organiser = req.query.organiser;
 
-        res.render("events-update", {
+        let eventToEdit = await Event.findById(targetId)
+
+        res.render("update-event", {
             targetId,
-            title,
-            description,
-            date,
-            location,
-            category,
-            organiser
+            title: eventToEdit.title,
+            description: eventToEdit.description,
+            date: eventToEdit.date,
+            location: eventToEdit.location,
+            category: eventToEdit.category,
         })
+
     } catch (err) {
         console.error("Error:", err);
         res.send("Error updating the event. Please try again.")
     }
 }
 
+exports.updateEvent = async (req, res) => {
+    try {
+        const targetId = req.query.eventId
+        let title = req.body.title;
+        let description = req.body.description;
+        let date = req.body.date; // need to update date such that is is day/month/year (can do 1/1/2001) time can put AM/PM style? or 24h idk
+        let location = req.body.location;
+        let category = req.body.category;
+
+        const updatedEvent = await Event.findByIdAndUpdate(
+            targetId,
+            {title, description, date, location, category}
+        )
+        res.redirect('/events')
+    } catch (err) {
+        console.error("Error saving the update:", err)
+        res.send("Error occurred while trying to update the event.")
+    }  
+}
 
 // Delete Event (Have a button visible to admins only to allow them to DELETE an event)
 
 exports.renderDeletePage = async (req,res) => {
     try {
         let allEvents = await Event.find()
-        res.render("delete-events", {events: AllEvents})
+        res.render("delete-events", {events: allEvents})
     } catch (err) {
         console.error(err)
         res.send("Error loading the delete page.")
