@@ -96,7 +96,7 @@ exports.updateEvent = async (req, res) => {
             targetId,
             {title, description, date, location, category}
         )
-        res.redirect('/events')
+        res.redirect('/events?success=true') // ? is a query string and success = true is used to display message whether the update is confirmed under events page
     } catch (err) {
         console.error("Error saving the update:", err)
         res.send("Error occurred while trying to update the event.")
@@ -115,18 +115,26 @@ exports.renderDeletePage = async (req,res) => {
     }
 }
 
-
 exports.deleteEvent = async (req,res) => {
     try {
-        let deleteEvent = req.body.deleteEvent   || [];
+        let deleteEvent = req.body.deleteEventIds;
+        
+
+        if (!deleteEvent) {
+            const allEvents = await Event.find();
+            return res.render("delete-events", {
+                events: allEvents,
+                error: "Please select at least one event to delete."
+            })
+        }
 
         if (typeof(deleteEvent) === "string") {
             deleteEvent = [deleteEvent];
         };
 
-        await Event.deleteMany({ _id : { $in: deleteEvent}})
+        await Event.deleteMany({ _id : { $in: deleteEvent}});
 
-        res.render("delete-success")
+        res.redirect("/events?success=true");
     } catch (err) {
         console.log(err)
         res.send("An error occurred while trying to delete the event(s).")
