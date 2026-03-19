@@ -6,10 +6,12 @@
     <title>Update Event</title>
 </head>
 <body>
-        <form action="/events/update-event?eventId=<%= targetId ? targetId : '' %>" method="post">
+    <h1>Update Event</h1>
+    <p><a href="/events">← Back to Events</a></p>
+
+        <form action="/events/update-event?eventId=<%= targetId ? targetId : '' %>" method="post"> <!-- After the ?, it represents a query string!-->
             <input type="hidden" name="eventId" value="<%= targetId %>">
 
-            <h1>Update Event</h1>
             Title:<br>
             <input type="text" name="title" value="<%= title ? title : "" %>" style="width:640px; font-size:18px; padding:8px;">
             <br>
@@ -29,7 +31,7 @@
             Category:<br>
             <input type="text" name="category" value="<%= category ? category : "" %>">
             <br>
-
+            <br>
             <button type="submit">Confirm the update</button>
         </form>
     
