@@ -14,8 +14,8 @@
             Description: <br>
             <input type="text" name="description" value="<%= description ? description : "" %>">
             <br><br>
-            Date:<br>
-            <input type="text" name="date" value="<%= date ? date : "" %>">
+            Date and Time:<br>
+            <input type="datetime-local" name="date" value="<%= locals.date ? date : '' %>" required>
             <br><br>
             Location:<br>
             <input type="text" name="location" value="<%= location ? location : "" %>">

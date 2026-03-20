@@ -68,11 +68,15 @@ exports.updateEventPage = async (req,res) => {
 
         let eventToEdit = await Event.findById(targetId)
 
+        // Conversion of "datetime-local" to a format that is compatible with HTML
+        let formattedDateForHTML = eventToEdit.date.toISOString().slice(0, 16); // slice away the seconds
+
+
         res.render("update-event", {
             targetId,
             title: eventToEdit.title,
             description: eventToEdit.description,
-            date: eventToEdit.date,
+            date: formattedDateForHTML,
             location: eventToEdit.location,
             category: eventToEdit.category,
         })
@@ -88,7 +92,7 @@ exports.updateEvent = async (req, res) => {
         const targetId = req.query.eventId
         let title = req.body.title;
         let description = req.body.description;
-        let date = req.body.date; // need to update date such that is is day/month/year (can do 1/1/2001) time can put AM/PM style? or 24h idk
+        let date = req.body.date; 
         let location = req.body.location;
         let category = req.body.category;
 
