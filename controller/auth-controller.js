@@ -71,7 +71,7 @@ exports.loginPost = async (req, res) => {
         req.session.role     = user.role;
 
         if (user.role === "admin") {
-            return res.redirect('/admin-profile');
+            return res.redirect('/admin/dashboard');
         }
 
         res.redirect('/events/list');
