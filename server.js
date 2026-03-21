@@ -3,8 +3,7 @@ const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const path = require('path');
 const fs = require('fs');
-//remembers user when they log in
-const session = require('express-session'); //UserProfile - Added Session for Auth
+const session = require('express-session');
 
 // Load environment variables from config.env
 dotenv.config({ path: './config.env' });
@@ -22,7 +21,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Enables session handling for user authentication.
 // Stores user login state across requests using req.session.
 app.use(session({
-  secret: 'secretKey',
+  secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false
 }));
@@ -44,10 +43,12 @@ async function connectDB() {
 // ==========================================
 // const authRoutes = require('./routes/auth-routes');
 const eventRoutes = require('./routes/events-routes');
-const userRoutes = require('./routes/user-routes'); //UserProfile - Added Route
+const userRoutes = require('./routes/user-routes');
+const authRoutes = require('./routes/auth-routes');
 
 // app.use('/auth', authRoutes);
 app.use('/events', eventRoutes); //UserProfile - Added Route
+app.use('/auth', authRoutes);
 app.use('/', userRoutes);
 
 // Temporary Home Page Route
