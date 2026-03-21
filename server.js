@@ -2,7 +2,6 @@ const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const path = require('path');
-const fs = require('fs');
 const session = require('express-session');
 
 dotenv.config({ path: './config.env' });
@@ -33,38 +32,23 @@ async function connectDB() {
     }
   };
 
+  // middlewares
+const { isAuthenticated, isAdmin } = require('./middleware/authMiddleware');
+
+// import routes
 const authRoutes = require('./routes/auth-routes');
 const eventRoutes = require('./routes/events-routes');
 const userRoutes = require('./routes/user-routes');
+const adminRoutes = require('./routes/admin-routes');
 
+// mount routes
 app.use('/auth', authRoutes);
-app.use('/events', eventRoutes);
-app.use('/', userRoutes);
+app.use('/events', isAuthenticated, eventRoutes);
+app.use('/profile', isAuthenticated, userRoutes);
+app.use('/admin', isAdmin, adminRoutes);
 
 app.get('/', (req, res) => {
     res.redirect('/auth/login');
-});
-
-// UserProfile - Added temporary test login route (REMOVE before submission)
-// This simulates a logged-in user by manually setting req.session.userId
-app.get('/test-login', async (req, res) => {
-  try {
-    const User = require('./models/user-models');
-
-    // Get any existing user from the database
-    const user = await User.findOne();
-
-    if (!user) {
-      return res.send("No user found in database. Please create a user first.");
-    }
-    // Manually set session userId
-    req.session.userId = user._id;
-    res.redirect('/profile');
-
-  } catch (err) {
-    console.error(err);
-    res.send("Error during test login");
-  }
 });
 
 // Start Server
