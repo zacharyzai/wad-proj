@@ -2,6 +2,26 @@ const Event = require("../models/event-models");
 
 
 // Read (user sees all the available events on a particular date)
+exports.viewEventPage = async (req,res) => {
+    try {
+        const events = await Event.find(); // fetch from MongoDB
+        res.json(events);
+    } catch (error) {
+        res.status(500).json({ message: error.message })
+    }
+;
+}
+
+exports.renderEventsPage = async (req,res) => {
+    try {
+        const events = await Event.find();
+        res.render("events", {events}); //pass data to EJS
+    } catch (error) {
+        res.status(500).send(error.message)
+    }
+};
+
+// Render (what user sees when clicked into one event)
 
 
 
