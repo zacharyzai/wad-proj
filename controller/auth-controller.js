@@ -1,13 +1,11 @@
 const bcrypt = require('bcrypt');
 const User = require('../models/user-models');
-const { name } = require('ejs');
-
 exports.registerGet = (req, res) => {
     res.render('register');
 }
 
 exports.registerPost = async (req, res) => {
-    const { user, email, password, role } = req.body;
+    const { name, email, password, role } = req.body;
 
     try {
         const passwordHash = await bcrypt.hash(password, 10);

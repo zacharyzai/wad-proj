@@ -36,6 +36,8 @@ const userSchema = new mongoose.Schema({
   }
 });
 
-module.exports = mongoose.model('User', userSchema);
+const User = mongoose.model('User', userSchema);
 
-exports.createUser = function(data) { return User.create(data); };
+User.createUser = function(data) { return User.create(data); };
+
+module.exports = User;
