@@ -74,7 +74,7 @@ exports.loginPost = async (req, res) => {
             return res.redirect('/admin-profile');
         }
 
-        res.redirect('/event/list');
+        res.redirect('/events/list');
     } catch (err) {
         console.error(err);
         res.render('login', { errors: ['Login failed. Please try again.']});
