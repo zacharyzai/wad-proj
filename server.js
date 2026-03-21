@@ -3,6 +3,8 @@ const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const path = require('path');
 const fs = require('fs');
+//remembers user when they log in
+const session = require('express-session'); //UserProfile - Added Session for Auth
 
 // Load environment variables from config.env
 dotenv.config({ path: './config.env' });
@@ -16,6 +18,14 @@ app.set('views', path.join(__dirname, 'views'));
 // Middleware to parse URL-encoded bodies (for HTML forms) and serve static files
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Enables session handling for user authentication.
+// Stores user login state across requests using req.session.
+app.use(session({
+  secret: 'secretKey',
+  resave: false,
+  saveUninitialized: false
+}));
 
 // Database Connection
 async function connectDB() {
@@ -34,15 +44,36 @@ async function connectDB() {
 // ==========================================
 // const authRoutes = require('./routes/auth-routes');
 const eventRoutes = require('./routes/events-routes');
-// const profileRoutes = require('./routes/profile-routes');
+const userRoutes = require('./routes/user-routes'); //UserProfile - Added Route
 
 // app.use('/auth', authRoutes);
-app.use('/events', eventRoutes);
-// app.use('/profile', profileRoutes);
+app.use('/events', eventRoutes); //UserProfile - Added Route
+app.use('/', userRoutes);
 
 // Temporary Home Page Route
 app.get('/', (req, res) => {
-    res.render('/'); 
+    res.render('/'); });
+
+// UserProfile - Added temporary test login route (REMOVE before submission)
+// This simulates a logged-in user by manually setting req.session.userId
+app.get('/test-login', async (req, res) => {
+  try {
+    const User = require('./models/user-models');
+
+    // Get any existing user from the database
+    const user = await User.findOne();
+
+    if (!user) {
+      return res.send("No user found in database. Please create a user first.");
+    }
+    // Manually set session userId
+    req.session.userId = user._id;
+    res.redirect('/profile');
+
+  } catch (err) {
+    console.error(err);
+    res.send("Error during test login");
+  }
 });
 
 // Start Server
