@@ -4,6 +4,13 @@ const eventController = require("./../controller/events-controller");
 
 const router = express.Router();
 
+// Read Event
+router.get("/read-event", eventController.viewEventPage);
+
+// Render Event
+router.get("/events", eventController.renderEventsPage);
+router.post("/events/:id/rsvp", eventController.rsvpEvent);
+
 // Create Event
 router.get("/create-event", eventController.createEventPage);
 router.post("/create-event", eventController.createEvent);
