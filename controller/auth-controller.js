@@ -2,7 +2,7 @@ const bcrypt = require('bcrypt');
 const User = require('../models/user-models');
 
 exports.registerGet = (req, res) => {
-    res.render('register', { errors: [] });
+    res.render('register', { errors: [], formData: {} });
 }
 
 exports.registerPost = async (req, res) => {
@@ -22,7 +22,7 @@ exports.registerPost = async (req, res) => {
     }
 
     if (errors.length > 0) {
-        return res.render('register', { errors });
+        return res.render('register', { errors, formData: req.body });
     }
     try {
         const passwordHash = await bcrypt.hash(password, 10);
