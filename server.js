@@ -42,7 +42,7 @@ app.use('/events', eventRoutes);
 
 // Temporary Home Page Route
 app.get('/', (req, res) => {
-    res.render('/'); 
+    res.render('/events/create-event'); 
 });
 
 // Start Server
