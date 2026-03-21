@@ -7,6 +7,15 @@
 </head>
 <body>
     <h1>Register</h1>
+
+    <% if (errors.length > 0) { %>
+        <ul>
+            <% errors.forEach(error => { %>
+                <li><%= error %></li>
+            <% }); %>
+        </ul>
+    <% } %>
+
     <form action='/auth/register'  method="post">
         Name:
         <input type="text" name="name">
