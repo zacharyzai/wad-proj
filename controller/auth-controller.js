@@ -26,7 +26,7 @@ exports.registerPost = async (req, res) => {
     }
     try {
         const passwordHash = await bcrypt.hash(password, 10);
-        await User.createUser({ name, email, passwordHash, role: role || 'student', studentId: '', faculty: '', bio: '' });
+        await User.create({ name, email, passwordHash, role: role || 'student', studentId: '', faculty: '', bio: '' });
         res.send('Registered successfully! <a href="/auth/login">Login</a>');
     } catch (err) {
         console.error(err);
