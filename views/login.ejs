@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registration</title>
+    <title>Login</title>
 </head>
 <body>
-    <h1>Register</h1>
+    <h1>Login</h1>
 
     <% if (errors.length > 0) { %>
         <ul>
@@ -16,11 +16,7 @@
         </ul>
     <% } %>
 
-    <form action='/auth/register'  method="post">
-        Name:
-        <input type="text" name="name">
-        <br><br>
-
+    <form action='/auth/login'  method="post">
         Email:
         <input type="email" name="email">
         <br><br>
@@ -29,17 +25,9 @@
         <input type="password" name="password">
         <br><br>
 
-        Role:
-        <select name="role">
-            <option value="student">Student</option>
-            <option value="organizer">Organizer</option>
-            <option value="admin">Admin</option>
-        </select>
-        <br><br>
-
-        <button type="submit">Register</button>
+        <button type="submit">Login</button>
     </form>
 
-    <a href="/auth/login">Already have an account?</a>
+    <a href="/auth/register">Don't have an account?</a>
 </body>
 </html>
