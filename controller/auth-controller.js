@@ -66,11 +66,9 @@ exports.loginPost = async (req, res) => {
             return res.render('login', { errors });
         }
 
-        req.session.user = {
-            id: user._id,
-            username: user.username,
-            role: user.role
-        }
+        req.session.userId   = user._id;
+        req.session.userName = user.name;
+        req.session.role     = user.role;
 
         if (user.role === "admin") {
             return res.redirect('/admin-profile');
