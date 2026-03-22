@@ -9,7 +9,7 @@ router.get("/read-event", eventController.viewEventPage);
 
 // Show page + RSVP route
 router.get("/", eventController.renderEventsPage);
-router.post("/events/:id/rsvp", eventController.rsvpEvent);
+router.post("/:id/rsvp", eventController.rsvpEvent);
 
 
 // Create Event
