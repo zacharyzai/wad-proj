@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration</title>
+</head>
+<body>
+    <h1>Register</h1>
+
+    <% if (errors.length > 0) { %>
+        <ul>
+            <% errors.forEach(error => { %>
+                <li><%= error %></li>
+            <% }); %>
+        </ul>
+    <% } %>
+
+    <form action='/auth/register'  method="post">
+        Name:
+        <input type="text" name="name">
+        <br><br>
+
+        Email:
+        <input type="email" name="email">
+        <br><br>
+
+        Password:
+        <input type="password" name="password">
+        <br><br>
+
+        Role:
+        <select name="role">
+            <option value="student">Student</option>
+            <option value="organizer">Organizer</option>
+            <option value="admin">Admin</option>
+        </select>
+        <br><br>
+
+        <button type="submit">Register</button>
+    </form>
+
+    <a href="/auth/login">Already have an account?</a>
+</body>
+</html>

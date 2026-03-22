@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard</title>
+</head>
+
+<body>
+    <h2>Admin Dashboard</h2>
+    <p>Welcome, <%= userName %></p>
+    <p><a href="/events/list">View Events</a> | <a href="/auth/logout">Logout</a></p>
+
+    <hr>
+
+    <!-- users table -->
+    <h3>All Users (<%= users.length %>)</h3>
+
+    <% if (users.length === 0) { %>
+        <p>No users found.</p>
+    <% } else { %>
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Student ID</th>
+                    <th>Faculty</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% users.forEach(user => { %>
+                    <tr>
+                        <td><%= user.name %></td>
+                        <td><%= user.email %></td>
+                        <td><%= user.role %></td>
+                        <td><%= user.studentId || '-' %></td>
+                        <td><%= user.faculty || '-' %></td>
+                        <td>
+                            <!-- edit button -->
+                            <a href="/admin/edit-user/<%= user._id %>">Edit</a>
+
+                            <!-- delete button: hidden for  own account -->
+                            <% if (user._id.toString() !== currentUserId) { %>
+                                <form action="/admin/delete-user/<%= user._id %>" 
+                                      method="post" 
+                                      style="display:inline;">
+                                    <button type="submit" 
+                                            onclick="return confirm('Delete this user?')">
+                                        Delete
+                                    </button>
+                                </form>
+                            <% } else { %>
+                                (you)
+                            <% } %>
+                        </td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    <% } %>
+
+    <hr>
+
+    <!-- events table: to do after events finish! -->
+    <h3>All Events</h3>
+    <p>Events section coming soon.</p>
+
+</body>
+</html>
