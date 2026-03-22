@@ -8,7 +8,7 @@ built with Express.js, MongoDB, and EJS templates using MVC architecture.
 - **Event Listings**: Browse and filter campus events by category
 - **Event Management**: Organizers can create, edit, and delete their own events
 - **RSVP System**: Students can RSVP to events, update their status, and cancel
-- **User Profiles**: View and edit your personal profile and see your RSVPs
+- **User Profiles**: View, edit and delete your personal profile and see your RSVPs
 - **Admin Dashboard**: Admins can manage all users and events
 - **Authentication**: Secure login and registration with password hashing
 - **Authorization**: Role-based access control for students, organizers, and admins
@@ -86,12 +86,14 @@ role dropdown during registration.
 3. Filter events by category using the dropdown
 4. Click on an event to view details and RSVP
 5. View and manage your RSVPs on your profile page at `/profile`
+6. Delete your own profile
 
 ### As an Organizer
 1. Log in with an organizer account
 2. Create a new event at `/events/create`
 3. Edit or delete your own events from the event detail page
 4. You cannot edit or delete events created by other organizers
+5. Delete your own profile
 
 ### As an Admin
 1. Log in with the admin account
@@ -137,6 +139,7 @@ role dropdown during registration.
 | GET | `/profile` | View your profile |
 | GET | `/profile/edit` | Show edit form |
 | POST | `/profile/edit` | Submit profile changes |
+| POST | `/profile/delete` | Delete own profile |
 
 ### Admin
 | Method | URL | Description |
