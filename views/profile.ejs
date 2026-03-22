@@ -16,6 +16,11 @@
 
   <a href="/profile/edit">Edit Profile</a>
   <a href="/events">Browse Events</a>
-
+  
+  <br><br>
+  <form action="/profile/delete" method="POST"
+    onsubmit="return confirm('Are you sure you want to delete your account? This action cannot be undone.');">
+    <button type="submit" style="color: red;"> Delete Account </button>
+  </form>
 </body>
 </html>

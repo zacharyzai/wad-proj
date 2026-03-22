@@ -66,3 +66,27 @@ exports.updateProfile = async (req, res) => {
     res.send("Error updating profile");
   }
 };
+
+//Delete profile (CRUD)
+exports.deleteProfile = async (req, res) => {
+  try {
+    const userId = req.session.userId;
+
+    if (!userId) {
+      return res.send("Unauthorized");
+    }
+
+    await User.findByIdAndDelete(userId);
+
+    // Destroy session after deletion
+    req.session.destroy((err) => {
+      if (err) {
+        return res.send("Error logging out");
+      }
+      res.redirect("/auth/login");
+    });
+    
+  } catch (err) {
+    res.send("Error deleting profile");
+  }
+};
