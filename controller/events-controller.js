@@ -79,10 +79,10 @@ exports.createEvent = async (req, res) => {
             date: date,
             location: location,
             category: category,
-            organiser: "65f1a2b3c4d5e6f7a8b9c0d1" // temporary hardcoded ID for testing. once login ready swap to req.user._id, || check on this, assign admin as organiser
+            organiser: req.session.userId
         };
 
-        let result = await Event.addEvents(newEvent);
+        let result = await Event.create(newEvent);
         console.log("My Log:", result);
 
         res.redirect("/events/create-event")
