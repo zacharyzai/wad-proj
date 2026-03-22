@@ -7,7 +7,7 @@ const router = express.Router();
 // Read Event
 router.get("/read-event", eventController.viewEventPage);
 
-// Render Event
+// Show page + RSVP route
 router.get("/events", eventController.renderEventsPage);
 router.post("/events/:id/rsvp", eventController.rsvpEvent);
 

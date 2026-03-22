@@ -11,7 +11,7 @@ exports.viewEventPage = async (req,res) => {
     }
 ;
 }
-
+// Render (what user sees when clicked into one event)
 exports.renderEventsPage = async (req,res) => {
     try {
         const events = await Event.find();
@@ -21,7 +21,22 @@ exports.renderEventsPage = async (req,res) => {
     }
 };
 
-// Render (what user sees when clicked into one event)
+// RSVP 
+exports.rsvpEvent = async(req,res) => {
+    try {
+        const event = await Event.findById(req.params.id);
+
+        if (!event.attendees) {
+            event.attendees = [];
+        }
+        event.attendees.push("testUser"); // this is replaced later with logged-in user
+
+        await event.save();
+        res.redirect("/events"); //page reloads after rsvp
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
+};
 
 
 
