@@ -49,8 +49,13 @@ app.use('/profile', isAuthenticated, userRoutes);
 app.use('/admin', isAdmin, adminRoutes);
 
 app.get('/', (req, res) => {
-    res.render('/events/create-event'); 
-    res.redirect('/auth/login');
+    if (req.session && req.session.userId) {
+        // If they are already logged in, show them the events!
+        res.redirect('/events');
+    } else {
+        // Otherwise, make them log in first
+        res.redirect('/auth/login');
+    }
 });
 
 // Start Server
