@@ -15,7 +15,7 @@ exports.viewEventPage = async (req,res) => {
 exports.renderEventsPage = async (req,res) => {
     try {
         const events = await Event.find();
-        res.render("events", {events}); //pass data to EJS
+        res.render("event-view", {events}); //pass data to EJS
     } catch (error) {
         res.status(500).send(error.message)
     }

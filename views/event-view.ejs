@@ -8,21 +8,24 @@
 <body>
     <h1>Event List</h1>
     
-    <table>
+    <table border="1">
         <thead>
             <tr>
                 <th>Title</th>
-                <th>Date</th>
+                <th>Date & Time</th>
                 <th>Category</th>
                 <th>Location</th>
                 <th>Action</th>
+                <th>Attendees</th>
             </tr>
             </thead>
         <tbody>   
             <% events.forEach(event => { %>
                 <tr>
                     <td><%= event.title  %></td>
-                    <td><%= event.date  %></td>
+                    <!-- <td><%= event.date %></td> -->
+                    <td><%= event.date.toLocaleString('en-SG', { dateStyle: 'medium', timeStyle: 'short' }) %></td> <!-- toLocaleString is used format numbers, date to make it readable. 'en-SG' -> specific to SG time. 
+                                                                                                                        dateStyle -> make the appearance of the date clean. timeStyle -> trim GMT-->
                     <td><%= event.category || "N/A"  %></td>
                     <td><%= event.location  %></td>
                     <td>
