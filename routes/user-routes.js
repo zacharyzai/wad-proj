@@ -8,4 +8,6 @@ router.get('/edit', userController.getEditProfile);
 
 router.post('/edit', userController.updateProfile);
 
+router.post('/delete', userController.deleteProfile);
+
 module.exports = router;
