@@ -15,7 +15,8 @@ exports.viewEventPage = async (req,res) => {
 exports.renderEventsPage = async (req,res) => {
     try {
         const events = await Event.find();
-        res.render("event-view", {events}); //pass data to EJS
+        const success = req.query.success;
+        res.render("event-view", {events, success}); //pass data to EJS
     } catch (error) {
         res.status(500).send(error.message)
     }
@@ -175,7 +176,7 @@ exports.deleteEvent = async (req,res) => {
             deleteEvent = [deleteEvent];
         };
 
-        await Event.deleteMany({ _id : { $in: deleteEvent}});
+        await Event.deleteMany({ _id : { $in: deleteEvent}}); // $in in MongoDB operator means match any value in this array
 
         res.redirect("/events?success=true");
     } catch (err) {
