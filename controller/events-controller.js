@@ -85,7 +85,7 @@ exports.createEvent = async (req, res) => {
         let result = await Event.create(newEvent);
         console.log("My Log:", result);
 
-        res.redirect("/events/create-event")
+        res.redirect("/events")
 
     } catch (err) {
         console.error("Database error:", err);
@@ -130,6 +130,14 @@ exports.updateEvent = async (req, res) => {
         let date = req.body.date; 
         let location = req.body.location;
         let category = req.body.category;
+
+        if (!title || !description || !date || !location || !category) {
+            return res.render("update-event", {
+                error: "All fields are required",
+                targetId, title, description, date, location, category
+            });
+        }
+        
 
         const updatedEvent = await Event.findByIdAndUpdate(
             targetId,

@@ -6,6 +6,12 @@
     <title>Update Event</title>
 </head>
 <body>
+
+    <% if (typeof(error) !== 'undefined' && error) { %>
+        <p style="color: red; font-weight: bold;"><%= error %></p>
+    <% } %>
+
+    
     <h1>Update Event</h1>
     <p><a href="/events">← Back to Events</a></p>
 
