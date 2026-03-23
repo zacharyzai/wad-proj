@@ -3,6 +3,8 @@ const router = express.Router();
 const adminController = require('../controller/admin-controller');
 
 router.get('/dashboard', adminController.showDashboard);
+router.get('/create-user', adminController.showCreateUser);
+router.post('/create-user', adminController.handleCreateUser);
 router.post('/delete-user/:id', adminController.deleteUser);
 router.get('/edit-user/:id', adminController.showEditUser);
 router.post('/edit-user/:id', adminController.handleEditUser);
