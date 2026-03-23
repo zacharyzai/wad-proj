@@ -21,8 +21,8 @@ router.get("/update-event", eventController.updateEventPage);
 router.post("/update-event", eventController.updateEvent);
 
 // Delete Event
-router.get("/delete-event", eventController.renderDeletePage); // To view the table of events that may be deleted
-router.post("/delete-event", eventController.deleteEvent); // To show the success of the deletion of the page and back to Events Home Page button
+router.get("/delete-event", eventController.renderDeletePage);
+router.post("/delete-event", eventController.deleteEvent); 
 
 
 module.exports = router;

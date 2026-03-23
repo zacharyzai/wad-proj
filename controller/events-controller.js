@@ -39,8 +39,6 @@ exports.rsvpEvent = async(req,res) => {
 };
 
 
-
-
 // Create Event (Have a button visible to admins only to create an event)
 
 exports.createEventPage = (req,res) => {
@@ -85,7 +83,7 @@ exports.createEvent = async (req, res) => {
         let result = await Event.create(newEvent);
         console.log("My Log:", result);
 
-        res.redirect("/events")
+        res.redirect("/events?success=true")
 
     } catch (err) {
         console.error("Database error:", err);
@@ -104,9 +102,7 @@ exports.updateEventPage = async (req,res) => {
         let eventToEdit = await Event.findById(targetId)
 
         // Conversion of "datetime-local" to a format that is compatible with HTML
-        let formattedDateForHTML = eventToEdit.date.toISOString().slice(0, 16); // slice away the seconds
-
-
+        let formattedDateForHTML = eventToEdit.date.toISOString().slice(0, 16); // slice away the seconds + ISOString() --> converts JS Date object into standardised string format, needed to allow HTML to recognise the data
         res.render("update-event", {
             targetId,
             title: eventToEdit.title,

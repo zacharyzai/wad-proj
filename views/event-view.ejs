@@ -6,6 +6,12 @@
     <title>Event List</title>
 </head>
 <body>
+
+    <% if (typeof(success) !== 'undefined' && success) { %>
+        <p style="color: green; font-weight: bold;">Action completed successfully!</p>
+    <% } %> 
+    <!--Added success message when update/delete/create is successful-->
+
     <h1>Event List</h1>
     
     <table border="1">
@@ -24,8 +30,8 @@
                 <tr>
                     <td><%= event.title  %></td>
                     <!-- <td><%= event.date %></td> -->
-                    <td><%= event.date.toLocaleString('en-SG', { dateStyle: 'medium', timeStyle: 'short' }) %></td> <!-- toLocaleString is used format numbers, date to make it readable. 'en-SG' -> specific to SG time. 
-                                                                                                                        dateStyle -> make the appearance of the date clean. timeStyle -> trim GMT-->
+                    <td><%= event.date.toLocaleString('en-SG', { dateStyle: 'medium', timeStyle: 'short' }) %></td> <!-- toLocaleString is used to format numbers, date to make it readable. 'en-SG' -> specific to SG time. 
+                                                                                                                        dateStyle -> make the appearance of the date clean. timeStyle -> trim GMT -->
                     <td><%= event.category || "N/A"  %></td>
                     <td><%= event.location  %></td>
                     <td>
