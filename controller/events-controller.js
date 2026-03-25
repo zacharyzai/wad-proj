@@ -232,3 +232,14 @@ exports.addReview = async (req, res) => {
     }
 };
 
+exports.getEventDetails = async (req, res) => {
+    try {
+        const event = await Event.findById(req.params.id)
+            .populate("reviews"); // if you want reviews shown
+
+        res.render("event-view", { event });
+    } catch (err) {
+        console.error(err);
+        res.send("Error loading event");
+    }
+};

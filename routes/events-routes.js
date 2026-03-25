@@ -27,6 +27,8 @@ router.post("/delete-event", eventController.deleteEvent);
 // View Event Details
 router.get("/:id", eventController.viewEventDetails);
 
+// Get Event Details
+router.get("/:id", eventController.getEventDetails);
 
 
 
