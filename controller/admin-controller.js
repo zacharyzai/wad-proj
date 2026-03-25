@@ -1,14 +1,17 @@
 const bcrypt = require("bcrypt");
 const User = require("../models/user-models");
+const Event = require("../models/event-models");
 
 exports.showDashboard = async (req, res) => {
   try {
     const users = await User.find();
+    const events = await Event.find();
+    const totalRSVPs = events.reduce((sum, e) => sum + e.attendees.length, 0);
 
     res.render("admin/dashboard", {
       users,
-      events: [], // rmb to update when events is done!
-      totalRSVPs: 0, // rmb to update when rsvp is done!
+      events,
+      totalRSVPs,
       userName: req.session.userName,
       currentUserId: req.session.userId.toString(),
     });
@@ -132,3 +135,4 @@ exports.deleteUser = async (req, res) => {
     res.send("Error deleting user.");
   }
 };
+

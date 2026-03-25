@@ -29,9 +29,20 @@
                     <font><%= users.length %></font>
                 </td>
                 <td width="20"></td>
+                <td align="center" bgcolor="#e8fdf0">
+                    <strong>Total Events:</strong><br>
+                    <font><%= events.length %></font>
+                </td>
+                <td width="20"></td>
                 <td align="center" bgcolor="#fdfae8">
-                    <strong>Manage Data:</strong><br>
-                    <a href="/admin/create-user">➕ Create New User</a>
+                    <strong>Total RSVPs:</strong><br>
+                    <font><%= totalRSVPs %></font>
+                </td>
+                <td width="20"></td>
+                <td align="center" bgcolor="#fde8f4">
+                    <strong>Quick Actions:</strong><br>
+                    <a href="/admin/create-user">➕ New User</a> &nbsp;|&nbsp;
+                    <a href="/events/create-event">📅 New Event</a>
                 </td>
             </tr>
         </table>
@@ -93,11 +104,6 @@
             <% } %>
         </section>
 
-        <br><br>
-        <hr width="80%">
-
-        <h3>All Events</h3>
-        <p>Events section coming soon.</p>
 
     </center>
 </body>
