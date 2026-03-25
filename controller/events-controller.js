@@ -1,4 +1,5 @@
 const Event = require("../models/event-models");
+const Review = require("../models/review-models"); // added for review
 
 
 // Read (user sees all the available events on a particular date)
