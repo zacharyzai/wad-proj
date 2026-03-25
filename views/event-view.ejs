@@ -41,6 +41,10 @@
                         </form>
                     </td>
                     <td><%= event.attendees ? event.attendees.length : 0 %></td>
+                    <td>
+                        <a href="/events/<%= event._id %>">View</a>
+                    </td>
+                    
                 </tr>
             <%}) %>
             

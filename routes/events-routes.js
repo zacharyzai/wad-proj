@@ -27,5 +27,7 @@ router.post("/update-event", eventController.updateEvent);
 router.get("/delete-event", eventController.renderDeletePage);
 router.post("/delete-event", eventController.deleteEvent); 
 
+// View Event Details
+router.get("/:id", eventController.viewEventDetails);
 
 module.exports = router;

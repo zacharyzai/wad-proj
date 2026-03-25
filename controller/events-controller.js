@@ -185,4 +185,20 @@ exports.deleteEvent = async (req,res) => {
     }
 }
 
+exports.viewEventDetails = async (req, res) => {
+    try {
+        const event = await Event.findById(req.params.id)
+            .populate('organiser', 'name')
+            .populate('reviews');
+        
+        if (!event) {
+            return res.send("Event not found.");
+        }
+
+        res.render("event-details", { event });
+    } catch (err) {
+        console.error(err);
+        res.send("Error loading event details.");
+    }
+};
 

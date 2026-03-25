@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= event.title %></title>
+</head>
+<body>
+    <p><a href="/events">← Back to Events</a></p>
+
+    <h1><%= event.title %></h1>
+
+    <table border="1" cellpadding="8">
+        <tr>
+            <th>Title</th>
+            <td><%= event.title %></td>
+        </tr>
+        <tr>
+            <th>Date & Time</th>
+            <td><%= event.date.toLocaleString('en-SG', { dateStyle: 'medium', timeStyle: 'short' }) %></td>
+        </tr>
+        <tr>
+            <th>Location</th>
+            <td><%= event.location %></td>
+        </tr>
+        <tr>
+            <th>Category</th>
+            <td><%= event.category || "N/A" %></td>
+        </tr>
+        <tr>
+            <th>Description</th>
+            <td><%= event.description %></td>
+        </tr>
+        <tr>
+            <th>Organiser</th>
+            <td><%= event.organiser ? event.organiser.name : "Unknown" %></td>
+        </tr>
+        <tr>
+            <th>Attendees</th>
+            <td><%= event.attendees ? event.attendees.length : 0 %></td>
+        </tr>
+        <tr>
+            <th>Reviews</th>
+            <td>
+                <!-- scrollable review section -->
+                <div style="max-height: 300px; overflow-y: auto;">
+                    <% if (event.reviews && event.reviews.length > 0) { %>
+                        <% event.reviews.forEach(review => { %>
+                            <div style="border: 1px solid grey; padding: 8px; margin-bottom: 8px;">
+                                <strong><%= review.title %></strong> - <%= review.rating %>/5
+                                <br>
+                                <p><%= review.comment %></p>
+                            </div>
+                        <% }) %>
+                    <% } else { %>
+                        <p>No reviews yet.</p>
+                    <% } %>
+                </div>
+            </td>
+        </tr>
+    </table>
+
+</body>
+</html>
