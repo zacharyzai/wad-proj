@@ -41,12 +41,14 @@ const authRoutes = require('./routes/auth-routes');
 const eventRoutes = require('./routes/events-routes');
 const userRoutes = require('./routes/user-routes');
 const adminRoutes = require('./routes/admin-routes');
+const reviewRoutes = require('./routes/review-routes');
 
 // mount routes
 app.use('/auth', authRoutes);
 app.use('/events', isAuthenticated, eventRoutes);
 app.use('/profile', isAuthenticated, userRoutes);
 app.use('/admin', isAdmin, adminRoutes);
+// review routes are handled within /events (e.g. /events/:id/review)
 
 app.get('/', (req, res) => {
     if (req.session && req.session.userId) {

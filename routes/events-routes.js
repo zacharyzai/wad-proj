@@ -1,4 +1,5 @@
 const express = require('express');
+const { isAdmin } = require('../middleware/authMiddleware');
 
 const eventController = require("./../controller/events-controller");
 
@@ -11,24 +12,29 @@ router.get("/read-event", eventController.viewEventPage);
 router.get("/", eventController.renderEventsPage);
 router.post("/:id/rsvp", eventController.rsvpEvent);
 
+// To Un-RSVP
+router.post("/:id/unrsvp", eventController.unrsvpEvent);
+
 
 // Create Event
-router.get("/create-event", eventController.createEventPage);
-router.post("/create-event", eventController.createEvent);
+router.get("/create-event", isAdmin, eventController.createEventPage);
+router.post("/create-event", isAdmin, eventController.createEvent);
 
 // Update Event
-router.get("/update-event", eventController.updateEventPage);
-router.post("/update-event", eventController.updateEvent);
+router.get("/update-event", isAdmin, eventController.updateEventPage);
+router.post("/update-event", isAdmin, eventController.updateEvent);
 
 // Delete Event
-router.get("/delete-event", eventController.renderDeletePage);
-router.post("/delete-event", eventController.deleteEvent); 
+router.get("/delete-event", isAdmin, eventController.renderDeletePage);
+router.post("/delete-event", isAdmin, eventController.deleteEvent); 
 
-// View Event Details
+// Review - show form and submit
+router.get("/:id/review", eventController.addReviewPage);
+router.post("/:id/review", eventController.addReview);
+
+// View Event Details (must be last — /:id matches anything)
 router.get("/:id", eventController.viewEventDetails);
 
-// Add Review to Event
-router.post("/:id/review", eventController.addReview);
 
 
 module.exports = router;
