@@ -13,8 +13,14 @@
     <!--Added success message when update/delete/create is successful-->
 
     <h1>Event List</h1>
-    <a href="/events/create-event"><button>Create an Event</button></a>
-    <a href="/events/delete-event"><button>Delete an Event</button></a>
+    <% if (role === 'admin' || role=== 'organiser') { %>
+        <a href="/events/create-event"><button>Create Event</button></a>
+    <% } %>
+
+    <% if (role === 'admin') { %>
+        <a href="/events/delete-event"><button>Delete Event</button></a>
+    <% } %>
+    
     <table border="1">
         <thead>
             <tr>
@@ -25,7 +31,9 @@
                 <th>Action</th>
                 <th>Attendees</th>
                 <th>View Extra Information</th>
+                <% if (role === 'admin') { %>
                 <th>Update Event Details</th>
+                <% } %>
             </tr>
             </thead>
         <tbody>   
@@ -47,9 +55,10 @@
                         <a href="/events/<%= event._id %>">View</a>
                     </td>
                     <td>
-                        <a href="/events/update-event?eventId=<%= event._id %>">Update Event</a>
+                        <% if (role === 'admin' || role === "organiser") { %>
+                            <a href="/events/update-event?eventId=<%= event._id %>"><button>Update Event</button></a>
+                        <% } %>
                     </td>
-                    
                 </tr>
             <%}) %>
             

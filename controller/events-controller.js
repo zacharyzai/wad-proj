@@ -17,7 +17,8 @@ exports.renderEventsPage = async (req,res) => {
     try {
         const events = await Event.find();
         const success = req.query.success;
-        res.render("event-view", {events, success}); //pass data to EJS
+        const role = req.session.role;
+        res.render("event-view", {events, success, role}); //pass data to EJS
     } catch (error) {
         res.status(500).send(error.message)
     }
@@ -196,7 +197,7 @@ exports.viewEventDetails = async (req, res) => {
             return res.send("Event not found.");
         }
 
-        res.render("event-details", { event });
+        res.render("event-details", {event, role: req.session.role});
     } catch (err) {
         console.error(err);
         res.send("Error loading event details.");
