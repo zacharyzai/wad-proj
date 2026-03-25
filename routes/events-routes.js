@@ -24,11 +24,12 @@ router.post("/update-event", eventController.updateEvent);
 router.get("/delete-event", eventController.renderDeletePage);
 router.post("/delete-event", eventController.deleteEvent); 
 
-// View Event Details
-router.get("/:id", eventController.viewEventDetails);
+// Review - show form and submit
+router.get("/:id/review", eventController.addReviewPage);
+router.post("/:id/review", eventController.addReview);
 
-// Get Event Details
-router.get("/:id", eventController.getEventDetails);
+// View Event Details (must be last — /:id matches anything)
+router.get("/:id", eventController.viewEventDetails);
 
 
 

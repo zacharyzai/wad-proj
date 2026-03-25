@@ -203,6 +203,20 @@ exports.viewEventDetails = async (req, res) => {
     }
 };
 
+exports.addReviewPage = async (req, res) => {
+    try {
+        const event = await Event.findById(req.params.id);
+        if (!event) {
+            return res.send("Event not found.");
+        }
+        res.render("create-review", { event });
+    } catch (err) {
+        console.error(err);
+        res.send("Error loading review page.");
+    }
+};
+
+
 // To add review
 exports.addReview = async (req, res) => {
     try {
@@ -231,6 +245,8 @@ exports.addReview = async (req, res) => {
         res.send("Error adding review.");
     }
 };
+
+
 
 exports.getEventDetails = async (req, res) => {
     try {
