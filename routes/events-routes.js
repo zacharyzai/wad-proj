@@ -11,6 +11,9 @@ router.get("/read-event", eventController.viewEventPage);
 router.get("/", eventController.renderEventsPage);
 router.post("/:id/rsvp", eventController.rsvpEvent);
 
+// Show page + RSVP route
+router.get("/events", eventController.renderEventsPage);
+router.post("/events/:id/rsvp", eventController.rsvpEvent);
 
 // Create Event
 router.get("/create-event", eventController.createEventPage);
