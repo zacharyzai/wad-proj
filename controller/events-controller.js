@@ -2,6 +2,41 @@ const Event = require("../models/event-models");
 
 
 // Read (user sees all the available events on a particular date)
+exports.viewEventPage = async (req,res) => {
+    try {
+        const events = await Event.find(); // fetch from MongoDB
+        res.json(events);
+    } catch (error) {
+        res.status(500).json({ message: error.message })
+    }
+;
+}
+// Render (what user sees when clicked into one event)
+exports.renderEventsPage = async (req,res) => {
+    try {
+        const events = await Event.find();
+        res.render("events", {events}); //pass data to EJS
+    } catch (error) {
+        res.status(500).send(error.message)
+    }
+};
+
+// RSVP 
+exports.rsvpEvent = async(req,res) => {
+    try {
+        const event = await Event.findById(req.params.id);
+
+        if (!event.attendees) {
+            event.attendees = [];
+        }
+        event.attendees.push("testUser"); // this is replaced later with logged-in user
+
+        await event.save();
+        res.redirect("/events"); //page reloads after rsvp
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
+};
 
 
 
@@ -44,13 +79,13 @@ exports.createEvent = async (req, res) => {
             date: date,
             location: location,
             category: category,
-            organiser: req.user._id // check on this, assign admin as organiser
+            organiser: "65f1a2b3c4d5e6f7a8b9c0d1" // temporary hardcoded ID for testing. once login ready swap to req.user._id, || check on this, assign admin as organiser
         };
 
         let result = await Event.addEvents(newEvent);
         console.log("My Log:", result);
 
-        res.redirect("/events")
+        res.redirect("/events/create-event")
 
     } catch (err) {
         console.error("Database error:", err);
@@ -64,54 +99,81 @@ exports.createEvent = async (req, res) => {
 // Update Event (Have a button visible to admins only to allow them to UPDATE an event)
 exports.updateEventPage = async (req,res) => {
     try {
-        let targetId = req.query.eventid; // need to get from events viewing page when use click the specific event
-        let title = req.query.title;
-        let description = req.query.description;
-        let date = req.query.date;
-        let location = req.query.location;
-        let category = req.query.category;
-        let organiser = req.query.organiser;
+        let targetId = req.query.eventId; // need to get from events viewing page when use click the specific event
 
-        res.render("/events-update", {
+        let eventToEdit = await Event.findById(targetId)
+
+        // Conversion of "datetime-local" to a format that is compatible with HTML
+        let formattedDateForHTML = eventToEdit.date.toISOString().slice(0, 16); // slice away the seconds
+
+
+        res.render("update-event", {
             targetId,
-            title,
-            description,
-            date,
-            location,
-            category,
-            organiser
+            title: eventToEdit.title,
+            description: eventToEdit.description,
+            date: formattedDateForHTML,
+            location: eventToEdit.location,
+            category: eventToEdit.category,
         })
+
     } catch (err) {
         console.error("Error:", err);
         res.send("Error updating the event. Please try again.")
     }
 }
 
+exports.updateEvent = async (req, res) => {
+    try {
+        const targetId = req.query.eventId
+        let title = req.body.title;
+        let description = req.body.description;
+        let date = req.body.date; 
+        let location = req.body.location;
+        let category = req.body.category;
+
+        const updatedEvent = await Event.findByIdAndUpdate(
+            targetId,
+            {title, description, date, location, category}
+        )
+        res.redirect('/events?success=true') // ? is a query string and success = true is used to display message whether the update is confirmed under events page
+    } catch (err) {
+        console.error("Error saving the update:", err)
+        res.send("Error occurred while trying to update the event.")
+    }  
+}
 
 // Delete Event (Have a button visible to admins only to allow them to DELETE an event)
 
 exports.renderDeletePage = async (req,res) => {
     try {
         let allEvents = await Event.find()
-        res.render("delete-events", {events: AllEvents})
+        res.render("delete-events", {events: allEvents})
     } catch (err) {
         console.error(err)
         res.send("Error loading the delete page.")
     }
 }
 
-
 exports.deleteEvent = async (req,res) => {
     try {
-        let deleteEvent = req.body.deleteEvent   || [];
+        let deleteEvent = req.body.deleteEventIds;
+        
+
+        if (!deleteEvent) {
+            const allEvents = await Event.find();
+            return res.render("delete-events", {
+                events: allEvents,
+                error: "Please select at least one event to delete."
+            })
+        }
 
         if (typeof(deleteEvent) === "string") {
             deleteEvent = [deleteEvent];
         };
 
-        await Event.deleteMany({ _id : { $in: deleteEvent}})
+        await Event.deleteMany({ _id : { $in: deleteEvent}});
 
-        res.render("delete-success")
+        res.redirect("/events?success=true");
     } catch (err) {
         console.log(err)
         res.send("An error occurred while trying to delete the event(s).")

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create User</title>
+</head>
+<body>
+    <h2>Create User</h2>
+    <a href="/admin/dashboard">Back to Dashboard</a>
+
+    <% if (errors.length > 0) { %>
+        <ul>
+            <% errors.forEach(error => { %>
+                <li><%= error %></li>
+            <% }) %>
+        </ul>
+    <% } %>
+
+    <form action="/admin/create-user" method="post">
+
+        <label>Name:</label><br>
+        <input type="text" name="name">
+        <br><br>
+
+        <label>Email:</label><br>
+        <input type="email" name="email">
+        <br><br>
+
+        <label>Password:</label><br>
+        <input type="password" name="password">
+        <br><br>
+
+        <label>Role:</label><br>
+        <select name="role">
+            <option value="student">Student</option>
+            <option value="organizer">Organizer</option>
+            <option value="admin">Admin</option>
+        </select>
+        <br><br>
+
+        <label>Student ID (optional):</label><br>
+        <input type="text" name="studentId">
+        <br><br>
+
+        <label>Faculty (optional):</label><br>
+        <input type="text" name="faculty">
+        <br><br>
+
+        <button type="submit">Create User</button>
+    </form>
+
+</body>
+</html>
