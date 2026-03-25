@@ -60,5 +60,21 @@
         </tr>
     </table>
 
+    <hr>
+    <h2>Leave a Review</h2>
+    <form action="/events/<%= event._id %>/review" method="post">
+        Title:<br>
+        <input type="text" name="title" required><br>
+
+        Rating (1-5):<br>
+        <input type="number" name="rating" min="1" max="5" required><br>
+
+        Comment:<br>
+        <textarea name="comment" required></textarea><br><br>
+
+        <button type="submit">Submit Review</button>
+    </form>
+
+
 </body>
 </html>

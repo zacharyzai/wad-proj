@@ -203,3 +203,31 @@ exports.viewEventDetails = async (req, res) => {
     }
 };
 
+exports.addReview = async (req, res) => {
+    try {
+        const { title, rating, comment } = req.body;
+
+        if (!title || !rating || !comment) {
+            return res.redirect("/events/" + req.params.id);
+        }
+
+        const review = await Review.create({
+            event: req.params.id,
+            user: req.session.userId,
+            title,
+            rating,
+            comment
+        });
+
+        // Push the review ID into the event's reviews array
+        await Event.findByIdAndUpdate(req.params.id, {
+            $push: { reviews: review._id }
+        });
+
+        res.redirect("/events/" + req.params.id);
+    } catch (err) {
+        console.error(err);
+        res.send("Error adding review.");
+    }
+};
+
