@@ -1,106 +1,119 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Event List</title>
-</head>
-<body>
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Event List</title>
+    </head>
+    <body align="center">
+        <center>
+            <br>
+            <h1>📅 Campus Event Directory 🎓</h1>
+            <p>Discover hackathons, concerts, and club meetings happening around SMU.</p>
 
-    <% if (typeof(success) !== 'undefined' && success) { %>
-        <p style="color: green; font-weight: bold;">Action completed successfully!</p>
-    <% } %> 
-    <!--Added success message when update/delete/create is successful-->
+            <nav>
+                <p>
+                    <a href="/">🏠 Home</a> | 
+                    <a href="/profile">👤 My Profile</a> | 
+                    <a href="/auth/logout">🚪 Logout</a>
+                </p>
+            </nav>
 
-    <h1>Event List</h1>
-    <% if (role === 'admin' || role=== 'organiser') { %>
-        <a href="/events/create-event"><button>Create Event</button></a>
-    <% } %>
+            <hr width="90%">
+            <% if (typeof(success) !== 'undefined' && success) { %>
+                <p style="color: green; font-weight: bold;">Action completed successfully!</p>
+            <% } %> 
+            <!--Added success message when update/delete/create is successful-->
 
-    <% if (role === 'admin') { %>
-        <a href="/events/delete-event"><button>Delete Event</button></a>
-    <% } %>
-    
-    <table border="1">
-        <thead>
-            <tr>
-                <th>Title</th>
-                <th>Date & Time</th>
-                <th>Category</th>
-                <th>Location</th>
-                <th>Action</th>
-                <th>Attendees</th>
-                <th>View Extra Information</th>
-                <% if (role === 'admin') { %>
-                <th>Update Event Details</th>
-                <% } %>
-            </tr>
-            </thead>
-        <tbody>   
-            <% events.forEach(event => { %>
-                <tr>
-                    <td><%= event.title  %></td>
-                    <!-- <td><%= event.date %></td> -->
-                    <td><%= event.date.toLocaleString('en-SG', { dateStyle: 'medium', timeStyle: 'short' }) %></td> <!-- toLocaleString is used to format numbers, date to make it readable. 'en-SG' -> specific to SG time. 
-                                                                                                                        dateStyle -> make the appearance of the date clean. timeStyle -> trim GMT -->
-                    <td><%= event.category || "N/A"  %></td>
-                    <td><%= event.location  %></td>
-                    <td>
-                        <form action="/events/<%= event._id %>/rsvp" method="post">
-                            <button type="submit">RSVP</button>
-                        </form>
-                    </td>
-                    <td><%= event.attendees ? event.attendees.length : 0 %></td>
-                    <td>
-                        <a href="/events/<%= event._id %>">View</a>
-                    </td>
-                        <% if (role === 'admin' || role === "organiser") { %>
-                            <td>
-                            <a href="/events/update-event?eventId=<%= event._id %>"><button>Update Event</button></a>
-                        </td>
-                        <% } %>
-                </tr>
-            <%}) %>
+            <h1>Event List</h1>
+            <% if (role === 'admin' || role=== 'organiser') { %>
+                <a href="/events/create-event"><button>Create Event</button></a>
+            <% } %>
+
+            <% if (role === 'admin') { %>
+                <a href="/events/delete-event"><button>Delete Event</button></a>
+            <% } %>
             
-        </tbody> 
-    </table>
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Date & Time</th>
+                        <th>Category</th>
+                        <th>Location</th>
+                        <th>Action</th>
+                        <th>Attendees</th>
+                        <th>View Extra Information</th>
+                        <% if (role === 'admin') { %>
+                        <th>Update Event Details</th>
+                        <% } %>
+                    </tr>
+                    </thead>
+                <tbody>   
+                    <% events.forEach(event => { %>
+                        <tr>
+                            <td><%= event.title  %></td>
+                            <!-- <td><%= event.date %></td> -->
+                            <td><%= event.date.toLocaleString('en-SG', { dateStyle: 'medium', timeStyle: 'short' }) %></td> <!-- toLocaleString is used to format numbers, date to make it readable. 'en-SG' -> specific to SG time. 
+                                                                                                                                dateStyle -> make the appearance of the date clean. timeStyle -> trim GMT -->
+                            <td><%= event.category || "N/A"  %></td>
+                            <td><%= event.location  %></td>
+                            <td>
+                                <form action="/events/<%= event._id %>/rsvp" method="post">
+                                    <button type="submit">RSVP</button>
+                                </form>
+                            </td>
+                            <td><%= event.attendees ? event.attendees.length : 0 %></td>
+                            <td>
+                                <a href="/events/<%= event._id %>">View</a>
+                            </td>
+                                <% if (role === 'admin' || role === "organiser") { %>
+                                    <td>
+                                    <a href="/events/update-event?eventId=<%= event._id %>"><button>Update Event</button></a>
+                                </td>
+                                <% } %>
+                        </tr>
+                    <%}) %>
+                    
+                </tbody> 
+            </table>
 
 
 
-<!-- My Events Portion-->
-    <br>
-    <hr>
-<h2>My Events</h2>
-<% if (myEvents.length > 0) { %>
-    <table border="1">
-        <thead>
-            <tr>
-                <th>Title</th>
-                <th>Date & Time</th>
-                <th>Category</th>
-                <th>Location</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            <% myEvents.forEach(event => { %>
-                <tr>
-                    <td><%= event.title %></td>
-                    <td><%= event.date.toLocaleString('en-SG', { dateStyle: 'medium', timeStyle: 'short' }) %></td>
-                    <td><%= event.category || "N/A" %></td>
-                    <td><%= event.location %></td>
-                    <td>
-                        <form action="/events/<%= event._id%>/unrsvp" method="POST">
-                            <button type="submit">Un-RSVP</button>
-                        </form>
-                    </td>
-                </tr>
-            <% }) %>
-        </tbody>
-    </table>
-<% } else { %>
-    <p>You haven't RSVP'd to any events yet.</p>
-<% } %>
-
-</body>
-</html>
+        <!-- My Events Portion-->
+            <br>
+            <hr>
+        <h2>My Events</h2>
+        <% if (myEvents.length > 0) { %>
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Date & Time</th>
+                        <th>Category</th>
+                        <th>Location</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% myEvents.forEach(event => { %>
+                        <tr>
+                            <td><%= event.title %></td>
+                            <td><%= event.date.toLocaleString('en-SG', { dateStyle: 'medium', timeStyle: 'short' }) %></td>
+                            <td><%= event.category || "N/A" %></td>
+                            <td><%= event.location %></td>
+                            <td>
+                                <form action="/events/<%= event._id%>/unrsvp" method="POST">
+                                    <button type="submit">Un-RSVP</button>
+                                </form>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        <% } else { %>
+            <p>You haven't RSVP'd to any events yet.</p>
+        <% } %>
+        </center>
+    </body>
+    </html>
