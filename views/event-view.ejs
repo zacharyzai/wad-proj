@@ -29,13 +29,14 @@
             <!--Added success message when update/delete/create is successful-->
 
             <h1>Event List</h1>
-            <% if (role === 'admin' || role=== 'organiser') { %>
+            <% if (role === 'admin' || role=== 'organizer') { %>
                 <a href="/events/create-event"><button>Create Event</button></a>
             <% } %>
 
             <% if (role === 'admin') { %>
                 <a href="/events/delete-event"><button>Delete Event</button></a>
             <% } %>
+
             
             <table border="1">
                 <thead>
