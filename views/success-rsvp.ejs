@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>RSVP Successful</title>
+</head>
+<body>
+    <h1>RSVP Submitted Successfully</h1>
+
+    <p>You have successfully RSVP'd for:</p>
+    <p><strong><%= event.title %></strong></p>
+
+    <p><strong>Status:</strong> <%= result.status %></p>
+    <p><strong>Note:</strong> <%= result.note %></p>
+
+    <a href="/rsvp/rsvp-list">View My RSVPs</a>
+    <br><br>
+    <a href="/events">Back to Events</a>
+</body>
+</html>

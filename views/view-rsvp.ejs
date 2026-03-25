@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>View RSVP</title>
+</head>
+<body>
+    <h1>RSVP Details</h1>
+
+    <p><strong>Event:</strong> <%= result.eventId.title %></p>
+    <p><strong>Description:</strong> <%= result.eventId.description %></p>
+    <p><strong>Date:</strong> <%= new Date(result.eventId.date).toDateString() %></p>
+    <p><strong>Location:</strong> <%= result.eventId.location %></p>
+    <p><strong>Category:</strong> <%= result.eventId.category %></p>
+
+    <hr>
+
+    <p><strong>Status:</strong> <%= result.status %></p>
+    <p><strong>Note:</strong> <%= result.note %></p>
+
+    <a href="/rsvp/update-rsvp?id=<%= result._id %>">Update RSVP</a>
+    <a href="/rsvp/delete-rsvp?id=<%= result._id %>">Delete RSVP</a>
+
+    <br><br>
+    <a href="/rsvp/rsvp-list">Back to My RSVPs</a>
+</body>
+</html>

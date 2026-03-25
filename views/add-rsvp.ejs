@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add RSVP</title>
+</head>
+<body>
+    <h1>RSVP for <%= event.title %></h1>
+
+    <% if (msg) { %>
+        <p style="color:red;"><%= msg %></p>
+    <% } %>
+
+    <p><strong>Description:</strong> <%= event.description %></p>
+    <p><strong>Date:</strong> <%= new Date(event.date).toDateString() %></p>
+    <p><strong>Location:</strong> <%= event.location %></p>
+    <p><strong>Category:</strong> <%= event.category %></p>
+
+    <form action="/rsvp/add-rsvp" method="POST">
+        <input type="hidden" name="eventId" value="<%= event._id %>">
+
+        <label>Status:</label>
+        <select name="status">
+            <option value="">Select one</option>
+            <option value="Going">Going</option>
+            <option value="Maybe">Maybe</option>
+            <option value="Not Going">Not Going</option>
+        </select>
+
+        <br><br>
+
+        <label>Note:</label>
+        <input type="text" name="note">
+
+        <br><br>
+
+        <button type="submit">Submit RSVP</button>
+    </form>
+</body>
+</html>

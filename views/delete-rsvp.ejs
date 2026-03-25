@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Delete RSVP</title>
+</head>
+<body>
+    <h1>Delete RSVP</h1>
+
+    <p>Are you sure you want to delete this RSVP?</p>
+
+    <p><strong>Event:</strong> <%= result.eventId.title %></p>
+    <p><strong>Status:</strong> <%= result.status %></p>
+    <p><strong>Note:</strong> <%= result.note %></p>
+
+    <form action="/rsvp/delete-rsvp" method="POST">
+        <input type="hidden" name="rsvpId" value="<%= result._id %>">
+        <button type="submit">Delete RSVP</button>
+    </form>
+
+    <br>
+    <a href="/rsvp/view-rsvp?id=<%= result._id %>">Cancel</a>
+</body>
+</html>

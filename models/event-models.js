@@ -41,9 +41,26 @@ const eventSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 module.exports = mongoose.model('Event', eventSchema, 'events');
+const Event = mongoose.model('Event', eventSchema, 'events');
 
 // Methods here
 
-exports.addEvents = function(newEvent) {
+exports.retrieveAll = function() {
+    return Event.find();
+};
+
+exports.findById = function(id) {
+    return Event.findById(id);
+};
+
+exports.addEvent = function(newEvent) {
     return Event.create(newEvent);
+};
+
+exports.updateEvent = function(id, updatedData) {
+    return Event.updateOne({ id: id }, updatedData);
+};
+
+exports.deleteEvent = function(id) {
+    return Event.deleteOne({ id: id });
 };

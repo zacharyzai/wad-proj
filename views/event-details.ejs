@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Event Details</title>
+</head>
+<body>
+  <h1><%= event.title %></h1>
+
+  <p><strong>Description:</strong> <%= event.description %></p>
+  <p><strong>Date:</strong> <%= event.date.toDateString() %></p>
+  <p><strong>Location:</strong> <%= event.location %></p>
+  <p><strong>Category:</strong> <%= event.category %></p>
+
+  <% if (event.organiser) { %>
+    <p><strong>Organiser:</strong> <%= event.organiser.name %></p>
+  <% } %>
+
+  <hr>
+
+  <h2>Your RSVP</h2>
+
+  <% if (user) { %>
+    <% if (!userRSVP) { %>
+      <p>You have not RSVP’d for this event yet.</p>
+      <a href="/add-rsvp/<%= event._id %>">Create RSVP</a>
+    <% } else { %>
+      <p><strong>Status:</strong> <%= userRSVP.status %></p>
+      <p><strong>Note:</strong> <%= userRSVP.note %></p>
+
+      <a href="/update-rsvp?id=<%= userRSVP._id %>">Update RSVP</a>
+      <a href="/delete-rsvp?id=<%= userRSVP._id %>">Delete RSVP</a>
+    <% } %>
+  <% } else { %>
+    <p>Please log in to RSVP for this event.</p>
+  <% } %>
+
+  <hr>
+
+  <h2>Attendees</h2>
+
+  <% if (attendeeList.length === 0) { %>
+    <p>No RSVPs yet.</p>
+  <% } else { %>
+    <ul>
+      <% attendeeList.forEach(oneRSVP => { %>
+        <li>
+          <%= oneRSVP.userId.name %> - <%= oneRSVP.status %>
+        </li>
+      <% }) %>
+    </ul>
+  <% } %>
+
+  <br>
+  <a href="/events">Back to Event List</a>
+</body>
+</html>

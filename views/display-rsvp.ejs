@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My RSVPs</title>
+</head>
+<body>
+    <h1>My RSVPs</h1>
+
+    <% if (rsvpList.length === 0) { %>
+        <p>You have not RSVP'd for any events yet.</p>
+    <% } else { %>
+        <ul>
+            <% rsvpList.forEach(rsvp => { %>
+                <li>
+                    <strong><%= rsvp.eventId.title %></strong>
+                    - <%= rsvp.status %>
+
+                    <% if (rsvp.note) { %>
+                        - <%= rsvp.note %>
+                    <% } %>
+
+                    <a href="/view-rsvp?id=<%= rsvp._id %>">View</a>
+                    <a href="/update-rsvp?id=<%= rsvp._id %>">Update</a>
+                    <a href="/delete-rsvp?id=<%= rsvp._id %>">Delete</a>
+                </li>
+            <% }) %>
+        </ul>
+    <% } %>
+</body>
+</html>

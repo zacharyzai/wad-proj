@@ -34,13 +34,17 @@ async function connectDB() {
 // ==========================================
 // const authRoutes = require('./routes/auth-routes');
 const eventRoutes = require('./routes/events-routes');
-// const profileRoutes = require('./routes/profile-routes');
+const userRoutes = require('./routes/user-routes');
+const adminRoutes = require('./routes/admin-routes');
 
-// app.use('/auth', authRoutes);
-app.use('/events', eventRoutes);
-// app.use('/profile', profileRoutes);
 
-// Temporary Home Page Route
+// mount routes
+app.use('/auth', authRoutes);
+app.use('/events', isAuthenticated, eventRoutes);
+app.use('/profile', isAuthenticated, userRoutes);
+app.use('/admin', isAdmin, adminRoutes);
+
+
 app.get('/', (req, res) => {
     res.render('/'); 
 });
