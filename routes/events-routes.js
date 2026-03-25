@@ -27,8 +27,7 @@ router.post("/delete-event", eventController.deleteEvent);
 // View Event Details
 router.get("/:id", eventController.viewEventDetails);
 
-// Add Review to Event
-router.post("/:id/review", eventController.addReview);
+
 
 
 module.exports = router;
