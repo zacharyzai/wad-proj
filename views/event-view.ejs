@@ -13,7 +13,8 @@
     <!--Added success message when update/delete/create is successful-->
 
     <h1>Event List</h1>
-    
+    <a href="/events/create-event"><button>Create an Event</button></a>
+    <a href="/events/delete-event"><button>Delete an Event</button></a>
     <table border="1">
         <thead>
             <tr>
@@ -24,6 +25,7 @@
                 <th>Action</th>
                 <th>Attendees</th>
                 <th>View Extra Information</th>
+                <th>Update Event Details</th>
             </tr>
             </thead>
         <tbody>   
@@ -43,6 +45,9 @@
                     <td><%= event.attendees ? event.attendees.length : 0 %></td>
                     <td>
                         <a href="/events/<%= event._id %>">View</a>
+                    </td>
+                    <td>
+                        <a href="/events/update-event?eventId=<%= event._id %>">Update Event</a>
                     </td>
                     
                 </tr>
