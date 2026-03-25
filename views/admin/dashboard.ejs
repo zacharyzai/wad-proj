@@ -6,68 +6,99 @@
   <title>Admin Dashboard</title>
 </head>
 
-<body>
-    <h2>Admin Dashboard</h2>
-    <p>Welcome, <%= userName %></p>
-    <p><a href="/events">View Events</a> | <a href="/auth/logout">Logout</a></p>
+<body align="center">
+    <center>
+        <br>
+        <h1>🛠️ Admin Control Panel</h1>
+        <p>Logged in as: <strong><%= userName %></strong> (Administrator)</p>
+        
+        <nav>
+            <p>
+                <a href="/">🏠 Home</a> | 
+                <a href="/events">🔍 Browse Events</a> | 
+                <a href="/auth/logout">🚪 Logout</a>
+            </p>
+        </nav>
 
-    <hr>
+        <hr width="80%">
 
-    <!-- users table -->
-    <h3>All Users (<%= users.length %>) 
-    <a href="/admin/create-user">Create User</a></h3>
-
-    <% if (users.length === 0) { %>
-        <p>No users found.</p>
-    <% } else { %>
-        <table border="1">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Role</th>
-                    <th>Student ID</th>
-                    <th>Faculty</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <% users.forEach(user => { %>
-                    <tr>
-                        <td><%= user.name %></td>
-                        <td><%= user.email %></td>
-                        <td><%= user.role %></td>
-                        <td><%= user.studentId || '-' %></td>
-                        <td><%= user.faculty || '-' %></td>
-                        <td>
-                            <!-- edit button -->
-                            <a href="/admin/edit-user/<%= user._id %>">Edit</a>
-
-                            <!-- delete button: hidden for  own account -->
-                            <% if (user._id.toString() !== currentUserId) { %>
-                                <form action="/admin/delete-user/<%= user._id %>" 
-                                      method="post" 
-                                      style="display:inline;">
-                                    <button type="submit" 
-                                            onclick="return confirm('Delete this user?')">
-                                        Delete
-                                    </button>
-                                </form>
-                            <% } else { %>
-                                (you)
-                            <% } %>
-                        </td>
-                    </tr>
-                <% }) %>
-            </tbody>
+        <table border="0" cellpadding="10">
+            <tr>
+                <td align="center" bgcolor="#e8f4fd">
+                    <strong>Total Users:</strong><br>
+                    <font><%= users.length %></font>
+                </td>
+                <td width="20"></td>
+                <td align="center" bgcolor="#fdfae8">
+                    <strong>Manage Data:</strong><br>
+                    <a href="/admin/create-user">➕ Create New User</a>
+                </td>
+            </tr>
         </table>
-    <% } %>
 
-    <hr>
+        <br>
 
-    <!-- events table: to do after events finish! -->
-    <h3>All Events</h3>
-    <p>Events section coming soon.</p>
+        <section>
+            <h3>👤 User Directory</h3>
+            <% if (users.length === 0) { %>
+                <p>No users found in the database.</p>
+            <% } else { %>
+                <table border="1" cellpadding="10" width="90%">
+                    <thead>
+                        <tr bgcolor="#eeeeee">
+                            <th>Full Name</th>
+                            <th>Email Address</th>
+                            <th>System Role</th>
+                            <th>Student ID</th>
+                            <th>Faculty</th>
+                            <th>Management Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% users.forEach(user => { %>
+                            <tr>
+                                <td><%= user.name %></td>
+                                <td><%= user.email %></td>
+                                <td>
+                                    <% if (user.role === 'admin') { %>
+                                        <strong>⭐ ADMIN</strong>
+                                    <% } else if (user.role === 'organizer') { %>
+                                        💼 Organizer
+                                    <% } else { %>
+                                        👨‍🎓 Student
+                                    <% } %>
+                                </td>
+                                <td><%= user.studentId || '-' %></td>
+                                <td><%= user.faculty || '-' %></td>
+                                <td align="center">
+                                    <a href="/admin/edit-user/<%= user._id %>">📝 Edit</a>
+                                    &nbsp;|&nbsp;
+                                    <% if (user._id.toString() !== currentUserId) { %>
+                                        <form action="/admin/delete-user/<%= user._id %>" 
+                                              method="post" 
+                                              style="display:inline;">
+                                            <button type="submit" 
+                                                    onclick="return confirm('⚠️ Are you sure you want to delete this user? This cannot be undone.')">
+                                                🗑️ Delete
+                                            </button>
+                                        </form>
+                                    <% } else { %>
+                                        <em>(You)</em>
+                                    <% } %>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            <% } %>
+        </section>
 
+        <br><br>
+        <hr width="80%">
+
+        <h3>All Events</h3>
+        <p>Events section coming soon.</p>
+
+    </center>
 </body>
 </html>
