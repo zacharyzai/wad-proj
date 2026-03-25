@@ -12,6 +12,9 @@ router.get("/read-event", eventController.viewEventPage);
 router.get("/", eventController.renderEventsPage);
 router.post("/:id/rsvp", eventController.rsvpEvent);
 
+// To Un-RSVP
+router.post("/:id/unrsvp", eventController.unrsvpEvent);
+
 
 // Create Event
 router.get("/create-event", isAdmin, eventController.createEventPage);

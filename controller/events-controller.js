@@ -16,9 +16,12 @@ exports.viewEventPage = async (req,res) => {
 exports.renderEventsPage = async (req,res) => {
     try {
         const events = await Event.find();
+        const myEvents = await Event.find({attendees: req.session.userId}); // Specific user would be able to see events they RSVP'ed for
         const success = req.query.success;
         const role = req.session.role;
-        res.render("event-view", {events, success, role}); //pass data to EJS
+
+
+        res.render("event-view", {events, success, role, myEvents}); //pass data to EJS
     } catch (error) {
         res.status(500).send(error.message)
     }
@@ -32,10 +35,22 @@ exports.rsvpEvent = async(req,res) => {
         if (!event.attendees) {
             event.attendees = [];
         }
-        event.attendees.push("testUser"); // this is replaced later with logged-in user
+        event.attendees.push(req.session.userId); 
 
         await event.save();
         res.redirect("/events"); //page reloads after rsvp
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
+};
+
+// UNRSVP
+exports.unrsvpEvent = async (req, res) => {
+    try {
+        await Event.findByIdAndUpdate(req.params.id, {
+            $pull: { attendees: req.session.userId } // $pull function is the opposite $push. It removes all instances of a matching value from the array
+        });
+        res.redirect("/events");
     } catch (error) {
         res.status(500).send(error.message);
     }
@@ -187,6 +202,7 @@ exports.deleteEvent = async (req,res) => {
     }
 }
 
+// View Extra details of the event
 exports.viewEventDetails = async (req, res) => {
     try {
         const event = await Event.findById(req.params.id)
@@ -204,6 +220,7 @@ exports.viewEventDetails = async (req, res) => {
     }
 };
 
+// To view the Add Review Page
 exports.addReviewPage = async (req, res) => {
     try {
         const event = await Event.findById(req.params.id);
