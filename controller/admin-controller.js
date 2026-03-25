@@ -37,7 +37,7 @@ exports.showEditUser = async (req, res) => {
 };
 
 exports.handleEditUser = async (req, res) => {
-  const { name, email, role } = req.body;
+  const { name, email, role, studentId, faculty } = req.body;
   const errors = [];
 
   if (!name || name.trim().length === 0) {
@@ -52,12 +52,23 @@ exports.handleEditUser = async (req, res) => {
   }
 
   if (errors.length > 0) {
-    const user = await User.findById(req.params.id);
-    return res.render("admin/edit-user", { user, errors });
+    try {
+      const user = await User.findById(req.params.id);
+      return res.render("admin/edit-user", { user, errors });
+    } catch (err) {
+      return res.send("Error reloading form.");
+    }
   }
 
   try {
-    await User.findByIdAndUpdate(req.params.id, { name, email, role });
+    await User.findByIdAndUpdate(req.params.id, { 
+      name, 
+      email, 
+      role, 
+      studentId,
+      faculty
+    });
+    
     res.redirect("/admin/dashboard");
   } catch (err) {
     console.error(err);
