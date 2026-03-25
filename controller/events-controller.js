@@ -203,6 +203,7 @@ exports.viewEventDetails = async (req, res) => {
     }
 };
 
+// To add review
 exports.addReview = async (req, res) => {
     try {
         const { title, rating, comment } = req.body;
