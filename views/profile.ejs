@@ -12,6 +12,9 @@
         <nav>
             <p>
                 <a href="/">🏠 Home</a> | 
+                <% if (user.role === 'admin') { %>
+                    <a href="/admin/dashboard">🛠️ Admin Dashboard</a> | 
+                <% } %>
                 <a href="/events">🔍 Browse Events</a> | 
                 <a href="/auth/logout">🚪 Logout</a>
             </p>
