@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My Profile</title>
+</head>
+<body>
+
+  <h1>My Profile</h1>
+
+  <p><strong>Name:</strong> <%= user.name %></p>
+  <p><strong>Email:</strong> <%= user.email %></p>
+  <p><strong>Student ID:</strong> <%= user.studentId %></p>
+  <p><strong>Faculty:</strong> <%= user.faculty %></p>
+  <p><strong>Role:</strong> <%= user.role %></p>
+  <p><strong>Bio:</strong> <%= user.bio %></p>
+
+  <a href="/profile/edit">Edit Profile</a>
+  <a href="/events">Browse Events</a>
+  
+  <br><br>
+  <form action="/profile/delete" method="POST"
+    onsubmit="return confirm('Are you sure you want to delete your account? This action cannot be undone.');">
+    <button type="submit" style="color: red;"> Delete Account </button>
+  </form>
+</body>
+</html>

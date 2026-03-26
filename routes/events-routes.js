@@ -4,16 +4,31 @@ const eventController = require("./../controller/events-controller");
 
 const router = express.Router();
 
+// Read Event
+router.get("/read-event", eventController.viewEventPage);
+
+// Show page + RSVP route
+router.get("/", eventController.renderEventsPage);
+router.post("/:id/rsvp", eventController.rsvpEvent);
+
+
 // Create Event
 router.get("/create-event", eventController.createEventPage);
 router.post("/create-event", eventController.createEvent);
 
 // Update Event
 router.get("/update-event", eventController.updateEventPage);
-router.post("update-event", eventController.updateEvent);
+router.post("/update-event", eventController.updateEvent);
 
 // Delete Event
-router.post("/delete-event", eventController.deleteEvent);
+router.get("/delete-event", eventController.renderDeletePage);
+router.post("/delete-event", eventController.deleteEvent); 
+
+// View Event Details
+router.get("/:id", eventController.viewEventDetails);
+
+// Add Review to Event
+router.post("/:id/review", eventController.addReview);
 
 
 module.exports = router;

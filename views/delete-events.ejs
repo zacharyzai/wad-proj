@@ -6,10 +6,44 @@
     <title>Delete an Event</title>
 </head>
 <body>
-    <center>
-        <form action="/events/delete" method="post">
+    <% if (typeof(error) !== 'undefined' && error) { %>
+        <p style="color: red; font-weight: bold;"><%= error %></p>
+    <% } %>
+
+    <p><a href="/events">← Back to Events</a></p>
+
+        <form action="/events/delete-event" method="post">
             <!-- Delete an event. Make it with checkbox so admin can delete multiple events easily -->
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>Events</th>
+                        <th>Delete?</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr>
+                    <tr>
+                    <% events.forEach(event => { %>
+                        <td>
+                        <td>
+                            <%= event.title %>
+                        </td>
+                        </td>
+
+                        <td>
+                            <input type="checkbox" name="deleteEventIds" value="<%= event._id %>">
+                        </td>
+                    </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+            <br>
+            <button type="submit">Confirm Delete Event</button>
+
+
+
         </form>
-    </center>
 </body>
 </html>

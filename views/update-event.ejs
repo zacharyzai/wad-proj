@@ -6,26 +6,40 @@
     <title>Update Event</title>
 </head>
 <body>
-    <center>
-        <form action="/events/update" method="post">
+
+    <% if (typeof(error) !== 'undefined' && error) { %>
+        <p style="color: red; font-weight: bold;"><%= error %></p>
+    <% } %>
+
+    
+    <h1>Update Event</h1>
+    <p><a href="/events">← Back to Events</a></p>
+
+        <form action="/events/update-event?eventId=<%= targetId ? targetId : '' %>" method="post"> <!-- After the ?, it represents a query string!-->
+            <input type="hidden" name="eventId" value="<%= targetId %>">
+
             Title:<br>
-            <input type="text" name="title" value="<%= title ? title : "" %>">
+            <input type="text" name="title" value="<%= title ? title : "" %>" style="width:640px; font-size:18px; padding:8px;">
             <br>
+
             Description: <br>
             <input type="text" name="description" value="<%= description ? description : "" %>">
             <br>
-            Date:<br>
-            <input type="text" name="date" value="<%= date ? date : "" %>">
+
+            Date and Time:<br>
+            <input type="datetime-local" name="date" value="<%= locals.date ? date : '' %>" required>
             <br>
+
             Location:<br>
             <input type="text" name="location" value="<%= location ? location : "" %>">
             <br>
+
             Category:<br>
             <input type="text" name="category" value="<%= category ? category : "" %>">
             <br>
+            <br>
             <button type="submit">Confirm the update</button>
         </form>
-    </center>
     
 </body>
 </html>

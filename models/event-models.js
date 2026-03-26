@@ -37,13 +37,16 @@ const eventSchema = new mongoose.Schema({
     attendees: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
+    }],
+    reviews: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Review'
     }]
 }, { timestamps: true });
 
 module.exports = mongoose.model('Event', eventSchema, 'events');
 const Event = mongoose.model('Event', eventSchema, 'events');
 
-// Methods here
 
 exports.retrieveAll = function() {
     return Event.find();
