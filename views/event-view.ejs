@@ -83,7 +83,7 @@
                                         </td>
 
                                         <td>
-                                            <%= event.attendees.length ? event.attendees.length : 0 %> / 
+                                            <%= event.attendees.length %> / <%= event.maxAttendees ? event.maxAttendees : "Unlimited" %>
                                         </td>
                                         <td>
                                             <a href="/events/<%= event._id %>">View</a>
