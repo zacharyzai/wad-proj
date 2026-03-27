@@ -15,13 +15,18 @@ exports.viewEventPage = async (req,res) => {
 // Render (what user sees when clicked into one event)
 exports.renderEventsPage = async (req,res) => {
     try {
-        const events = await Event.find();
+        const page = parseInt(req.query.page) || 1; // Comes in as a string so need to convert to integer
+        const limit = 5;
+        const skip = (page -1) * limit;
+        const totalPages = Math.ceil((await Event.countDocuments()) / limit);
+
+        const events = await Event.find().skip(skip).limit(limit);
         const myEvents = await Event.find({attendees: req.session.userId}); // Specific user would be able to see events they RSVP'ed for
         const success = req.query.success;
         const role = req.session.role;
 
 
-        res.render("event-view", {events, success, role, myEvents}); //pass data to EJS
+        res.render("event-view", {events, success, role, myEvents, page, totalPages}); //pass data to EJS + added pages
     } catch (error) {
         res.status(500).send(error.message)
     }
