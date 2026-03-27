@@ -3,41 +3,54 @@ const Review = require("../models/review-models"); // added for review
 
 
 // Read (user sees all the available events on a particular date)
-exports.viewEventPage = async (req,res) => {
+exports.viewEventPage = async (req, res) => {
     try {
         const events = await Event.find(); // fetch from MongoDB
         res.json(events);
     } catch (error) {
         res.status(500).json({ message: error.message })
     }
-;
+    ;
 }
 // Render (what user sees when clicked into one event)
-exports.renderEventsPage = async (req,res) => {
+exports.renderEventsPage = async (req, res) => {
     try {
-        const events = await Event.find();
-        const myEvents = await Event.find({attendees: req.session.userId}); // Specific user would be able to see events they RSVP'ed for
+        const page = parseInt(req.query.page) || 1; // Comes in as a string so need to convert to integer
+        const limit = 5;
+        const skip = (page - 1) * limit;
+        const totalPages = Math.ceil((await Event.countDocuments()) / limit);
+
+        const events = await Event.find().skip(skip).limit(limit); // Skip pages. Each page has 5 events 
+        const myEvents = await Event.find({ attendees: req.session.userId }); // Specific user would be able to see events they RSVP'ed for
         const success = req.query.success;
         const role = req.session.role;
 
 
-        res.render("event-view", {events, success, role, myEvents}); //pass data to EJS
+        res.render("event-view", { events, success, role, myEvents, page, totalPages, userId: req.session.userId}); //pass data to EJS + added pages
     } catch (error) {
         res.status(500).send(error.message)
     }
 };
 
 // RSVP 
-exports.rsvpEvent = async(req,res) => {
+exports.rsvpEvent = async (req, res) => {
     try {
         const event = await Event.findById(req.params.id);
 
-        if (!event.attendees) {
-            event.attendees = [];
+        if (event.attendees && event.attendees.includes(req.session.userId)) { 
+            return res.redirect("/events"); // To prevent duplicate RSVP 
         }
-        event.attendees.push(req.session.userId); 
+                                                        
+        if (event.maxAttendees &&           
+            event.attendees.length >= event.maxAttendees) 
+            {                                             
+                return res.redirect("/events?error=full");
+            } 
 
-        await event.save();
+        await Event.findByIdAndUpdate(req.params.id, { // Object that holds URL route parameters
+            $addToSet: { attendees: req.session.userId } // $addToSet is a MongoDB operator. Only adds a value to an array if it doesn't exist so unique to users (like sets)
+        });
+
         res.redirect("/events"); //page reloads after rsvp
     } catch (error) {
         res.status(500).send(error.message);
@@ -59,14 +72,15 @@ exports.unrsvpEvent = async (req, res) => {
 
 // Create Event (Have a button visible to admins only to create an event)
 
-exports.createEventPage = (req,res) => {
+exports.createEventPage = (req, res) => {
     try {
         res.render("create-event", {
             title: "",
             description: "",
             date: "",
             location: "",
-            category: ""
+            category: [],
+            maxAttendees: ""
         })
     } catch (err) {
         console.error(err)
@@ -79,12 +93,18 @@ exports.createEvent = async (req, res) => {
     let description = req.body.description;
     let date = req.body.date;
     let location = req.body.location;
-    let category = req.body.category;
+    let maxAttendees = req.body.maxAttendees || undefined
+    let category = req.body.category || [];
+
+    if (typeof (category) === 'string') {
+        category = [category];
+    };
 
     // To ensure all the fields are present, else, render them back to the same link + error shown
-    if (!title || !category || !description || !location || !date) {
-        return res.render("create-event", {error: "All fields are required", 
-            title, category, description, location, date
+    if (!title || category.length === 0 || !description || !location || !date) {
+        return res.render("create-event", {
+            error: "All fields are required",
+            title, category, description, location, date, maxAttendees
         });
     };
 
@@ -95,6 +115,7 @@ exports.createEvent = async (req, res) => {
             date: date,
             location: location,
             category: category,
+            maxAttendees: maxAttendees,
             organiser: req.session.userId
         };
 
@@ -102,18 +123,18 @@ exports.createEvent = async (req, res) => {
         console.log("My Log:", result);
 
         res.redirect("/events?success=true")
-
     } catch (err) {
         console.error("Database error:", err);
-        res.render("create-event", {error: "An error occured while saving to database",
-            title, category, description, location, date
+        res.render("create-event", {
+            error: "An error occured while saving to database",
+            title, category, description, location, date, maxAttendees
         });
     };
 
 };
 
 // Update Event (Have a button visible to admins only to allow them to UPDATE an event)
-exports.updateEventPage = async (req,res) => {
+exports.updateEventPage = async (req, res) => {
     try {
         let targetId = req.query.eventId; // need to get from events viewing page when use click the specific event
 
@@ -128,6 +149,7 @@ exports.updateEventPage = async (req,res) => {
             date: formattedDateForHTML,
             location: eventToEdit.location,
             category: eventToEdit.category,
+            maxAttendees: eventToEdit.maxAttendees
         })
 
     } catch (err) {
@@ -141,45 +163,51 @@ exports.updateEvent = async (req, res) => {
         const targetId = req.query.eventId
         let title = req.body.title;
         let description = req.body.description;
-        let date = req.body.date; 
+        let date = req.body.date;
         let location = req.body.location;
-        let category = req.body.category;
+        let maxAttendees = req.body.maxAttendees || undefined
+        let category = req.body.category || [];
 
-        if (!title || !description || !date || !location || !category) {
+        if (typeof (category) === 'string') {
+            category = [category];
+        };
+
+        if (!title || !description || !date || !location || category.length === 0) {
             return res.render("update-event", {
                 error: "All fields are required",
-                targetId, title, description, date, location, category
+                targetId, title, description, date, location, category, maxAttendees
             });
         }
-        
+
+
 
         const updatedEvent = await Event.findByIdAndUpdate(
             targetId,
-            {title, description, date, location, category}
+            { title, description, date, location, maxAttendees, category }
         )
         res.redirect('/events?success=true') // ? is a query string and success = true is used to display message whether the update is confirmed under events page
     } catch (err) {
         console.error("Error saving the update:", err)
         res.send("Error occurred while trying to update the event.")
-    }  
+    }
 }
 
 // Delete Event (Have a button visible to admins only to allow them to DELETE an event)
 
-exports.renderDeletePage = async (req,res) => {
+exports.renderDeletePage = async (req, res) => {
     try {
         let allEvents = await Event.find()
-        res.render("delete-events", {events: allEvents})
+        res.render("delete-events", { events: allEvents })
     } catch (err) {
         console.error(err)
         res.send("Error loading the delete page.")
     }
 }
 
-exports.deleteEvent = async (req,res) => {
+exports.deleteEvent = async (req, res) => {
     try {
         let deleteEvent = req.body.deleteEventIds;
-        
+
 
         if (!deleteEvent) {
             const allEvents = await Event.find();
@@ -189,11 +217,11 @@ exports.deleteEvent = async (req,res) => {
             })
         }
 
-        if (typeof(deleteEvent) === "string") {
+        if (typeof (deleteEvent) === "string") {
             deleteEvent = [deleteEvent];
         };
 
-        await Event.deleteMany({ _id : { $in: deleteEvent}}); // $in in MongoDB operator means match any value in this array
+        await Event.deleteMany({ _id: { $in: deleteEvent } }); // $in in MongoDB operator means match any value in this array
 
         res.redirect("/events?success=true");
     } catch (err) {
@@ -208,12 +236,12 @@ exports.viewEventDetails = async (req, res) => {
         const event = await Event.findById(req.params.id)
             .populate('organiser', 'name')
             .populate('reviews');
-        
+
         if (!event) {
             return res.send("Event not found.");
         }
 
-        res.render("event-details", {event, role: req.session.role});
+        res.render("event-details", { event, role: req.session.role });
     } catch (err) {
         console.error(err);
         res.send("Error loading event details.");
