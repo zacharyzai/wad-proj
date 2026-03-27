@@ -9,6 +9,10 @@
     <h1>Create an Event</h1>
     <p><a href="/events">← Back to Events</a></p>
 
+    <% if (typeof(error) !== 'undefined' && error) { %>
+        <p style="color: red; font-weight: bold;"><%= error %></p>
+    <% } %>
+
         <form action="/events/create-event" method="post">
             Title:<br>
             <input type="text" name="title" value="<%= title ? title : "" %>">
@@ -25,9 +29,9 @@
             Category:<br>
             <label><input type="checkbox" name="category" value="General"> General</label><br>
             <label><input type="checkbox" name="category" value="Sports"> Sports</label><br>
-            <label><input type="checkbox" name="category" value="Special"> Ceremonies & Special Events</label><br>
+            <label><input type="checkbox" name="category" value="Festivals"> Festivals</label><br>
             <label><input type="checkbox" name="category" value="Hackathons"> Hackathons</label><br>
-            <label><input type="checkbox" name="category" value="Panel"> Panel Discussions</label><br>
+            <label><input type="checkbox" name="category" value="Discussions"> Panel Discussions</label><br>
             <label><input type="checkbox" name="category" value="Networking"> Networking</label><br>
             <label><input type="checkbox" name="category" value="Others"> Others</label><br>            
             <br><br>

@@ -25,7 +25,7 @@ const eventSchema = new mongoose.Schema({
     // Field 5: Type of event (e.g., Sports, Food, Tech)
     category: [{
         type: String,
-        enum: ['General', 'Sports', 'Ceremonies & Special Events', 'Hackathons', 'Panel Discussions', 'Networking', 'Others'], // enum is used to tell Mongoose to only accept these specific values
+        enum: ['General', 'Sports', 'Festivals', 'Hackathons', 'Discussions', 'Networking', 'Others'], // enum is used to tell Mongoose to only accept these specific values
     }],
     
     // Field 6: The user who created the event (Links to User schema)
