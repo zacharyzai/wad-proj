@@ -23,10 +23,11 @@ const eventSchema = new mongoose.Schema({
         required: [true, 'Location is required']
     },
     // Field 5: Type of event (e.g., Sports, Food, Tech)
-    category: {
+    category: [{
         type: String,
-        default: 'General'
-    },
+        enum: ['General', 'Sports', 'Ceremonies & Special Events', 'Hackathons', 'Panel Discussions', 'Networking', 'Others'], // enum is used to tell Mongoose to only accept these specific values
+    }],
+    
     // Field 6: The user who created the event (Links to User schema)
     organiser: {
         type: mongoose.Schema.Types.ObjectId,
