@@ -20,7 +20,7 @@ exports.renderEventsPage = async (req, res) => {
         const skip = (page - 1) * limit;
         const totalPages = Math.ceil((await Event.countDocuments()) / limit);
 
-        const events = await Event.find().skip(skip).limit(limit);
+        const events = await Event.find().skip(skip).limit(limit); // Skip pages. Each page has 5 events 
         const myEvents = await Event.find({ attendees: req.session.userId }); // Specific user would be able to see events they RSVP'ed for
         const success = req.query.success;
         const role = req.session.role;
@@ -37,12 +37,20 @@ exports.rsvpEvent = async (req, res) => {
     try {
         const event = await Event.findById(req.params.id);
 
-        if (!event.attendees) {
-            event.attendees = [];
+        if (event.attendees && event.attendees.includes(req.session.userId)) { 
+            return res.redirect("/events"); // To prevent duplicate RSVP 
         }
-        event.attendees.push(req.session.userId);
+                                                        
+        if (event.maxAttendees &&           
+            event.attendees.length >= event.maxAttendees) 
+            {                                             
+                return res.redirect("/events?error=full");
+            } 
 
-        await event.save();
+        await Event.findByIdAndUpdate(req.params.id, { // Object that holds URL route parameters
+            $addToSet: { attendees: req.session.userId } // $addToSet is a MongoDB operator. Only adds a value to an array if it doesn't exist so unique to users (like sets)
+        });
+
         res.redirect("/events"); //page reloads after rsvp
     } catch (error) {
         res.status(500).send(error.message);
@@ -157,7 +165,7 @@ exports.updateEvent = async (req, res) => {
         let description = req.body.description;
         let date = req.body.date;
         let location = req.body.location;
-        let maxAttendees = req.body.maxAttendees
+        let maxAttendees = req.body.maxAttendees || undefined
         let category = req.body.category || [];
 
         if (typeof (category) === 'string') {
