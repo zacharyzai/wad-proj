@@ -35,6 +35,7 @@ router.post("/:id/review", eventController.addReview);
 // View Event Details (must be last — /:id matches anything)
 router.get("/:id", eventController.viewEventDetails);
 
-
+// Delete Review (Admin only) - must be before /:id
+router.post("/:id/review/:reviewId/delete", isAdmin, eventController.deleteReview);
 
 module.exports = router;

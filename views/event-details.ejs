@@ -50,6 +50,14 @@
                                 <strong><%= review.title %></strong> - <%= review.rating %>/5
                                 <br>
                                 <p><%= review.comment %></p>
+
+                                <% if (role === 'admin') { %>
+                                <form method="POST" action="/events/<%= event._id %>/review/<%= review._id %>/delete">
+                                    <button type="submit" onclick="return confirm('Delete this review?')">
+                                        🗑️ Delete Review
+                                    </button>
+                                </form>
+                            <% } %>
                             </div>
                         <% }) %>
                     <% } else { %>
@@ -57,9 +65,14 @@
                     <% } %>
                 </div>
             </td>
+            
         </tr>
     </table>
+    <a href="/events/<%= event._id %>/review">
+        <button>✍️ Leave a Review</button>
+    </a>
 
+    
     
 
 

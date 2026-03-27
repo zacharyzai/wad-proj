@@ -277,3 +277,23 @@ exports.getEventDetails = async (req, res) => {
         res.send("Error loading event");
     }
 };
+
+exports.deleteReview = async (req, res) => {
+    try {
+        const { id, reviewId } = req.params;
+
+        // Remove review from Review collection
+        await Review.findByIdAndDelete(reviewId);
+
+        // Remove review reference from the Event's reviews array
+        await Event.findByIdAndUpdate(id, {
+            $pull: { reviews: reviewId }
+        });
+
+        res.redirect("/events/" + id);
+    } catch (err) {
+        console.error(err);
+        res.send("Error deleting review.");
+    }
+};
+
