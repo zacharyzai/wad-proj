@@ -50,23 +50,36 @@
                                 <strong><%= review.title %></strong> - <%= review.rating %>/5
                                 <br>
                                 <p><%= review.comment %></p>
-
+                                show edit/delete only to review owner
+                                <% if (review.user && review.user.toString() === String(userId)) { %>      
+                                    <a href="/events/<%= event._id %>/review/<%= review._id %>/edit">
+                                        <button>✏️ Edit</button>
+                                    </a>
+                                    <form method="POST" action="/events/<%= event._id %>/review/<%= review._id %>/delete-own"
+                                        style="display:inline;">
+                                        <button type="submit" onclick="return confirm('Delete your review?')">
+                                            🗑️ Delete
+                                        </button>
+                                    </form>
+                                <% } %>
+                                <!-- Admin delete button (separate from owner delete) -->
                                 <% if (role === 'admin') { %>
-                                <form method="POST" action="/events/<%= event._id %>/review/<%= review._id %>/delete">
-                                    <button type="submit" onclick="return confirm('Delete this review?')">
-                                        🗑️ Delete Review
-                                    </button>
-                                </form>
-                            <% } %>
+                                    <form method="POST" action="/events/<%= event._id %>/review/<%= review._id %>/delete"
+                                        style="display:inline;">
+                                        <button type="submit" onclick="return confirm('Admin: Delete this review?')">
+                                            🛡️ Admin Delete
+                                        </button>
+                                    </form>
+                                <% } %>
                             </div>
                         <% }) %>
-                    <% } else { %>
-                        <p>No reviews yet.</p>
-                    <% } %>
-                </div>
-            </td>
-            
-        </tr>
+                        <% } else { %>
+                            <p>No reviews yet.</p>
+                        <% } %>
+                    </div>
+                </td>
+                
+            </tr>
     </table>
     <a href="/events/<%= event._id %>/review">
         <button>✍️ Leave a Review</button>

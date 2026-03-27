@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Review</title>
+</head>
+<body>
+    <h1>Edit Your Review</h1>
+
+    <% if (typeof error !== 'undefined') { %>
+        <p style="color:red;"><%= error %></p>
+    <% } %>
+
+    <form method="POST" action="/events/<%= eventId %>/review/<%= review._id %>/edit">
+        <label>Title:</label><br>
+        <input type="text" name="title" value="<%= review.title %>" required><br><br>
+
+        <label>Rating (1-5):</label><br>
+        <input type="number" name="rating" min="1" max="5" value="<%= review.rating %>" required><br><br>
+
+        <label>Comment:</label><br>
+        <textarea name="comment" required><%= review.comment %></textarea><br><br>
+
+        <button type="submit">💾 Save Changes</button>
+        <a href="/events/<%= eventId %>"><button type="button">Cancel</button></a>
+    </form>
+</body>
+</html>

@@ -31,6 +31,30 @@
                 <!--Added success message when update/delete/create is successful-->
 
                 <h1>Event List</h1>
+                <!-- Filter Bar -->
+                <form method="GET" action="/events">
+                    <label for="category">Category:</label>
+                    <select name="category" id="category">
+                        <option value="all" <%= selectedCategory === 'all' ? 'selected' : '' %>>All</option>
+                        <% categories.forEach(cat => { %>
+                            <option value="<%= cat %>" <%= selectedCategory === cat ? 'selected' : '' %>>
+                                <%= cat %>
+                            </option>
+                        <% }) %>
+                    </select>
+
+                    <label for="sort">Sort by:</label>
+                    <select name="sort" id="sort">
+                        <option value="" <%= selectedSort === '' ? 'selected' : '' %>>Default</option>
+                        <option value="popular" <%= selectedSort === 'popular' ? 'selected' : '' %>>Most Popular</option>
+                        <option value="newest" <%= selectedSort === 'newest' ? 'selected' : '' %>>Newest</option>
+                        <option value="oldest" <%= selectedSort === 'oldest' ? 'selected' : '' %>>Oldest</option>
+                    </select>
+
+                    <button type="submit">Apply</button>
+                    <a href="/events">Reset</a>
+                </form>
+                <br>
                 <% if (role==='admin' || role==='organizer' ) { %>
                     <table border="0" cellpadding="10">
                         <tr>

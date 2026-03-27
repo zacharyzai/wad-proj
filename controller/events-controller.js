@@ -15,20 +15,42 @@ exports.viewEventPage = async (req, res) => {
 // Render (what user sees when clicked into one event)
 exports.renderEventsPage = async (req, res) => {
     try {
-        const page = parseInt(req.query.page) || 1; // Comes in as a string so need to convert to integer
+        const page = parseInt(req.query.page) || 1;
         const limit = 5;
         const skip = (page - 1) * limit;
-        const totalPages = Math.ceil((await Event.countDocuments()) / limit);
 
-        const events = await Event.find().skip(skip).limit(limit); // Skip pages. Each page has 5 events 
-        const myEvents = await Event.find({ attendees: req.session.userId }); // Specific user would be able to see events they RSVP'ed for
+        const { category, sort } = req.query;
+
+        let filter = {};
+        if (category && category !== "all") {
+            filter.category = category;
+        }
+
+        let events = await Event.find(filter).skip(skip).limit(limit);
+
+        if (sort === "popular") {
+            events = events.sort((a, b) => (b.attendees?.length || 0) - (a.attendees?.length || 0));
+        } else if (sort === "newest") {
+            events = await Event.find(filter).sort({ date: -1 }).skip(skip).limit(limit);
+        } else if (sort === "oldest") {
+            events = await Event.find(filter).sort({ date: 1 }).skip(skip).limit(limit);
+        }
+
+        const totalPages = Math.ceil((await Event.countDocuments(filter)) / limit);
+        const myEvents = await Event.find({ attendees: req.session.userId });
         const success = req.query.success;
         const role = req.session.role;
+        const categories = ['General', 'Sports', 'Festivals', 'Hackathons', 'Discussions', 'Networking', 'Others'];
 
-
-        res.render("event-view", { events, success, role, myEvents, page, totalPages, userId: req.session.userId}); //pass data to EJS + added pages
+        res.render("event-view", {
+            events, success, role, myEvents, page, totalPages,
+            userId: req.session.userId,
+            categories,
+            selectedCategory: category || "all",
+            selectedSort: sort || ""
+        });
     } catch (error) {
-        res.status(500).send(error.message)
+        res.status(500).send(error.message);
     }
 };
 
@@ -237,11 +259,13 @@ exports.viewEventDetails = async (req, res) => {
             .populate('organiser', 'name')
             .populate('reviews');
 
-        if (!event) {
-            return res.send("Event not found.");
-        }
+        if (!event) return res.send("Event not found.");
 
-        res.render("event-details", { event, role: req.session.role });
+        res.render("event-details", {
+            event,
+            role: req.session.role,
+            userId: req.session.userId  // 👈 add this
+        });
     } catch (err) {
         console.error(err);
         res.send("Error loading event details.");
@@ -305,9 +329,71 @@ exports.getEventDetails = async (req, res) => {
         res.send("Error loading event");
     }
 };
-exports.deleteReview = async(req,res) => {
+
+// Edit Review Page (only review owner)
+exports.editReviewPage = async (req, res) => {
     try {
-        const { id, reviewId }
+        const review = await Review.findById(req.params.reviewId);
+
+        if (!review) return res.send("Review not found.");
+
+        // Check if the logged-in user owns this review
+        if (review.user.toString() !== req.session.userId) {
+            return res.send("Unauthorized: You can only edit your own reviews.");
+        }
+
+        const event = await Event.findById(req.params.id);
+        res.render("edit-review", { review, event });
+    } catch (err) {
+        console.error(err);
+        res.send("Error loading edit review page.");
     }
-}
+};
+
+// Update Review (only review owner)
+exports.editReviewPage = async (req, res) => {
+    try {
+        const review = await Review.findById(req.params.reviewId);
+
+        if (!review) return res.send("Review not found.");
+
+        if (review.user.toString() !== req.session.userId) {
+            return res.send("You are not allowed to edit this review.");
+        }
+
+        res.render("edit-review", { 
+            review, 
+            eventId: req.params.id  
+        });
+    } catch (err) {
+        console.error(err);
+        res.send("Error loading edit page.");
+    }
+};
+
+// Delete Review (owner or admin)
+exports.deleteReview = async (req, res) => {
+    try {
+        const { id, reviewId } = req.params;
+        const review = await Review.findById(reviewId);
+
+        if (!review) return res.send("Review not found.");
+
+        // Allow if admin OR the review owner
+        const isOwner = review.user.toString() === req.session.userId;
+        const isAdmin = req.session.role === "admin";
+
+        if (!isOwner && !isAdmin) {
+            return res.send("Unauthorized: You cannot delete this review.");
+        }
+
+        await Review.findByIdAndDelete(reviewId);
+        await Event.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
+
+        res.redirect("/events/" + id);
+    } catch (err) {
+        console.error(err);
+        res.send("Error deleting review.");
+    }
+};
 
