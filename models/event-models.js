@@ -27,14 +27,22 @@ const eventSchema = new mongoose.Schema({
         type: String,
         enum: ['General', 'Sports', 'Festivals', 'Hackathons', 'Discussions', 'Networking', 'Others'], // enum is used to tell Mongoose to only accept these specific values
     }],
-    
-    // Field 6: The user who created the event (Links to User schema)
+    // Field 6, Max Attendees
+    maxAttendees : {
+        type: Number,
+        min: 1,
+        validate: {
+            validator: Number.isInteger,
+            message: "Enter a valid number"
+        }
+    },
+    // Field 7: The user who created the event (Links to User schema)
     organiser: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true
     },
-    // Field 7: Array of users attending (Links to User schema for RSVPs)
+    // Field 8: Array of users attending (Links to User schema for RSVPs)
     attendees: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'

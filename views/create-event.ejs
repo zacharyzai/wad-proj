@@ -26,6 +26,9 @@
             Location:<br>
             <input type="text" name="location" value="<%= location ? location : "" %>">
             <br><br>
+            Maximum Capacity of Attendees: <br>
+            <input type="number" name="maxAttendees" min="50" value="<%= maxAttendees ? maxAttendees : 50 %>">
+            <br><br>
             Category:<br>
             <label><input type="checkbox" name="category" value="General"> General</label><br>
             <label><input type="checkbox" name="category" value="Sports"> Sports</label><br>

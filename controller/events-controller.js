@@ -71,7 +71,8 @@ exports.createEventPage = (req, res) => {
             description: "",
             date: "",
             location: "",
-            category: []
+            category: [],
+            maxAttendees: ""
         })
     } catch (err) {
         console.error(err)
@@ -84,6 +85,7 @@ exports.createEvent = async (req, res) => {
     let description = req.body.description;
     let date = req.body.date;
     let location = req.body.location;
+    let maxAttendees = req.body.maxAttendees
     let category = req.body.category || [];
 
     if (typeof(category) === 'string') {
@@ -94,7 +96,7 @@ exports.createEvent = async (req, res) => {
     if (!title || category.length === 0 || !description || !location || !date) {
         return res.render("create-event", {
             error: "All fields are required",
-            title, category, description, location, date
+            title, category, description, location, date, maxAttendees
         });
     };
 
@@ -107,6 +109,7 @@ exports.createEvent = async (req, res) => {
             date: date,
             location: location,
             category: category,
+            maxAttendees: maxAttendees,
             organiser: req.session.userId
         };
 
@@ -114,12 +117,11 @@ exports.createEvent = async (req, res) => {
         console.log("My Log:", result);
 
         res.redirect("/events?success=true")
-
     } catch (err) {
         console.error("Database error:", err);
         res.render("create-event", {
             error: "An error occured while saving to database",
-            title, category, description, location, date
+            title, category, description, location, date, maxAttendees
         });
     };
 
@@ -141,6 +143,7 @@ exports.updateEventPage = async (req, res) => {
             date: formattedDateForHTML,
             location: eventToEdit.location,
             category: eventToEdit.category,
+            maxAttendees: eventToEdit.maxAttendees
         })
 
     } catch (err) {
@@ -156,6 +159,7 @@ exports.updateEvent = async (req, res) => {
         let description = req.body.description;
         let date = req.body.date;
         let location = req.body.location;
+        let maxAttendees = req.body.maxAttendees
         let category = req.body.category || [];
 
         if (typeof(category) === 'string') {
@@ -165,7 +169,7 @@ exports.updateEvent = async (req, res) => {
         if (!title || !description || !date || !location || category.length === 0) {
             return res.render("update-event", {
                 error: "All fields are required",
-                targetId, title, description, date, location, category
+                targetId, title, description, date, location, category, maxAttendees
             });
         }
 
@@ -173,7 +177,7 @@ exports.updateEvent = async (req, res) => {
 
         const updatedEvent = await Event.findByIdAndUpdate(
             targetId,
-            { title, description, date, location, category }
+            { title, description, date, location, maxAttendees, category }
         )
         res.redirect('/events?success=true') // ? is a query string and success = true is used to display message whether the update is confirmed under events page
     } catch (err) {

@@ -34,6 +34,10 @@
             <input type="text" name="location" value="<%= location ? location : "" %>">
             <br>
 
+            Maximum Capacity of Attendees: <br>
+            <input type="number" name="maxAttendees" min="50" value="<%= maxAttendees ? maxAttendees : 50 %>">
+            <br><br>
+
             Category:<br>
             <label><input type="checkbox" name="category" value="General" <%= category && category.includes('General') ? 'checked' : '' %>> General</label><br>
             <label><input type="checkbox" name="category" value="Sports" <%= category && category.includes('Sports') ? 'checked' : '' %>> Sports</label><br>
