@@ -279,7 +279,7 @@ exports.getEventDetails = async (req, res) => {
 };
 exports.deleteReview = async(req,res) => {
     try {
-        const { id, reviewId } =
+        const { id, reviewId }
     }
 }
 
