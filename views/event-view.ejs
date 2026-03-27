@@ -88,6 +88,19 @@
                 </tbody> 
             </table>
 
+<p>        
+    <% if (page > 1) { %>
+        <button type="submit"><a href="/events?page=<%= page-1 %>">Previous</a></button>
+    <% } %>
+        
+    <% if (page >= 1 && page < totalPages) { %>
+     <button type="submit"><a href="/events?page=<%= page+1 %>">Next</a></button>
+    <% } %>
+    
+
+    Page <%= page %> of <%= totalPages %>
+</p>
+
 
 
         <!-- My Events Portion-->
