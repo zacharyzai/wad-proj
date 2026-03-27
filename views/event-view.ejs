@@ -74,7 +74,7 @@
                                                 timeStyle: 'short' }) %>
                                         </td>
                                         <!-- toLocaleString is used to format numbers, date to make it readable. 'en-SG' -> specific to SG time. 
-                                                                                                                                dateStyle -> make the appearance of the date clean. timeStyle -> trim GMT -->
+                                        dateStyle -> make the appearance of the date clean. timeStyle -> trim GMT -->
                                         <td>
                                             <%= event.category.length > 0 ? event.category.join(', ') : "N/A" %>
                                         </td>
@@ -89,9 +89,15 @@
                                             <a href="/events/<%= event._id %>">View</a>
                                         </td>
                                         <td>
-                                            <form action="/events/<%= event._id %>/rsvp" method="post">
-                                                <button type="submit">RSVP</button>
-                                            </form>
+                                            <% if (event.attendees.includes(userId)) { %>
+                                                Already RSVP'd
+                                            <% } else if (event.attendees.length >= event.maxAttendees && event.maxAttendees) { %>
+                                                Event Full
+                                                <% } else { %>
+                                                    <form action="/events/<%= event._id %>/rsvp" method="post">
+                                                        <button type="submit">RSVP</button>
+                                                    </form>
+                                                <% } %>
                                         </td>
                                         <% if (role==='admin' || role==="organiser" ) { %>
                                             <td>

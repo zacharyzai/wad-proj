@@ -26,7 +26,7 @@ exports.renderEventsPage = async (req, res) => {
         const role = req.session.role;
 
 
-        res.render("event-view", { events, success, role, myEvents, page, totalPages }); //pass data to EJS + added pages
+        res.render("event-view", { events, success, role, myEvents, page, totalPages, userId: req.session.userId}); //pass data to EJS + added pages
     } catch (error) {
         res.status(500).send(error.message)
     }
@@ -85,10 +85,10 @@ exports.createEvent = async (req, res) => {
     let description = req.body.description;
     let date = req.body.date;
     let location = req.body.location;
-    let maxAttendees = req.body.maxAttendees
+    let maxAttendees = req.body.maxAttendees || undefined
     let category = req.body.category || [];
 
-    if (typeof(category) === 'string') {
+    if (typeof (category) === 'string') {
         category = [category];
     };
 
@@ -99,8 +99,6 @@ exports.createEvent = async (req, res) => {
             title, category, description, location, date, maxAttendees
         });
     };
-
-
 
     try {
         const newEvent = {
@@ -162,7 +160,7 @@ exports.updateEvent = async (req, res) => {
         let maxAttendees = req.body.maxAttendees
         let category = req.body.category || [];
 
-        if (typeof(category) === 'string') {
+        if (typeof (category) === 'string') {
             category = [category];
         };
 

@@ -26,8 +26,8 @@
             Location:<br>
             <input type="text" name="location" value="<%= location ? location : "" %>">
             <br><br>
-            Maximum Capacity of Attendees: <br>
-            <input type="number" name="maxAttendees" min="50" value="<%= maxAttendees ? maxAttendees : 50 %>">
+            Maximum Capacity of Attendees: (If left blank, it will be unlimited)<br>
+            <input type="number" name="maxAttendees" value="<%= maxAttendees ? maxAttendees : "" %>">
             <br><br>
             Category:<br>
             <label><input type="checkbox" name="category" value="General"> General</label><br>
