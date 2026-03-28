@@ -10,6 +10,8 @@
         <p style="color: red; font-weight: bold;"><%= error %></p>
     <% } %>
 
+    <h2>Delete Events</h2>
+
     <p><a href="/events">← Back to Events</a></p>
 
         <form action="/events/delete-event" method="post">
@@ -24,12 +26,9 @@
 
                 <tbody>
                     <tr>
-                    <tr>
                     <% events.forEach(event => { %>
                         <td>
-                        <td>
                             <%= event.title %>
-                        </td>
                         </td>
 
                         <td>

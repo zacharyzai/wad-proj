@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Select Event</title>
+</head>
+<body>
+    <p><a href="/events">← Back to Events</a></p>
+    <h1>Select an Event to <%= action === 'update' ? 'Update' : 'Delete' %></h1>
+
+    <% if (events.length === 0) { %>
+        <p>You have no events.</p>
+    <% } else { %>
+        <table border="1" cellpadding="8">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Date & Time</th>
+                    <th>Location</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% events.forEach(event => { %>
+                    <tr>
+                        <td><%= event.title %></td>
+                        <td><%= event.date.toLocaleString('en-SG', { dateStyle: 'medium', timeStyle: 'short' }) %></td>
+                        <td><%= event.location %></td>
+                        <td>
+                            <a href="/events/<%= action %>-event?eventId=<%= event._id %>">
+                                <button><%= action === 'update' ? 'Edit' : 'Delete' %></button>
+                            </a>
+                        </td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    <% } %>
+</body>
+</html>
