@@ -5,8 +5,8 @@
     <title>Select Event</title>
 </head>
 <body>
-    <p><a href="/events">← Back to Events</a></p>
     <h1>Select an Event to <%= action === 'update' ? 'Update' : 'Delete' %></h1>
+    <p><a href="/events">← Back to Events</a></p>
 
     <% if (events.length === 0) { %>
         <p>You have no events.</p>
