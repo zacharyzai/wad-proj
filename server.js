@@ -45,10 +45,11 @@ const reviewRoutes = require('./routes/review-routes');
 
 // mount routes
 app.use('/auth', authRoutes);
+app.use('/events', isAuthenticated, reviewRoutes); // Review now has its own route
 app.use('/events', isAuthenticated, eventRoutes);
 app.use('/profile', isAuthenticated, userRoutes);
 app.use('/admin', isAdmin, adminRoutes);
-// review routes are handled within /events (e.g. /events/:id/review)
+
 
 app.get('/', (req, res) => {
     if (req.session && req.session.userId) {

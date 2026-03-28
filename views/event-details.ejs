@@ -50,7 +50,8 @@
                                 <strong><%= review.title %></strong> - <%= review.rating %>/5
                                 <br>
                                 <p><%= review.comment %></p>
-                                show edit/delete only to review owner
+                                <!--show edit/delete only to review owner-->
+
                                 <% if (review.user && review.user.toString() === String(userId)) { %>      
                                     <a href="/events/<%= event._id %>/review/<%= review._id %>/edit">
                                         <button>✏️ Edit</button>
