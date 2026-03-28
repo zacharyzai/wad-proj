@@ -59,15 +59,14 @@ exports.rsvpEvent = async (req, res) => {
     try {
         const event = await Event.findById(req.params.id);
 
-        if (event.attendees && event.attendees.includes(req.session.userId)) { 
+        if (event.attendees && event.attendees.includes(req.session.userId)) {
             return res.redirect("/events"); // To prevent duplicate RSVP 
         }
-                                                        
-        if (event.maxAttendees &&           
-            event.attendees.length >= event.maxAttendees) 
-            {                                             
-                return res.redirect("/events?error=full");
-            } 
+
+        if (event.maxAttendees &&
+            event.attendees.length >= event.maxAttendees) {
+            return res.redirect("/events?error=full");
+        }
 
         await Event.findByIdAndUpdate(req.params.id, { // Object that holds URL route parameters
             $addToSet: { attendees: req.session.userId } // $addToSet is a MongoDB operator. Only adds a value to an array if it doesn't exist so unique to users (like sets)
@@ -159,6 +158,16 @@ exports.createEvent = async (req, res) => {
 exports.updateEventPage = async (req, res) => {
     try {
         let targetId = req.query.eventId; // need to get from events viewing page when use click the specific event
+        // No eventId — show list of selectable events
+        if (!targetId) {
+            let myEvents;
+            if (req.session.role === 'admin') {
+                myEvents = await Event.find();
+            } else {
+                myEvents = await Event.find({ organiser: req.session.userId });
+            }
+            return res.render("select-event", { events: myEvents, action: "update" });
+        }
 
         let eventToEdit = await Event.findById(targetId)
 
@@ -181,9 +190,17 @@ exports.updateEventPage = async (req, res) => {
 }
 
 exports.updateEvent = async (req, res) => {
+
     try {
         const targetId = req.query.eventId
         let title = req.body.title;
+        const event = await Event.findById(targetId);
+
+                // Allow if admin OR if the organiser owns this event
+        if (req.session.role !== 'admin' && event.organiser.toString() !== req.session.userId) {
+            return res.send("Unauthorized: You can only modify your own events.");
+        }
+        
         let description = req.body.description;
         let date = req.body.date;
         let location = req.body.location;
@@ -218,31 +235,47 @@ exports.updateEvent = async (req, res) => {
 
 exports.renderDeletePage = async (req, res) => {
     try {
-        let allEvents = await Event.find()
-        res.render("delete-events", { events: allEvents })
-    } catch (err) {
-        console.error(err)
-        res.send("Error loading the delete page.")
-    }
+        if (req.session.role === 'admin') {
+            let allEvents = await Event.find();
+        } else {
+            allEvents = await Event.find({ organiser: req.session.userId });
+        }
+        res.render("delete-events", { events: allEvents });
+        } catch (err) {
+            console.log(err)
+            res.send("An error occurred while trying to delete the event(s).")
+        }
 }
 
 exports.deleteEvent = async (req, res) => {
     try {
         let deleteEvent = req.body.deleteEventIds;
-
-
         if (!deleteEvent) {
             const allEvents = await Event.find();
+            if (req.session.role === 'admin') {
+                allEvents = await Event.find();
+            } else {
+                allEvents = await Event.find({ organiser: req.session.userId });
+            }
             return res.render("delete-events", {
                 events: allEvents,
                 error: "Please select at least one event to delete."
-            })
+            });
         }
 
         if (typeof (deleteEvent) === "string") {
             deleteEvent = [deleteEvent];
         };
 
+        if (req.session.role !== 'admin') {
+            const events = await Event.find({ _id: { $in: deleteEvent } });
+            for (let e of events) {
+                if (e.organiser.toString() !== req.session.userId) {
+                    return res.send("Unauthorized: You can only delete your own events.");
+                }
+            }
+        }
+        
         await Event.deleteMany({ _id: { $in: deleteEvent } }); // $in in MongoDB operator means match any value in this array
 
         res.redirect("/events?success=true");

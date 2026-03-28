@@ -1,4 +1,5 @@
 const express = require('express');
+const { isAdmin, isAuthenticated, isOrganizer} = require('../middleware/authMiddleware');
 const { isAdmin, isAuthenticated, isOrganizer } = require('../middleware/authMiddleware');
 const eventController = require("./../controller/events-controller");
 
@@ -20,12 +21,12 @@ router.get("/create-event", isOrganizer, eventController.createEventPage);
 router.post("/create-event", isOrganizer, eventController.createEvent);
 
 // Update Event
-router.get("/update-event", isAdmin, eventController.updateEventPage);
-router.post("/update-event", isAdmin, eventController.updateEvent);
+router.get("/update-event", isOrganizer, eventController.updateEventPage);
+router.post("/update-event", isOrganizer, eventController.updateEvent);
 
 // Delete Event
-router.get("/delete-event", isAdmin, eventController.renderDeletePage);
-router.post("/delete-event", isAdmin, eventController.deleteEvent);
+router.get("/delete-event", isOrganizer, eventController.renderDeletePage);
+router.post("/delete-event", isOrganizer, eventController.deleteEvent);
 
 // View Event Details 
 router.get("/:id", eventController.viewEventDetails);
