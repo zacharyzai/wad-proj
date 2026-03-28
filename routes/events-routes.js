@@ -1,5 +1,5 @@
 const express = require('express');
-const { isAdmin, isAuthenticated } = require('../middleware/authMiddleware');
+const { isAdmin, isAuthenticated, isOrganizer } = require('../middleware/authMiddleware');
 const eventController = require("./../controller/events-controller");
 
 
@@ -16,8 +16,8 @@ router.post("/:id/rsvp", isAuthenticated, eventController.rsvpEvent);
 router.post("/:id/unrsvp", isAuthenticated, eventController.unrsvpEvent);
 
 // Create Event
-router.get("/create-event", isAdmin, eventController.createEventPage);
-router.post("/create-event", isAdmin, eventController.createEvent);
+router.get("/create-event", isOrganizer, eventController.createEventPage);
+router.post("/create-event", isOrganizer, eventController.createEvent);
 
 // Update Event
 router.get("/update-event", isAdmin, eventController.updateEventPage);
