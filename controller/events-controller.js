@@ -26,14 +26,24 @@ exports.renderEventsPage = async (req, res) => {
             filter.category = category;
         }
 
-        let events = await Event.find(filter).skip(skip).limit(limit);
+        // if (sort === "popular") {
+        //     events = events.sort((a, b) => (b.attendees?.length || 0) - (a.attendees?.length || 0));
+        // } else if (sort === "newest") {
+        //     events = await Event.find(filter).sort({ date: -1 }).skip(skip).limit(limit);
+        // } else if (sort === "oldest") {
+        //     events = await Event.find(filter).sort({ date: 1 }).skip(skip).limit(limit);
+        // }
+
+        if (sort === "upcoming") {
+            filter.date = { $gte: new Date() };
+        } else if (sort === "past") {
+            filter.date = { $lt: new Date() };
+        }
+
+        let events = await Event.find(filter).sort({ date: 1 }).skip(skip).limit(limit);
 
         if (sort === "popular") {
             events = events.sort((a, b) => (b.attendees?.length || 0) - (a.attendees?.length || 0));
-        } else if (sort === "newest") {
-            events = await Event.find(filter).sort({ date: -1 }).skip(skip).limit(limit);
-        } else if (sort === "oldest") {
-            events = await Event.find(filter).sort({ date: 1 }).skip(skip).limit(limit);
         }
 
         const totalPages = Math.ceil((await Event.countDocuments(filter)) / limit);
