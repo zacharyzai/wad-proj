@@ -33,26 +33,29 @@
                 <h1>Event List</h1>
                 <!-- Filter Bar -->
                 <form method="GET" action="/events">
-                    <label for="category">Category:</label>
-                    <select name="category" id="category">
-                        <option value="all" <%=selectedCategory==='all' ? 'selected' : '' %>>All</option>
+                    <div>
+                        <strong>Category:</strong><br>
                         <% categories.forEach(cat=> { %>
-                            <option value="<%= cat %>" <%=selectedCategory===cat ? 'selected' : '' %>>
+                            <label>
+                                <input type="checkbox" name="category" value="<%= cat %>"
+                                    <%=selectedCategories.includes(cat) ? 'checked' : '' %>>
                                 <%= cat %>
-                            </option>
+                            </label>
                             <% }) %>
-                    </select>
-
-                    <label for="sort">Sort by:</label>
-                    <select name="sort" id="sort">
-                        <option value="" <%= selectedSort === '' ? 'selected' : '' %>>Default</option>
-                        <option value="upcoming" <%= selectedSort === 'upcoming' ? 'selected' : '' %>>Upcoming</option>
-                        <option value="past" <%= selectedSort === 'past' ? 'selected' : '' %>>Past</option>
-                        <option value="popular" <%= selectedSort === 'popular' ? 'selected' : '' %>>Most Popular</option>
-                    </select>
-                    
-                    <button type="submit">Apply</button>
-                    <a href="/events">Reset</a>
+                    </div>
+                    <br>
+                    <div>
+                        <strong>Sort by:</strong>
+                        <select name="sort" id="sort">
+                            <option value="" <%=selectedSort==='' ? 'selected' : '' %>>All</option>
+                            <option value="upcoming" <%=selectedSort==='upcoming' ? 'selected' : '' %>>Upcoming</option>
+                            <option value="past" <%=selectedSort==='past' ? 'selected' : '' %>>Past</option>
+                            <option value="popular" <%=selectedSort==='popular' ? 'selected' : '' %>>Most Popular
+                            </option>
+                        </select>
+                        <button type="submit">Apply</button>
+                        <a href="/events">Reset</a>
+                    </div>
                 </form>
                 <br>
                 <% if (role==='admin' || role==='organizer' ) { %>
@@ -61,15 +64,16 @@
                             <td>
                                 <strong>Organizer Tools:</strong>
                                 <a href="/events/create-event"><button type="button">➕ Create New Event</button></a>
-                                <% if (role==='organizer') { %>
+                                <% if (role==='organizer' ) { %>
                                     <a href="/events/update-event"><button type="button">✏️ Update My Event</button></a>
-                                    <a href="/events/delete-event"><button type="button">🗑️ Delete My Event</button></a>
-                                <% } %>
-                                
-                                <% if (role==='admin' ) { %>
-                                    <a href="/events/delete-event"><button type="button">🗑️ Bulk Delete
-                                            (Admin)</button></a>
+                                    <a href="/events/delete-event"><button type="button">🗑️ Delete My
+                                            Event</button></a>
                                     <% } %>
+
+                                        <% if (role==='admin' ) { %>
+                                            <a href="/events/delete-event"><button type="button">🗑️ Bulk Delete
+                                                    (Admin)</button></a>
+                                            <% } %>
 
                             </td>
                         </tr>
@@ -131,7 +135,7 @@
                                                             </form>
                                                             <% } %>
                                             </td>
-                                            <% if (role==='admin') { %>
+                                            <% if (role==='admin' ) { %>
                                                 <td>
                                                     <a href="/events/update-event?eventId=<%= event._id %>"><button>Update
                                                             Event</button></a>
@@ -147,14 +151,11 @@
                                 <% if (page> 1) { %>
                                     <button type="submit"><a href="/events?page=<%= page-1 %>">Previous</a></button>
                                     <% } %>
-
-                                        <% if (page>= 1 && page < totalPages) { %>
-                                                <button type="submit"><a
-                                                        href="/events?page=<%= page+1 %>">Next</a></button>
-                                                <% } %>
-
-
-                                                    Page <%= page %> of <%= totalPages %>
+                                        Page <%= page %> of <%= totalPages %>
+                                <% if (page>= 1 && page < totalPages) { %>
+                                        <button type="submit"><a
+                                                href="/events?page=<%= page+1 %>">Next</a></button>
+                                        <% } %>
                             </p>
                             <% } else { %>
                                 <p>No events available at the moment.</p>

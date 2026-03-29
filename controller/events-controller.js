@@ -19,11 +19,14 @@ exports.renderEventsPage = async (req, res) => {
         const limit = 5;
         const skip = (page - 1) * limit;
 
-        const { category, sort } = req.query;
+        const category = req.query.category;
+        const sort = req.query.sort;
 
         let filter = {};
-        if (category && category !== "all") {
-            filter.category = category;
+        let selectedCategories = [];
+        if (category) {
+            selectedCategories = Array.isArray(category) ? category : [category];
+            filter.category = { $in: selectedCategories };
         }
 
         // if (sort === "popular") {
@@ -56,7 +59,7 @@ exports.renderEventsPage = async (req, res) => {
             events, success, role, myEvents, page, totalPages,
             userId: req.session.userId,
             categories,
-            selectedCategory: category || "all",
+            selectedCategories: category || "all",
             selectedSort: sort || ""
         });
     } catch (error) {
