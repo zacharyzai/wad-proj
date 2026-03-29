@@ -36,8 +36,19 @@
             <td><%= event.organiser ? event.organiser.name : "Unknown" %></td>
         </tr>
         <tr>
-            <th>Attendees</th>
+            <th>No. of Pax</th>
             <td><%= event.attendees ? event.attendees.length : 0 %></td>
+        </tr>
+        <tr>
+            <th>Attendees</th>
+            <td>
+            <% if (event.attendees.length==0) { %>
+             No attendees
+            <% } else { %>
+                <% event.attendees.forEach(person => { %>
+                <%= person.name %> <br>
+            <% })} %>
+            </td>
         </tr>
         <tr>
             <th>Reviews</th>

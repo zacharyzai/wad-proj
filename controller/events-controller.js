@@ -311,7 +311,8 @@ exports.viewEventDetails = async (req, res) => {
     try {
         const event = await Event.findById(req.params.id)
             .populate('organiser', 'name')
-            .populate('reviews');
+            .populate('reviews')
+            .populate("attendees", "name")
 
         if (!event) return res.send("Event not found.");
 
