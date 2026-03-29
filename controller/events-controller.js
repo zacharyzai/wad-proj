@@ -190,7 +190,9 @@ exports.updateEventPage = async (req, res) => {
         let eventToEdit = await Event.findById(targetId)
 
         // Conversion of "datetime-local" to a format that is compatible with HTML
-        let formattedDateForHTML = eventToEdit.date.toISOString().slice(0, 16); // slice away the seconds + ISOString() --> converts JS Date object into standardised string format, needed to allow HTML to recognise the data
+        const sgtOffset = 8 * 60 * 60 * 1000; // 8 hours in milliseconds
+        const sgtDate = new Date(eventToEdit.date.getTime() + sgtOffset); // getTime() returns milliseconds --> need add 8 hrs as toISOString() always return UTC Time
+        let formattedDateForHTML = sgtDate.toISOString().slice(0, 16); // slice away the seconds + ISOString() --> converts JS Date object into standardised string format, needed to allow HTML to recognise the data
         res.render("update-event", {
             targetId,
             title: eventToEdit.title,
@@ -253,8 +255,9 @@ exports.updateEvent = async (req, res) => {
 
 exports.renderDeletePage = async (req, res) => {
     try {
+        let allEvents = await Event.find();
         if (req.session.role === 'admin') {
-            let allEvents = await Event.find();
+            allEvents = await Event.find();
         } else {
             allEvents = await Event.find({ organiser: req.session.userId });
         }

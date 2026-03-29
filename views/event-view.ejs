@@ -85,6 +85,7 @@
                                 <thead>
                                     <tr>
                                         <th>Title</th>
+                                        <th>Status</th>
                                         <th>Date & Time</th>
                                         <th>Category</th>
                                         <th>Location</th>
@@ -102,7 +103,18 @@
                                             <td>
                                                 <%= event.title %>
                                             </td>
-                                            <!-- <td><%= event.date %></td> -->
+                                            <td>
+                                                <% const today=new Date(); const eventDate=new Date(event.date); let
+                                                    status; if (eventDate.toDateString()===today.toDateString()) {
+                                                    status="Ongoing" ; 
+                                                } else if (eventDate> today) {
+                                                    status = "Upcoming";
+                                                    } else {
+                                                    status = "Past";
+                                                    }
+                                                    %>
+                                                    <%= status %>
+                                            </td>
                                             <td>
                                                 <%= event.date.toLocaleString('en-SG', { dateStyle: 'medium' ,
                                                     timeStyle: 'short' }) %>
@@ -126,15 +138,17 @@
                                             <td>
                                                 <% if (event.attendees.includes(userId)) { %>
                                                     Already RSVP'd
-                                                <% } else if (event.date < new Date()) { %>
-                                                    Event Ended
-                                                <% } else if (event.attendees.length >= event.maxAttendees && event.maxAttendees) { %>
-                                                    Event Full
-                                                <% } else { %>
-                                                    <form action="/events/<%= event._id %>/rsvp" method="post">
-                                                        <button type="submit">RSVP</button>
-                                                    </form>
-                                                <% } %>
+                                                    <% } else if (event.date < new Date()) { %>
+                                                        Event Ended
+                                                        <% } else if (event.attendees.length>= event.maxAttendees &&
+                                                            event.maxAttendees) { %>
+                                                            Event Full
+                                                            <% } else { %>
+                                                                <form action="/events/<%= event._id %>/rsvp"
+                                                                    method="post">
+                                                                    <button type="submit">RSVP</button>
+                                                                </form>
+                                                                <% } %>
                                             </td>
                                             <% if (role==='admin' ) { %>
                                                 <td>
@@ -153,10 +167,10 @@
                                     <button type="submit"><a href="/events?page=<%= page-1 %>">Previous</a></button>
                                     <% } %>
                                         Page <%= page %> of <%= totalPages %>
-                                <% if (page>= 1 && page < totalPages) { %>
-                                        <button type="submit"><a
-                                                href="/events?page=<%= page+1 %>">Next</a></button>
-                                        <% } %>
+                                                <% if (page>= 1 && page < totalPages) { %>
+                                                        <button type="submit"><a
+                                                                href="/events?page=<%= page+1 %>">Next</a></button>
+                                                        <% } %>
                             </p>
                             <% } else { %>
                                 <p>No events available at the moment.</p>
