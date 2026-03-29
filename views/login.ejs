@@ -5,29 +5,58 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
 </head>
-<body>
-    <h1>Login</h1>
+<body align="center">
+    <center>
+        <br>
+            <h1>🔑 User Login</h1>
+            <p>Welcome back! Please enter your credentials to access the <strong>Campus Event Board</strong>.</p>
+        <hr width="50%">
 
-    <% if (errors.length > 0) { %>
-        <ul>
-            <% errors.forEach(error => { %>
-                <li><%= error %></li>
-            <% }); %>
-        </ul>
-    <% } %>
+        <% if (errors && errors.length > 0) { %>
+            <table border="1" cellpadding="10" bgcolor="#ffe6e6" width="40%">
+                <tr>
+                    <td>
+                        <strong>⚠️ Please fix the following:</strong>
+                        <ul>
+                            <% errors.forEach(error => { %>
+                                <li><%= error %></li>
+                            <% }); %>
+                        </ul>
+                    </td>
+                </tr>
+            </table>
+            <br>
+        <% } %>
 
-    <form action='/auth/login'  method="post">
-        Email:
-        <input type="email" name="email">
-        <br><br>
+        <form action="/auth/login" method="post">
+            <table border="0" cellpadding="8">
+                <tr>
+                    <td align="right"><strong>📧 Email:</strong></td>
+                    <td><input type="email" name="email" required size="30"></td>
+                </tr>
+                <tr>
+                    <td align="right"><strong>🔒 Password:</strong></td>
+                    <td><input type="password" name="password" required size="30"></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td align="left">
+                        <br>
+                        <button type="submit">
+                            <strong>Login to Account</strong>
+                        </button>
+                    </td>
+                </tr>
+            </table>
+        </form>
 
-        Password:
-        <input type="password" name="password">
-        <br><br>
-
-        <button type="submit">Login</button>
-    </form>
-
-    <a href="/auth/register">Don't have an account?</a>
+        <br>
+        <hr width="30%">
+        
+        <p>
+            <a href="/auth/register">Don't have an account? Register here</a><br><br>
+            <a href="/">🏠 Back to Home</a>
+        </p>
+    </center>
 </body>
 </html>

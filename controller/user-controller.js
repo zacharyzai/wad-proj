@@ -12,6 +12,7 @@ exports.getProfile = async (req, res) => {
 
     res.render("profile", { user });
   } catch (err) {
+    console.log(err)
     res.send("Error loading profile");
   }
 };
@@ -27,6 +28,7 @@ exports.getEditProfile = async (req, res) => {
 
     res.render("edit-profile", { user });
   } catch (err) {
+    console.log(err)
     res.send("Error loading edit page");
   }
 };
@@ -39,17 +41,30 @@ exports.updateProfile = async (req, res) => {
     const studentId = req.body.studentId;
     const faculty = req.body.faculty;
     const bio = req.body.bio;
+    let errors=[];
+
+    const user = await User.findById(req.session.userId);
 
     if (!name || !email) {
-      const user = await User.findById(req.session.userId);
-      return res.render("edit-profile", {
-        user,
-        errors: ["Name and Email are required"],
-      });
+      errors.push("Name and Email are required");
     }
 
     if (bio && bio.length > 200) {
-      return res.send("Bio cannot exceed 200 characters");
+      errors.push("Bio cannot exceed 200 characters");
+    }
+
+    if (errors.length > 0) {
+      return res.render("edit-profile", {
+        user: {
+          name: name,
+          email: email,
+          studentId: studentId,
+          faculty: faculty,
+          bio: bio,
+          role: user.role
+        },
+        errors
+      });
     }
 
     await User.findByIdAndUpdate(req.session.userId, {
@@ -57,12 +72,13 @@ exports.updateProfile = async (req, res) => {
       email,
       studentId,
       faculty,
-      bio,
+      bio
     });
 
     // Redirect back to profile page after update
     res.redirect("/profile");
   } catch (err) {
+    console.log(err)
     res.send("Error updating profile");
   }
 };
@@ -87,6 +103,7 @@ exports.deleteProfile = async (req, res) => {
     });
     
   } catch (err) {
+    console.log(err)
     res.send("Error deleting profile");
   }
 };

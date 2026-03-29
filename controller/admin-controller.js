@@ -1,14 +1,17 @@
 const bcrypt = require("bcrypt");
 const User = require("../models/user-models");
+const Event = require("../models/event-models");
 
 exports.showDashboard = async (req, res) => {
   try {
     const users = await User.find();
+    const events = await Event.find();
+    const totalRSVPs = events.reduce((sum, e) => sum + e.attendees.length, 0);
 
     res.render("admin/dashboard", {
       users,
-      events: [], // rmb to update when events is done!
-      totalRSVPs: 0, // rmb to update when rsvp is done!
+      events,
+      totalRSVPs,
       userName: req.session.userName,
       currentUserId: req.session.userId.toString(),
     });
@@ -37,7 +40,7 @@ exports.showEditUser = async (req, res) => {
 };
 
 exports.handleEditUser = async (req, res) => {
-  const { name, email, role } = req.body;
+  const { name, email, role, studentId, faculty } = req.body;
   const errors = [];
 
   if (!name || name.trim().length === 0) {
@@ -52,12 +55,23 @@ exports.handleEditUser = async (req, res) => {
   }
 
   if (errors.length > 0) {
-    const user = await User.findById(req.params.id);
-    return res.render("admin/edit-user", { user, errors });
+    try {
+      const user = await User.findById(req.params.id);
+      return res.render("admin/edit-user", { user, errors });
+    } catch (err) {
+      return res.send("Error reloading form.");
+    }
   }
 
   try {
-    await User.findByIdAndUpdate(req.params.id, { name, email, role });
+    await User.findByIdAndUpdate(req.params.id, { 
+      name, 
+      email, 
+      role, 
+      studentId,
+      faculty
+    });
+    
     res.redirect("/admin/dashboard");
   } catch (err) {
     console.error(err);
@@ -121,3 +135,4 @@ exports.deleteUser = async (req, res) => {
     res.send("Error deleting user.");
   }
 };
+

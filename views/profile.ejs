@@ -3,24 +3,97 @@
 <head>
   <title>My Profile</title>
 </head>
-<body>
+<body align="center">
+    <center>
+        <br>
+        <h1>👤 My Personal Profile</h1>
+        <p>Welcome back, <strong><%= user.name %></strong>! Here is your current campus information.</p>
+        
+        <nav>
+            <p>
+                <a href="/">🏠 Home</a> | 
+                <% if (user.role === 'admin') { %>
+                    <a href="/admin/dashboard">🛠️ Admin Dashboard</a> | 
+                <% } %>
+                <a href="/events">🔍 Browse Events</a> | 
+                <a href="/auth/logout">🚪 Logout</a>
+            </p>
+        </nav>
 
-  <h1>My Profile</h1>
+        <hr width="70%">
 
-  <p><strong>Name:</strong> <%= user.name %></p>
-  <p><strong>Email:</strong> <%= user.email %></p>
-  <p><strong>Student ID:</strong> <%= user.studentId %></p>
-  <p><strong>Faculty:</strong> <%= user.faculty %></p>
-  <p><strong>Role:</strong> <%= user.role %></p>
-  <p><strong>Bio:</strong> <%= user.bio %></p>
+        <table border="1" cellpadding="12" width="60%">
+            <tr bgcolor="#eeeeee">
+                <th colspan="2">Account & Identity</th>
+            </tr>
+            <tr>
+                <td align="right" width="40%"><strong>📛 Name:</strong></td>
+                <td align="left"><%= user.name %></td>
+            </tr>
+            <tr>
+                <td align="right"><strong>📧 Email:</strong></td>
+                <td align="left"><%= user.email %></td>
+            </tr>
+            <tr>
+                <td align="right"><strong>🎭 System Role:</strong></td>
+                <td align="left">
+                    <% if (user.role === 'admin') { %>
+                        <strong>⭐ Administrator</strong>
+                    <% } else if (user.role === 'organizer') { %>
+                        💼 Event Organizer
+                    <% } else { %>
+                        👨‍🎓 Student
+                    <% } %>
+                </td>
+            </tr>
+            <tr bgcolor="#f9f9f9">
+                <th colspan="2">Academic Background</th>
+            </tr>
+            <tr>
+                <td align="right"><strong>🆔 Student ID:</strong></td>
+                <td align="left"><%= user.studentId || 'Not provided' %></td>
+            </tr>
+            <tr>
+                <td align="right"><strong>🏛️ Faculty:</strong></td>
+                <td align="left"><%= user.faculty || 'Not provided' %></td>
+            </tr>
+            <tr>
+                <td align="right" valign="top"><strong>📝 About Me:</strong></td>
+                <td align="left">
+                    <em><%= user.bio || 'No bio written yet.' %></em>
+                </td>
+            </tr>
+        </table>
 
-  <a href="/profile/edit">Edit Profile</a>
-  <a href="/events">Browse Events</a>
-  
-  <br><br>
-  <form action="/profile/delete" method="POST"
-    onsubmit="return confirm('Are you sure you want to delete your account? This action cannot be undone.');">
-    <button type="submit" style="color: red;"> Delete Account </button>
-  </form>
+        <br>
+        
+        <p>
+            <a href="/profile/edit">
+                <button type="button">📝 Edit Profile Information</button>
+            </a>
+        </p>
+
+        <br>
+        <hr width="40%">
+
+        <section>
+            <h3 style="color: darkred;">⚠️ Delete your Account</h3>
+            <table border="1" cellpadding="10" bgcolor="#fff0f0" width="50%">
+                <tr>
+                    <td align="center">
+                        <p>Deleting your account will remove all your data from the Campus Event Board.</p>
+                        <form action="/profile/delete" method="POST"
+                            onsubmit="return confirm('🚨 Are you sure you want to delete your account? This action cannot be undone.');">
+                            <button type="submit" style="background-color: #ffcccc; color: red; font-weight: bold;">
+                                🗑️ Permanently Delete My Account
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            </table>
+        </section>
+
+        <br><br>
+    </center>
 </body>
 </html>

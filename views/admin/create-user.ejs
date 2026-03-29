@@ -5,50 +5,82 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Create User</title>
 </head>
-<body>
-    <h2>Create User</h2>
-    <a href="/admin/dashboard">Back to Dashboard</a>
+<body align="center">
+    <center>
+        <br>
+        <h1>🛠️ Admin: Create New User</h1>
+        <p>Directly add a new member to the <strong>Campus Event Board</strong> database.</p>
+        
+        <nav>
+            <a href="/admin/dashboard">⬅️ Back to Admin Dashboard</a>
+        </nav>
 
-    <% if (errors.length > 0) { %>
-        <ul>
-            <% errors.forEach(error => { %>
-                <li><%= error %></li>
-            <% }) %>
-        </ul>
-    <% } %>
+        <hr width="60%">
 
-    <form action="/admin/create-user" method="post">
+        <% if (errors && errors.length > 0) { %>
+            <table border="1" cellpadding="10" bgcolor="#ffe6e6" width="45%">
+                <tr>
+                    <td>
+                        <strong>⚠️ Error Creating User:</strong>
+                        <ul>
+                            <% errors.forEach(error => { %>
+                                <li><%= error %></li>
+                            <% }); %>
+                        </ul>
+                    </td>
+                </tr>
+            </table>
+            <br>
+        <% } %>
 
-        <label>Name:</label><br>
-        <input type="text" name="name">
-        <br><br>
-
-        <label>Email:</label><br>
-        <input type="email" name="email">
-        <br><br>
-
-        <label>Password:</label><br>
-        <input type="password" name="password">
-        <br><br>
-
-        <label>Role:</label><br>
-        <select name="role">
-            <option value="student">Student</option>
-            <option value="organizer">Organizer</option>
-            <option value="admin">Admin</option>
-        </select>
-        <br><br>
-
-        <label>Student ID (optional):</label><br>
-        <input type="text" name="studentId">
-        <br><br>
-
-        <label>Faculty (optional):</label><br>
-        <input type="text" name="faculty">
-        <br><br>
-
-        <button type="submit">Create User</button>
-    </form>
-
+        <form action="/admin/create-user" method="post">
+            <table border="1" cellpadding="10" width="50%">
+                <tr bgcolor="#eeeeee">
+                    <th colspan="2">User Credentials & Profile</th>
+                </tr>
+                <tr>
+                    <td align="right"><strong>👤 Full Name:</strong></td>
+                    <td align="left"><input type="text" name="name" required size="30"></td>
+                </tr>
+                <tr>
+                    <td align="right"><strong>📧 Email:</strong></td>
+                    <td align="left"><input type="email" name="email" required size="30"></td>
+                </tr>
+                <tr>
+                    <td align="right"><strong>🔒 Password:</strong></td>
+                    <td align="left"><input type="password" name="password" required size="30"></td>
+                </tr>
+                <tr>
+                    <td align="right"><strong>🎭 Assigned Role:</strong></td>
+                    <td align="left">
+                        <select name="role" style="width: 100%;">
+                            <option value="student">Student</option>
+                            <option value="organizer">Organizer</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr bgcolor="#f9f9f9">
+                    <th colspan="2">Additional Information (Optional)</th>
+                </tr>
+                <tr>
+                    <td align="right"><strong>🆔 Student ID:</strong></td>
+                    <td align="left"><input type="text" name="studentId" size="30" placeholder="e.g. 01234567"></td>
+                </tr>
+                <tr>
+                    <td align="right"><strong>🏛️ Faculty:</strong></td>
+                    <td align="left"><input type="text" name="faculty" size="30" placeholder="e.g. SCIS"></td>
+                </tr>
+                <tr>
+                    <td colspan="2" align="center">
+                        <br>
+                        <button type="submit">
+                            <strong>➕ Create User Account</strong>
+                        </button>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </center>
 </body>
 </html>
