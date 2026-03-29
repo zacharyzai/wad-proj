@@ -14,35 +14,35 @@
 
     <p><a href="/events">← Back to Events</a></p>
 
-        <form action="/events/delete-event" method="post">
-            <!-- Delete an event. Make it with checkbox so admin can delete multiple events easily -->
-            <table border="1">
-                <thead>
-                    <tr>
-                        <th>Events</th>
-                        <th>Delete?</th>
-                    </tr>
-                </thead>
+        <% if (events.length === 0) { %>
+            <p>No events to be deleted.</p>
+        <% } else { %>
+            <form action="/events/delete-event" method="post">
+                <!-- Delete an event. Make it with checkbox so admin can delete multiple events easily -->
+                <table border="1">
+                    <thead>
+                        <tr>
+                            <th>Events</th>
+                            <th>Delete?</th>
+                        </tr>
+                    </thead>
 
-                <tbody>
-                    <tr>
-                    <% events.forEach(event => { %>
-                        <td>
-                            <%= event.title %>
-                        </td>
-
-                        <td>
-                            <input type="checkbox" name="deleteEventIds" value="<%= event._id %>">
-                        </td>
-                    </tr>
-                    <% }) %>
-                </tbody>
-            </table>
-            <br>
-            <button type="submit">Confirm Delete Event</button>
-
-
-
-        </form>
+                    <tbody>
+                        <% events.forEach(event => { %>
+                        <tr>
+                            <td>
+                                <%= event.title %>
+                            </td>
+                            <td>
+                                <input type="checkbox" name="deleteEventIds" value="<%= event._id %>">
+                            </td>
+                        </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+                <br>
+                <button type="submit">Confirm Delete Event</button>
+            </form>
+        <% } %>
 </body>
 </html>

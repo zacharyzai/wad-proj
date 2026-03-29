@@ -19,21 +19,34 @@ exports.renderEventsPage = async (req, res) => {
         const limit = 5;
         const skip = (page - 1) * limit;
 
-        const { category, sort } = req.query;
+        const category = req.query.category;
+        const sort = req.query.sort;
 
         let filter = {};
-        if (category && category !== "all") {
-            filter.category = category;
+        let selectedCategories = [];
+        if (category) {
+            selectedCategories = Array.isArray(category) ? category : [category];
+            filter.category = { $in: selectedCategories };
         }
 
-        let events = await Event.find(filter).skip(skip).limit(limit);
+        // if (sort === "popular") {
+        //     events = events.sort((a, b) => (b.attendees?.length || 0) - (a.attendees?.length || 0));
+        // } else if (sort === "newest") {
+        //     events = await Event.find(filter).sort({ date: -1 }).skip(skip).limit(limit);
+        // } else if (sort === "oldest") {
+        //     events = await Event.find(filter).sort({ date: 1 }).skip(skip).limit(limit);
+        // }
+
+        if (sort === "upcoming") {
+            filter.date = { $gte: new Date() };
+        } else if (sort === "past") {
+            filter.date = { $lt: new Date() };
+        }
+
+        let events = await Event.find(filter).sort({ date: 1 }).skip(skip).limit(limit);
 
         if (sort === "popular") {
             events = events.sort((a, b) => (b.attendees?.length || 0) - (a.attendees?.length || 0));
-        } else if (sort === "newest") {
-            events = await Event.find(filter).sort({ date: -1 }).skip(skip).limit(limit);
-        } else if (sort === "oldest") {
-            events = await Event.find(filter).sort({ date: 1 }).skip(skip).limit(limit);
         }
 
         const totalPages = Math.ceil((await Event.countDocuments(filter)) / limit);
@@ -46,7 +59,7 @@ exports.renderEventsPage = async (req, res) => {
             events, success, role, myEvents, page, totalPages,
             userId: req.session.userId,
             categories,
-            selectedCategory: category || "all",
+            selectedCategories: category || "all",
             selectedSort: sort || ""
         });
     } catch (error) {
@@ -62,6 +75,11 @@ exports.rsvpEvent = async (req, res) => {
         if (event.attendees && event.attendees.includes(req.session.userId)) {
             return res.redirect("/events"); // To prevent duplicate RSVP 
         }
+
+        if (event.date < new Date()) {
+            return res.redirect("/events"); // Prevent RSVP for past events
+        }
+        
 
         if (event.maxAttendees &&
             event.attendees.length >= event.maxAttendees) {
@@ -172,7 +190,9 @@ exports.updateEventPage = async (req, res) => {
         let eventToEdit = await Event.findById(targetId)
 
         // Conversion of "datetime-local" to a format that is compatible with HTML
-        let formattedDateForHTML = eventToEdit.date.toISOString().slice(0, 16); // slice away the seconds + ISOString() --> converts JS Date object into standardised string format, needed to allow HTML to recognise the data
+        const sgtOffset = 8 * 60 * 60 * 1000; // 8 hours in milliseconds
+        const sgtDate = new Date(eventToEdit.date.getTime() + sgtOffset); // getTime() returns milliseconds --> need add 8 hrs as toISOString() always return UTC Time
+        let formattedDateForHTML = sgtDate.toISOString().slice(0, 16); // slice away the seconds + ISOString() --> converts JS Date object into standardised string format, needed to allow HTML to recognise the data
         res.render("update-event", {
             targetId,
             title: eventToEdit.title,
@@ -235,8 +255,9 @@ exports.updateEvent = async (req, res) => {
 
 exports.renderDeletePage = async (req, res) => {
     try {
+        let allEvents = await Event.find();
         if (req.session.role === 'admin') {
-            let allEvents = await Event.find();
+            allEvents = await Event.find();
         } else {
             allEvents = await Event.find({ organiser: req.session.userId });
         }
