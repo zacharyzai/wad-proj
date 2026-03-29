@@ -6,7 +6,7 @@
 <body>
     <h1>Update RSVP</h1>
 
-    <p><strong>Event:</strong> <%= result.eventId.title %></p>
+    <p><strong>Event:</strong> <%= event.title %></p>
 
     <form action="/rsvp/update-rsvp" method="POST">
         <input type="hidden" name="rsvpId" value="<%= result._id %>">

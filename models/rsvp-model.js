@@ -31,7 +31,7 @@ exports.addRSVP = function(newRSVP) {
 
 // Read one RSVP by RSVP id
 exports.findById = function(id) {
-    return RSVP.findById(id).populate('userId').populate('eventId');
+    return RSVP.findById(id);
 };
 
 // Read one RSVP by this user for this event
@@ -41,18 +41,18 @@ exports.findByUserAndEvent = function(userId, eventId) {
 
 // Read all RSVPs by this user
 exports.findAllByUser = function(userId) {
-    return RSVP.find({ userId: userId }).populate('eventId');
+    return RSVP.find({ userId: userId });
 };
 
 // Update
 exports.updateRSVP = function(id, status, note) {
     return RSVP.updateOne(
-        { id: id },
+        { _id: id },
         { status: status, note: note }
     );
 };
 
 // Delete
 exports.deleteRSVP = function(id) {
-    return RSVP.deleteOne({ id: id });
+    return RSVP.deleteOne({ _id: id });
 };

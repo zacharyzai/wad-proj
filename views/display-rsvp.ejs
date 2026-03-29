@@ -6,22 +6,22 @@
 <body>
     <h1>My RSVPs</h1>
 
-    <% if (rsvpList.length === 0) { %>
+    <% if (rsvpData.length === 0) { %>
         <p>You have not RSVP'd for any events yet.</p>
     <% } else { %>
         <ul>
-            <% rsvpList.forEach(rsvp => { %>
+            <% rsvpData.forEach(item => { %>
                 <li>
-                    <strong><%= rsvp.eventId.title %></strong>
-                    - <%= rsvp.status %>
+                    <strong><%= item.event.title %></strong>
+                    - <%= item.rsvp.status %>
 
-                    <% if (rsvp.note) { %>
-                        - <%= rsvp.note %>
+                    <% if (item.rsvp.note) { %>
+                        - <%= item.rsvp.note %>
                     <% } %>
 
-                    <a href="/view-rsvp?id=<%= rsvp._id %>">View</a>
-                    <a href="/update-rsvp?id=<%= rsvp._id %>">Update</a>
-                    <a href="/delete-rsvp?id=<%= rsvp._id %>">Delete</a>
+                    <a href="/rsvp/view-rsvp?id=<%= item.rsvp._id %>">View</a>
+                    <a href="/rsvp/update-rsvp?id=<%= item.rsvp._id %>">Update</a>
+                    <a href="/rsvp/delete-rsvp?id=<%= item.rsvp._id %>">Delete</a>
                 </li>
             <% }) %>
         </ul>

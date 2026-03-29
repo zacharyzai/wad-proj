@@ -1,5 +1,5 @@
 const express = require('express');
-const rsvpController = require('./../controllers/rsvp-controller');
+const rsvpController = require('./../controller/rsvp-controller');
 
 const router = express.Router();
 

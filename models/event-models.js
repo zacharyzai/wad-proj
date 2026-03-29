@@ -53,7 +53,6 @@ const eventSchema = new mongoose.Schema({
     }]
 }, { timestamps: true });
 
-module.exports = mongoose.model('Event', eventSchema, 'events');
 const Event = mongoose.model('Event', eventSchema, 'events');
 
 
@@ -70,9 +69,9 @@ exports.addEvent = function(newEvent) {
 };
 
 exports.updateEvent = function(id, updatedData) {
-    return Event.updateOne({ id: id }, updatedData);
+    return Event.updateOne({ _id: id }, updatedData);
 };
 
 exports.deleteEvent = function(id) {
-    return Event.deleteOne({ id: id });
+    return Event.deleteOne({ _id: id });
 };

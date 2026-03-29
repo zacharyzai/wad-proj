@@ -52,7 +52,7 @@ app.use('/admin', isAdmin, adminRoutes);
 
 
 app.get('/', (req, res) => {
-    if (req.session && req.session.userId) {
+    if (req.session && req.session.user) {
         // If they are already logged in, show them the events!
         res.redirect('/events');
     } else {

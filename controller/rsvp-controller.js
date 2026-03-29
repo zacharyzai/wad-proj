@@ -1,7 +1,6 @@
 const RSVP = require('./../models/rsvp-model');
 const Event = require('./../models/event-models');
 
-
 // SHOW ADD RSVP FORM
 exports.showAddForm = async (req, res) => {
     try {
@@ -9,17 +8,15 @@ exports.showAddForm = async (req, res) => {
         let event = await Event.findById(eventId);
 
         if (!event) {
-            res.send("Event not found");
-            return;
+            return res.send("Event not found");
         }
-        let msg = "";
-        res.render("add-rsvp", { event, msg });
+
+        res.render("add-rsvp", { event, msg: "" });
     } catch (error) {
         console.error(error);
         res.send("Error loading RSVP form");
     }
 };
-
 
 // CREATE RSVP
 exports.createRSVP = async (req, res) => {
@@ -27,6 +24,7 @@ exports.createRSVP = async (req, res) => {
         if (!req.session.user) {
             return res.send("You must be logged in to RSVP.");
         }
+
         let eventId = req.body.eventId;
         let userId = req.session.user.id;
         let status = req.body.status;
@@ -35,23 +33,23 @@ exports.createRSVP = async (req, res) => {
         let event = await Event.findById(eventId);
 
         if (!event) {
-            res.send("Event not found");
-            return;
+            return res.send("Event not found");
         }
 
-        if (status == "") {
-            let result = "";
-            let msg = "Status is required.";
-            res.render("add-rsvp", { event, result, msg });
-            return;
+        if (!status) {
+            return res.render("add-rsvp", {
+                event,
+                msg: "Status is required."
+            });
         }
 
         let existingRSVP = await RSVP.findByUserAndEvent(userId, eventId);
 
         if (existingRSVP) {
-            let msg = "You have already RSVP'd for this event.";
-            res.render("add-rsvp", { event, msg });
-            return;
+            return res.render("add-rsvp", {
+                event,
+                msg: "You have already RSVP'd for this event."
+            });
         }
 
         let newRSVP = {
@@ -62,14 +60,13 @@ exports.createRSVP = async (req, res) => {
         };
 
         let result = await RSVP.addRSVP(newRSVP);
-        res.render("add-rsvp", { result, msg: "RSVP successful!" });
-        res.redirect("/rsvp-list");
+
+        res.render("success-rsvp", { event, result });
     } catch (error) {
         console.error(error);
         res.send("Error creating RSVP");
     }
 };
-
 
 // SHOW ALL RSVPS FOR LOGGED-IN USER
 exports.showRSVPList = async (req, res) => {
@@ -77,15 +74,23 @@ exports.showRSVPList = async (req, res) => {
         if (!req.session.user) {
             return res.send("You must be logged in to view your RSVPs.");
         }
+
         let userId = req.session.user.id;
         let rsvpList = await RSVP.findAllByUser(userId);
-        res.render("display-rsvp", { rsvpList });
+
+        let rsvpData = [];
+
+        for (let rsvp of rsvpList) {
+            let event = await Event.findById(rsvp.eventId);
+            rsvpData.push({ rsvp, event });
+        }
+
+        res.render("display-rsvp", { rsvpData });
     } catch (error) {
         console.error(error);
         res.send("Error reading database");
     }
 };
-
 
 // SHOW ONE RSVP
 exports.getRSVP = async (req, res) => {
@@ -94,17 +99,21 @@ exports.getRSVP = async (req, res) => {
         let result = await RSVP.findById(rsvpId);
 
         if (!result) {
-            res.send("RSVP not found");
-            return;
+            return res.send("RSVP not found");
         }
 
-        res.render("view-rsvp", { result });
+        let event = await Event.findById(result.eventId);
+
+        if (!event) {
+            return res.send("Event not found");
+        }
+
+        res.render("view-rsvp", { result, event });
     } catch (error) {
         console.error(error);
         res.send("Error loading RSVP");
     }
 };
-
 
 // SHOW UPDATE FORM
 exports.showUpdateForm = async (req, res) => {
@@ -113,17 +122,21 @@ exports.showUpdateForm = async (req, res) => {
         let result = await RSVP.findById(rsvpId);
 
         if (!result) {
-            res.send("RSVP not found");
-            return;
+            return res.send("RSVP not found");
         }
 
-        res.render("update-rsvp", { result });
+        let event = await Event.findById(result.eventId);
+
+        if (!event) {
+            return res.send("Event not found");
+        }
+
+        res.render("update-rsvp", { result, event });
     } catch (error) {
         console.error(error);
         res.send("Error loading update form");
     }
 };
-
 
 // UPDATE RSVP
 exports.updateRSVP = async (req, res) => {
@@ -132,20 +145,18 @@ exports.updateRSVP = async (req, res) => {
         let status = req.body.status;
         let note = req.body.note;
 
-        if (status == "") {
-            res.send("Status is required.");
-            return;
+        if (!status) {
+            return res.send("Status is required.");
         }
 
         await RSVP.updateRSVP(rsvpId, status, note);
 
-        res.redirect("/view-rsvp?id=" + rsvpId);
+        res.redirect("/rsvp/view-rsvp?id=" + rsvpId);
     } catch (error) {
         console.error(error);
         res.send("Error updating RSVP");
     }
 };
-
 
 // SHOW DELETE PAGE
 exports.showDeleteForm = async (req, res) => {
@@ -154,17 +165,21 @@ exports.showDeleteForm = async (req, res) => {
         let result = await RSVP.findById(rsvpId);
 
         if (!result) {
-            res.send("RSVP not found");
-            return;
+            return res.send("RSVP not found");
         }
 
-        res.render("delete-rsvp", { result });
+        let event = await Event.findById(result.eventId);
+
+        if (!event) {
+            return res.send("Event not found");
+        }
+
+        res.render("delete-rsvp", { result, event });
     } catch (error) {
         console.error(error);
         res.send("Error loading delete page");
     }
 };
-
 
 // DELETE RSVP
 exports.deleteRSVP = async (req, res) => {
@@ -173,7 +188,7 @@ exports.deleteRSVP = async (req, res) => {
         let success = await RSVP.deleteRSVP(rsvpId);
 
         if (success.deletedCount === 1) {
-            res.redirect("/rsvp-list");
+            res.redirect("/rsvp/rsvp-list");
         } else {
             res.send("RSVP not found.");
         }
