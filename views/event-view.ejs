@@ -126,14 +126,15 @@
                                             <td>
                                                 <% if (event.attendees.includes(userId)) { %>
                                                     Already RSVP'd
-                                                    <% } else if (event.attendees.length>= event.maxAttendees &&
-                                                        event.maxAttendees) { %>
-                                                        Event Full
-                                                        <% } else { %>
-                                                            <form action="/events/<%= event._id %>/rsvp" method="post">
-                                                                <button type="submit">RSVP</button>
-                                                            </form>
-                                                            <% } %>
+                                                <% } else if (event.date < new Date()) { %>
+                                                    Event Ended
+                                                <% } else if (event.attendees.length >= event.maxAttendees && event.maxAttendees) { %>
+                                                    Event Full
+                                                <% } else { %>
+                                                    <form action="/events/<%= event._id %>/rsvp" method="post">
+                                                        <button type="submit">RSVP</button>
+                                                    </form>
+                                                <% } %>
                                             </td>
                                             <% if (role==='admin' ) { %>
                                                 <td>

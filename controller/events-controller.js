@@ -76,6 +76,11 @@ exports.rsvpEvent = async (req, res) => {
             return res.redirect("/events"); // To prevent duplicate RSVP 
         }
 
+        if (event.date < new Date()) {
+            return res.redirect("/events"); // Prevent RSVP for past events
+        }
+        
+
         if (event.maxAttendees &&
             event.attendees.length >= event.maxAttendees) {
             return res.redirect("/events?error=full");
