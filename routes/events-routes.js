@@ -1,5 +1,4 @@
 const express = require('express');
-const { isAdmin, isAuthenticated, isOrganizer} = require('../middleware/authMiddleware');
 const { isAdmin, isAuthenticated, isOrganizer } = require('../middleware/authMiddleware');
 const eventController = require("./../controller/events-controller");
 
