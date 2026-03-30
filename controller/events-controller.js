@@ -147,6 +147,14 @@ exports.createEvent = async (req, res) => {
         });
     };
 
+    if (new Date(date) < new Date()) {
+        return res.render("create-event", {
+            error: "Event date cannot be in the past.",
+            title, category, description, location, date, maxAttendees // Admin / Organisers cannot create events in the past.
+        });
+    };
+    
+
     try {
         const newEvent = {
             title: title,

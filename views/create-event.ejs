@@ -30,13 +30,13 @@
             <input type="number" name="maxAttendees" value="<%= maxAttendees ? maxAttendees : "" %>">
             <br><br>
             Category:<br>
-            <label><input type="checkbox" name="category" value="General"> General</label><br>
-            <label><input type="checkbox" name="category" value="Sports"> Sports</label><br>
-            <label><input type="checkbox" name="category" value="Festivals"> Festivals</label><br>
-            <label><input type="checkbox" name="category" value="Hackathons"> Hackathons</label><br>
-            <label><input type="checkbox" name="category" value="Discussions"> Panel Discussions</label><br>
-            <label><input type="checkbox" name="category" value="Networking"> Networking</label><br>
-            <label><input type="checkbox" name="category" value="Others"> Others</label><br>            
+            <label><input type="checkbox" name="category" value="General" <%= category.includes("General") ? "checked" : "" %>> General</label><br>
+            <label><input type="checkbox" name="category" value="Sports" <%= category.includes("Sports") ? "checked" : "" %>> Sports</label><br>
+            <label><input type="checkbox" name="category" value="Festivals" <%= category.includes("Festivals") ? "checked" : "" %>> Festivals</label><br>
+            <label><input type="checkbox" name="category" value="Hackathons" <%= category.includes("Hackathons") ? "checked" : "" %>> Hackathons</label><br>
+            <label><input type="checkbox" name="category" value="Discussions" <%= category.includes("Discussions") ? "checked" : "" %>> Panel Discussions</label><br>
+            <label><input type="checkbox" name="category" value="Networking" <%= category.includes("Networking") ? "checked" : "" %>> Networking</label><br>
+            <label><input type="checkbox" name="category" value="Others" <%= category.includes("Others") ? "checked" : "" %>> Others</label><br>            
             <br><br>
             <button type="submit">Confirm</button>
         </form>
