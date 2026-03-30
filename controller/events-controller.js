@@ -20,7 +20,7 @@ exports.renderEventsPage = async (req, res) => {
         const skip = (page - 1) * limit;
 
         const category = req.query.category;
-        const sort = req.query.sort;
+        const sort = req.query.sort !== undefined ? req.query.sort : "upcoming";
 
         let filter = {};
         let selectedCategories = [];
@@ -43,10 +43,13 @@ exports.renderEventsPage = async (req, res) => {
             filter.date = { $lt: new Date() };
         }
 
-        let events = await Event.find(filter).sort({ date: 1 }).skip(skip).limit(limit);
-
+        let events;
         if (sort === "popular") {
-            events = events.sort((a, b) => (b.attendees?.length || 0) - (a.attendees?.length || 0));
+            const allEvents = await Event.find(filter); // Get all events
+            allEvents.sort((a,b) => (b.attendees?.length || 0) - (a.attendees?.length || 0)); // Sort ALL by attendance
+            events = allEvents.slice(skip, skip + limit); // Cut out 5 just for the first page
+        } else {
+            events = await Event.find(filter).sort({date:1}).skip(skip).limit(limit);
         }
 
         const totalPages = Math.ceil((await Event.countDocuments(filter)) / limit);
@@ -88,7 +91,7 @@ exports.renderEventsPage = async (req, res) => {
             userId: req.session.userId,
             categories,
             selectedCategories: category || "all",
-            selectedSort: sort || "",
+            selectedSort: sort ,
             recommendedEvents
         });
     } catch (error) {
