@@ -34,6 +34,11 @@
                 <!-- Filter Bar -->
                 <form method="GET" action="/events">
                     <div>
+                        <strong>Search:</strong>
+                        <input type="text" name="search" value="<%= selectedSearch %>" placeholder="Search by title">
+                    </div>
+                    <br>
+                    <div>
                         <strong>Category:</strong><br>
                         <% categories.forEach(cat=> { %>
                             <label>

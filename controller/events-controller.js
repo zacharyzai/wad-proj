@@ -43,6 +43,14 @@ exports.renderEventsPage = async (req, res) => {
             filter.date = { $lt: new Date() };
         }
 
+        const search = req.query.search || "";
+        if (search) {
+            filter.$or = [ // $or means match title or location 
+                { title: { $regex: search, $options: "i" } },  // $regex is MongoDB's pattern matching like SQL LIKE
+                { location: { $regex: search, $options: "i" } } // $options: 'i' make it case-insensitive
+            ];
+        }
+
         let events;
         if (sort === "popular") {
             const allEvents = await Event.find(filter); // Get all events
@@ -91,8 +99,9 @@ exports.renderEventsPage = async (req, res) => {
             userId: req.session.userId,
             categories,
             selectedCategories: category || "all",
-            selectedSort: sort ,
-            recommendedEvents
+            selectedSort: sort,
+            recommendedEvents,
+            selectedSearch: search
         });
     } catch (error) {
         res.status(500).send(error.message);
