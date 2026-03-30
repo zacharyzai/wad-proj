@@ -106,8 +106,7 @@
                                             <td>
                                                 <% const today=new Date(); const eventDate=new Date(event.date); let
                                                     status; if (eventDate.toDateString()===today.toDateString()) {
-                                                    status="Ongoing" ; 
-                                                } else if (eventDate> today) {
+                                                    status="Ongoing" ; } else if (eventDate> today) {
                                                     status = "Upcoming";
                                                     } else {
                                                     status = "Past";
@@ -221,6 +220,49 @@
                                         <% } else { %>
                                             <p>You haven't RSVP'd to any events yet.</p>
                                             <% } %>
+<br>
+<hr>
+<h2>Recommended For You</h2>
+<% if (recommendedEvents.length> 0) { %>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Date & Time</th>
+                <th>Category</th>
+                <th>View Extra Information</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% recommendedEvents.forEach(event=> { %>
+                <tr>
+                    <td>
+                        <%= event.title %>
+                    </td>
+                    <td>
+                        <%= event.date.toLocaleString('en-SG', { dateStyle: 'medium' , timeStyle: 'short' }) %>
+                    </td>
+                    <td>
+                        <%= event.category.join(', ') %>
+                    </td>
+                    <td>
+                        <a href="/events/<%= event._id %>">View</a>
+                    </td>
+                    <td>
+                        <form action="/events/<%= event._id %>/rsvp" method="post">
+                            <button type="submit">RSVP</button>
+                        </form>
+                    </td>
+                </tr>
+            <% }) %>
+    </tbody>
+</table>
+
+    <% } else { %>
+        <p>No Events Available to Recommend</p>
+    <% } %>
+
     </center>
 </body>
 

@@ -55,12 +55,41 @@ exports.renderEventsPage = async (req, res) => {
         const role = req.session.role;
         const categories = ['General', 'Sports', 'Festivals', 'Hackathons', 'Discussions', 'Networking', 'Others'];
 
+        let allCategories = []; // Used to recommend users events based on their past attendance 
+        for (let event of myEvents) {
+            for (let cat of event.category) {
+                allCategories.push(cat);
+            };
+        };
+
+        let attendedCategories = [];
+        for (let cat of allCategories) {
+            if (!attendedCategories.includes(cat)) {
+                attendedCategories.push(cat);
+            };
+        };
+
+        let recommendedEvents;
+        if (attendedCategories.length > 0) {
+            recommendedEvents = await Event.find({
+                category: { $in: attendedCategories },
+                attendees: { $ne: req.session.userId },
+                date: { $gte: new Date() }
+            }).limit(3);
+        } else {
+            recommendedEvents = await Event.find({
+                category: { $in: ['General'] },
+                date: { $gte: new Date() }
+            }).limit(3);
+        }
+        
         res.render("event-view", {
             events, success, role, myEvents, page, totalPages,
             userId: req.session.userId,
             categories,
             selectedCategories: category || "all",
-            selectedSort: sort || ""
+            selectedSort: sort || "",
+            recommendedEvents
         });
     } catch (error) {
         res.status(500).send(error.message);
@@ -150,7 +179,7 @@ exports.createEvent = async (req, res) => {
     if (new Date(date) < new Date()) {
         return res.render("create-event", {
             error: "Event date cannot be in the past.",
-            title, category, description, location, date, maxAttendees // Admin / Organisers cannot create events in the past.
+            title, category, description, location, date, maxAttendees // Admin OR Organisers cannot create events in the past.
         });
     };
     
