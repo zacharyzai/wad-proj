@@ -50,7 +50,7 @@ exports.renderEventsPage = async (req, res) => {
         }
 
         const totalPages = Math.ceil((await Event.countDocuments(filter)) / limit);
-        const myEvents = await Event.find({ attendees: req.session.userId });
+        const myEvents = await Event.find({ attendees: req.session.userId, date: { $gte: new Date() } }); // Now users will only see upcoming events
         const success = req.query.success;
         const role = req.session.role;
         const categories = ['General', 'Sports', 'Festivals', 'Hackathons', 'Discussions', 'Networking', 'Others'];
