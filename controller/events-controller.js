@@ -312,7 +312,7 @@ exports.deleteEvent = async (req, res) => {
     try {
         let deleteEvent = req.body.deleteEventIds;
         if (!deleteEvent) {
-            const allEvents = await Event.find();
+            let allEvents = await Event.find();
             if (req.session.role === 'admin') {
                 allEvents = await Event.find();
             } else {
@@ -368,17 +368,6 @@ exports.viewEventDetails = async (req, res) => {
 };
 
 
-exports.getEventDetails = async (req, res) => {
-    try {
-        const event = await Event.findById(req.params.id)
-            .populate("reviews"); // if you want reviews shown
-
-        res.render("event-view", { event });
-    } catch (err) {
-        console.error(err);
-        res.send("Error loading event");
-    }
-};
 
 
 
