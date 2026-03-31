@@ -20,7 +20,10 @@
                     <a href="/admin/dashboard">🛠️ Admin Dashboard</a> |
                     <% } %>
                         <a href="/profile">👤 My Profile</a> |
-                        <a href="/auth/logout">🚪 Logout</a>
+                        <a href="/auth/logout">🚪 Logout</a> |
+                        <% if (role==='organizer' ) { %>
+                            <a href="/events/organizer-analytics">📊 Organizer Analytics</a> |
+                            <% } %>
             </p>
         </nav>
 
@@ -106,8 +109,7 @@
                                             <td>
                                                 <% const today=new Date(); const eventDate=new Date(event.date); let
                                                     status; if (eventDate.toDateString()===today.toDateString()) {
-                                                    status="Ongoing" ; 
-                                                } else if (eventDate> today) {
+                                                    status="Ongoing" ; } else if (eventDate> today) {
                                                     status = "Upcoming";
                                                     } else {
                                                     status = "Past";

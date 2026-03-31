@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Organizer Analytics</title>
+</head>
+
+<body align="center">
+    <center>
+        <br>
+        <h1>Your RSVPs</h1>
+        <p>See RSVP details for all the events you created.</p>
+
+        <nav>
+            <p>
+                <a href="/events">⬅️ Back to Events</a> |
+                <a href="/profile">👤 My Profile</a> |
+                <a href="/auth/logout">🚪 Logout</a>
+            </p>
+        </nav>
+
+        <hr width="90%">
+
+        <% if (events.length===0) { %>
+            <p>You have not created any events yet.</p>
+            <% } else { %>
+                <table border="1" cellpadding="10" width="95%">
+                    <head>
+                        <tr bgcolor="#eeeeee">
+                            <th>Event Name</th>
+                            <th>Number of Attendees</th>
+                            <th>Attendee Names</th>
+                            <th>Attendee Emails</th>
+                        </tr>
+                    </head>
+                    <body>
+                        <% events.forEach(event=> { %>
+                            <tr>
+                                <td>
+                                    <%= event.title %>
+                                </td>
+                                <td>
+                                    <%= event.attendees.length %>
+                                </td>
+                                <td>
+                                    <% if (event.attendees.length> 0) { %>
+                                        <ul style="text-align:left; margin:0; padding-left:20px;">
+                                            <% event.attendees.forEach(attendee=> { %>
+                                                <li>
+                                                    <%= attendee.name %>
+                                                </li>
+                                                <% }) %>
+                                        </ul>
+                                        <% } else { %>
+                                            No attendees yet
+                                            <% } %>
+                                </td>
+                                <td>
+                                    <% if (event.attendees.length> 0) { %>
+                                        <ul style="text-align:left; margin:0; padding-left:20px;">
+                                            <% event.attendees.forEach(attendee=> { %>
+                                                <li>
+                                                    <%= attendee.email %>
+                                                </li>
+                                                <% }) %>
+                                        </ul>
+                                        <% } else { %>
+                                            No attendee emails yet
+                                            <% } %>
+                                </td>
+                            </tr>
+                            <% }) %>
+                    </body>
+                </table>
+                <% } %>
+    </center>
+</body>
+
+</html>
