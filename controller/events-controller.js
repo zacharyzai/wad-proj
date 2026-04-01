@@ -213,7 +213,7 @@ exports.createEvent = async (req, res) => {
             organiser: req.session.userId
         };
 
-        let result = await Event.create(newEvent);
+        await Event.create(newEvent);
 
         res.redirect("/events?success=true")
     } catch (err) {
@@ -294,7 +294,7 @@ exports.updateEvent = async (req, res) => {
 
 
 
-        const updatedEvent = await Event.findByIdAndUpdate(
+        await Event.findByIdAndUpdate(
             targetId,
             { title, description, date, location, maxAttendees, category }
         )
