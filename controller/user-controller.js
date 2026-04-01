@@ -1,5 +1,5 @@
 const User = require("../models/user-models");
-const Event = require("../models/event-models");
+const { deleteUserCascade } = require("../services/userServices");
 
 //View Profile
 exports.getProfile = async (req, res) => {
@@ -106,14 +106,8 @@ exports.deleteProfile = async (req, res) => {
     if (!userId) {
       return res.send("Unauthorized");
     }
-
-    await Event.deleteMany({ organiser: userId });           // delete events they organised
-    await Event.updateMany(                                  // remove them from all attendee lists
-      { attendees: userId },
-      { $pull: { attendees: userId } }
-    );
-
-    await User.findByIdAndDelete(userId);
+    
+    await deleteUserCascade(userId);
 
     // Destroy session after deletion
     req.session.destroy((err) => {
