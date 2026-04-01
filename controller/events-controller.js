@@ -44,14 +44,16 @@ exports.renderEventsPage = async (req, res) => {
         } else if (sort === "past") {
             filter.date = { $lt: new Date() };
         }
-
+        
         const search = req.query.search || "";
         if (search) {
+            const escapedSearch = search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
             filter.$or = [ // $or means match title or location 
-                { title: { $regex: search, $options: "i" } },  // $regex is MongoDB's pattern matching like SQL LIKE
-                { location: { $regex: search, $options: "i" } } // $options: 'i' make it case-insensitive
+                { title: { $regex: escapedSearch, $options: "i" } }, // $regex is MongoDB's pattern matching like SQL LIKE
+                { location: { $regex: escapedSearch, $options: "i" } } // $options: 'i' make it case-insensitive
             ];
         }
+
 
         let events;
         let totalPages;
