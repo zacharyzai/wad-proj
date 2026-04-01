@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My RSVPs</title>
+</head>
+
+<body align="center">
+    <center>
+        <br>
+        <h1>🎟️ My RSVPs</h1>
+        <p>Here are all the events you have RSVP’d for.</p>
+
+        <nav>
+            <p>
+                <a href="/events">⬅️ Back to Events</a> |
+                <a href="/profile">👤 My Profile</a> |
+                <a href="/auth/logout">🚪 Logout</a>
+            </p>
+        </nav>
+
+        <hr width="85%">
+
+        <% if (!rsvps || rsvps.length===0) { %>
+            <p>You have not RSVP’d to any events yet.</p>
+            <% } else { %>
+                <table border="1" cellpadding="10" width="85%">
+                    <thead>
+                        <tr bgcolor="#eeeeee">
+                            <th>Event Name</th>
+                            <th>Date & Time</th>
+                            <th>Location</th>
+                            <th>RSVP Status</th>
+                            <th>RSVP Date</th>
+                            <th>Action</th>
+                            <th>Un-RSVP</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% rsvps.forEach(rsvp=> { %>
+                            <% if (rsvp.event) { %>
+                                <tr>
+                                    <td><strong>
+                                            <%= rsvp.event.title %>
+                                        </strong></td>
+                                    <td>
+                                        <%= rsvp.event.date.toLocaleString('en-SG', { dateStyle: 'medium' ,
+                                            timeStyle: 'short' }) %>
+                                    </td>
+                                    <td>
+                                        <%= rsvp.event.location %>
+                                    </td>
+                                    <td>
+                                        <%= rsvp.status %>
+                                    </td>
+                                    <td>
+                                        <%= rsvp.createdAt.toLocaleString('en-SG', { dateStyle: 'medium' ,
+                                            timeStyle: 'short' }) %>
+                                    </td>
+                                    <td>
+                                        <a href="/events/<%= rsvp.event._id %>">View Event</a>
+                                    </td>
+                                    <td>
+                                        <form action="/events/<%= rsvp.event._id %>/unrsvp" method="POST">
+                                            <button type="submit">Un-RSVP</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                <% } %>
+                                    <% }) %>
+                    </tbody>
+                </table>
+                <% } %>
+    </center>
+</body>
+
+</html>
