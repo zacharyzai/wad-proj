@@ -141,28 +141,27 @@ exports.rsvpEvent = async (req, res) => {
             });
         }
         if (!event) {
-            return res.status(404).redirect("/events");
+            return res.status(404).redirect("/events?sort=upcoming");
         }
 
         if (event.attendees && event.attendees.includes(req.session.userId)) {
-            return res.redirect("/events"); // To prevent duplicate RSVP 
+            return res.redirect("/events?sort=upcoming");
         }
 
         if (event.date < new Date()) {
-            return res.redirect("/events"); // Prevent RSVP for past events
+            return res.redirect("/events?sort=upcoming");
         }
-
 
         if (event.maxAttendees &&
             event.attendees.length >= event.maxAttendees) {
-            return res.redirect("/events?error=full");
+            return res.redirect("/events?sort=upcoming&error=full");
         }
 
-        await Event.findByIdAndUpdate(req.params.id, { // Object that holds URL route parameters
-            $addToSet: { attendees: req.session.userId } // $addToSet is a MongoDB operator. Only adds a value to an array if it doesn't exist so unique to users (like sets)
+        await Event.findByIdAndUpdate(req.params.id, {
+            $addToSet: { attendees: req.session.userId }
         });
 
-        const sort = req.body.sort || "";
+        const sort = req.body.sort || "upcoming";
         const page = req.body.page || 1;
 
         res.redirect(`/events?sort=${sort}&page=${page}`);
