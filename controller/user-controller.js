@@ -11,7 +11,7 @@ exports.getProfile = async (req, res) => {
       return res.send("User not found");
     }
 
-    res.render("profile", { user });
+    res.render("user/profile", { user });
   } catch (err) {
     console.log(err)
     res.send("Error loading profile");
@@ -27,7 +27,7 @@ exports.getEditProfile = async (req, res) => {
       return res.send("User not found");
     }
 
-    res.render("edit-profile", { user });
+    res.render("user/edit-profile", { user });
   } catch (err) {
     console.log(err)
     res.send("Error loading edit page");
@@ -55,7 +55,7 @@ exports.updateProfile = async (req, res) => {
     }
 
     if (errors.length > 0) {
-      return res.render("edit-profile", {
+      return res.render("user/edit-profile", {
         user: {
           name: name,
           email: email,
@@ -71,7 +71,7 @@ exports.updateProfile = async (req, res) => {
     const existingUser = await User.findOne({email, _id: { $ne: req.session.userId }});
     if (existingUser) {
       errors.push("That email is already in use by another account.")
-      return res.render("edit-profile", {user: {
+      return res.render("user/edit-profile", {user: {
         name,
         email, 
         studentId, 

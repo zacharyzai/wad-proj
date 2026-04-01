@@ -33,7 +33,7 @@ describe("Events Controller", () => {
       };
       await eventController.createEvent(req, res);
       expect(res.render).toHaveBeenCalledWith(
-        "create-event",
+        "events/create-event",
         expect.objectContaining({
           error: "All fields are required",
         }),
@@ -49,7 +49,7 @@ describe("Events Controller", () => {
       };
       await eventController.createEvent(req, res);
       expect(res.render).toHaveBeenCalledWith(
-        "create-event",
+        "events/create-event",
         expect.objectContaining({
           error: "All fields are required",
         }),
@@ -87,7 +87,7 @@ describe("Events Controller", () => {
       };
       await eventController.updateEvent(req, res);
       expect(res.render).toHaveBeenCalledWith(
-        "update-event",
+        "events/update-event",
         expect.objectContaining({
           error: "All fields are required",
         }),
@@ -121,7 +121,7 @@ describe("Events Controller", () => {
       await eventController.deleteEvent(req, res);
 
       expect(res.render).toHaveBeenCalledWith(
-        "delete-events",
+        "events/delete-events",
         expect.objectContaining({
           error: "Please select at least one event to delete.",
         }),

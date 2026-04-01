@@ -9,7 +9,7 @@ exports.addReviewPage = async (req, res) => {
         if (!event) {
             return res.send("Event not found.");
         }
-        res.render("create-review", { event });
+        res.render("review/create-review", { event });
     } catch (err) {
         console.error(err);
         res.send("Error loading review page.");
@@ -58,7 +58,7 @@ exports.editReviewPageUser = async (req, res) => {
             return res.send("Unauthorized: You can only edit your own reviews.");
         }
 
-        res.render("edit-review", { review, eventId: req.params.id });
+        res.render("review/edit-review", { review, eventId: req.params.id });
     } catch (err) {
         console.error(err);
         res.send("Error loading edit review page.");

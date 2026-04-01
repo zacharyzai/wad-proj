@@ -8,7 +8,7 @@ exports.organizerAnalyticsPage = async (req, res) => {
             .populate("attendees", "name email")
             .sort({ date: 1 });
 
-        res.render("organizer-analytics", {
+        res.render("organizer/organizer-analytics", {
             events: organizerEvents,
             role: req.session.role
         });

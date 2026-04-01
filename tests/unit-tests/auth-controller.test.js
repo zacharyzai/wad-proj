@@ -20,7 +20,7 @@ describe("Auth Controller", () => {
       req.body = { email: "test@test.com", password: "pass123" };
       await authController.registerPost(req, res);
       expect(res.render).toHaveBeenCalledWith(
-        "register",
+        "auth/register",
         expect.objectContaining({
           errors: expect.arrayContaining(["Name is required."]),
         }),
@@ -31,7 +31,7 @@ describe("Auth Controller", () => {
       req.body = { name: "   ", email: "test@test.com", password: "pass123" };
       await authController.registerPost(req, res);
       expect(res.render).toHaveBeenCalledWith(
-        "register",
+        "auth/register",
         expect.objectContaining({
           errors: expect.arrayContaining(["Name is required."]),
         }),
@@ -46,7 +46,7 @@ describe("Auth Controller", () => {
       };
       await authController.registerPost(req, res);
       expect(res.render).toHaveBeenCalledWith(
-        "register",
+        "auth/register",
         expect.objectContaining({
           errors: expect.arrayContaining(["Please enter a valid email"]),
         }),
@@ -57,7 +57,7 @@ describe("Auth Controller", () => {
       req.body = { name: "John", email: "", password: "pass123" };
       await authController.registerPost(req, res);
       expect(res.render).toHaveBeenCalledWith(
-        "register",
+        "auth/register",
         expect.objectContaining({
           errors: expect.arrayContaining(["Please enter a valid email"]),
         }),
@@ -68,7 +68,7 @@ describe("Auth Controller", () => {
       req.body = { name: "John", email: "john@test.com", password: "12345" };
       await authController.registerPost(req, res);
       expect(res.render).toHaveBeenCalledWith(
-        "register",
+        "auth/register",
         expect.objectContaining({
           errors: expect.arrayContaining([
             "Passwords requires minimum of 6 characters",
@@ -85,7 +85,7 @@ describe("Auth Controller", () => {
       req.body = { password: "pass123" };
       await authController.loginPost(req, res);
       expect(res.render).toHaveBeenCalledWith(
-        "login",
+        "auth/login",
         expect.objectContaining({
           errors: expect.arrayContaining(["Please enter an email"]),
         }),
@@ -96,7 +96,7 @@ describe("Auth Controller", () => {
       req.body = { email: "john@test.com" };
       await authController.loginPost(req, res);
       expect(res.render).toHaveBeenCalledWith(
-        "login",
+        "auth/login",
         expect.objectContaining({
           errors: expect.arrayContaining(["Passwords is required"]),
         }),
@@ -108,7 +108,7 @@ describe("Auth Controller", () => {
       User.findOne.mockResolvedValue(null);
       await authController.loginPost(req, res);
       expect(res.render).toHaveBeenCalledWith(
-        "login",
+        "auth/login",
         expect.objectContaining({
           errors: expect.arrayContaining(["Invalid email or password."]),
         }),
@@ -126,7 +126,7 @@ describe("Auth Controller", () => {
       bcrypt.compare.mockResolvedValue(false);
       await authController.loginPost(req, res);
       expect(res.render).toHaveBeenCalledWith(
-        "login",
+        "auth/login",
         expect.objectContaining({
           errors: expect.arrayContaining(["Invalid email or password."]),
         }),

@@ -83,7 +83,7 @@ exports.myRsvpsPage = async (req, res) => {
       .populate("event")
       .sort({ createdAt: -1 });
 
-    res.render("my-rsvps", { rsvps });
+    res.render("rsvp/my-rsvps", { rsvps });
   } catch (err) {
     console.error(err);
     res.send("Error loading RSVP page.");

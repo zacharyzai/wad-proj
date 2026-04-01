@@ -28,7 +28,7 @@ describe("User Controller", () => {
       };
       User.findById.mockResolvedValue(mockUser);
       await userController.getProfile(req, res);
-      expect(res.render).toHaveBeenCalledWith("profile", { user: mockUser });
+      expect(res.render).toHaveBeenCalledWith("user/profile", { user: mockUser });
     });
   });
 
@@ -42,7 +42,7 @@ describe("User Controller", () => {
       await userController.updateProfile(req, res);
 
       expect(res.render).toHaveBeenCalledWith(
-        "edit-profile",
+        "user/edit-profile",
         expect.objectContaining({
           errors: expect.arrayContaining(["Name and Email are required"]),
         }),
@@ -57,7 +57,7 @@ describe("User Controller", () => {
       await userController.updateProfile(req, res);
 
       expect(res.render).toHaveBeenCalledWith(
-        "edit-profile",
+        "user/edit-profile",
         expect.objectContaining({
           errors: expect.arrayContaining(["Name and Email are required"]),
         }),
