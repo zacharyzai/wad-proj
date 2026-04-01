@@ -112,7 +112,6 @@ exports.deleteProfile = async (req, res) => {
       { attendees: userId },
       { $pull: { attendees: userId } }
     );
-await User.findByIdAndDelete(userId);
 
     await User.findByIdAndDelete(userId);
 

@@ -30,6 +30,9 @@ router.post("/delete-event", isOrganizer, eventController.deleteEvent);
 // Organizer Analytics
 router.get("/organizer-analytics", isOrganizer, eventController.organizerAnalyticsPage);
 
+// RSVP Page
+router.get("/my-rsvps", isAuthenticated, eventController.myRsvpsPage);
+
 // View Event Details 
 router.get("/:id", eventController.viewEventDetails);
 

@@ -1,4 +1,5 @@
 const Event = require("../models/event-models");
+const RSVP = require("../models/rsvp-models");
 
 
 
@@ -69,6 +70,13 @@ exports.renderEventsPage = async (req, res) => {
         const role = req.session.role;
         const categories = ['General', 'Sports', 'Festivals', 'Hackathons', 'Discussions', 'Networking', 'Others'];
 
+        const myRsvpRecords = await RSVP.find({
+            user: req.session.userId,
+            status: "attending"
+        }).select("event");
+
+        const userRsvpEventIds = myRsvpRecords.map(rsvp => rsvp.event.toString());
+
         let allCategories = []; // Used to recommend users events based on their past attendance 
         for (let event of myEvents) {
             for (let cat of event.category) {
@@ -104,7 +112,8 @@ exports.renderEventsPage = async (req, res) => {
             selectedCategories: category || "all",
             selectedSort: sort,
             recommendedEvents,
-            selectedSearch: search
+            selectedSearch: search,
+            userRsvpEventIds
         });
     } catch (error) {
         res.status(500).send(error.message);
@@ -115,6 +124,22 @@ exports.renderEventsPage = async (req, res) => {
 exports.rsvpEvent = async (req, res) => {
     try {
         const event = await Event.findById(req.params.id);
+
+        const existingRsvp = await RSVP.findOne({
+            event: req.params.id,
+            user: req.session.userId
+        });
+
+        if (existingRsvp) {
+            existingRsvp.status = "attending";
+            await existingRsvp.save();
+        } else {
+            await RSVP.create({
+                event: req.params.id,
+                user: req.session.userId,
+                status: "attending"
+            });
+        }
         if (!event) {
             return res.status(404).redirect("/events");
         }
@@ -126,7 +151,7 @@ exports.rsvpEvent = async (req, res) => {
         if (event.date < new Date()) {
             return res.redirect("/events"); // Prevent RSVP for past events
         }
-        
+
 
         if (event.maxAttendees &&
             event.attendees.length >= event.maxAttendees) {
@@ -137,7 +162,10 @@ exports.rsvpEvent = async (req, res) => {
             $addToSet: { attendees: req.session.userId } // $addToSet is a MongoDB operator. Only adds a value to an array if it doesn't exist so unique to users (like sets)
         });
 
-        res.redirect("/events"); //page reloads after rsvp
+        const sort = req.body.sort || "";
+        const page = req.body.page || 1;
+
+        res.redirect(`/events?sort=${sort}&page=${page}`);
     } catch (error) {
         res.status(500).send(error.message);
     }
@@ -149,7 +177,18 @@ exports.unrsvpEvent = async (req, res) => {
         await Event.findByIdAndUpdate(req.params.id, {
             $pull: { attendees: req.session.userId } // $pull function is the opposite $push. It removes all instances of a matching value from the array
         });
-        res.redirect("/events");
+
+        const existingRsvp = await RSVP.findOne({
+            event: req.params.id,
+            user: req.session.userId
+        });
+
+        if (existingRsvp) {
+            existingRsvp.status = "cancelled";
+            await existingRsvp.save();
+        }
+
+        res.redirect("/events/my-rsvps");
     } catch (error) {
         res.status(500).send(error.message);
     }
@@ -213,7 +252,7 @@ exports.createEvent = async (req, res) => {
             organiser: req.session.userId
         };
 
-        let result = await Event.create(newEvent);
+        await Event.create(newEvent);
 
         res.redirect("/events?success=true")
     } catch (err) {
@@ -270,11 +309,11 @@ exports.updateEvent = async (req, res) => {
         let title = req.body.title;
         const event = await Event.findById(targetId);
 
-                // Allow if admin OR if the organiser owns this event
+        // Allow if admin OR if the organiser owns this event
         if (req.session.role !== 'admin' && event.organiser.toString() !== req.session.userId) {
             return res.send("Unauthorized: You can only modify your own events.");
         }
-        
+
         let description = req.body.description;
         let date = req.body.date;
         let location = req.body.location;
@@ -294,7 +333,7 @@ exports.updateEvent = async (req, res) => {
 
 
 
-        const updatedEvent = await Event.findByIdAndUpdate(
+        await Event.findByIdAndUpdate(
             targetId,
             { title, description, date, location, maxAttendees, category }
         )
@@ -316,10 +355,10 @@ exports.renderDeletePage = async (req, res) => {
             allEvents = await Event.find({ organiser: req.session.userId });
         }
         res.render("delete-events", { events: allEvents });
-        } catch (err) {
-            console.log(err)
-            res.send("An error occurred while trying to delete the event(s).")
-        }
+    } catch (err) {
+        console.log(err)
+        res.send("An error occurred while trying to delete the event(s).")
+    }
 }
 
 exports.deleteEvent = async (req, res) => {
@@ -350,7 +389,7 @@ exports.deleteEvent = async (req, res) => {
                 }
             }
         }
-        
+
         await Event.deleteMany({ _id: { $in: deleteEvent } }); // $in in MongoDB operator means match any value in this array
 
         res.redirect("/events?success=true");
@@ -399,5 +438,21 @@ exports.organizerAnalyticsPage = async (req, res) => {
     } catch (err) {
         console.error(err);
         res.send("Error loading organizer analytics page.");
+    }
+};
+
+exports.myRsvpsPage = async (req, res) => {
+    try {
+        const rsvps = await RSVP.find({
+            user: req.session.userId,
+            status: "attending"
+        })
+            .populate("event")
+            .sort({ createdAt: -1 });
+
+        res.render("my-rsvps", { rsvps });
+    } catch (err) {
+        console.error(err);
+        res.send("Error loading RSVP page.");
     }
 };
