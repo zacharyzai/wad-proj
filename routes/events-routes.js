@@ -6,7 +6,7 @@ const eventController = require("./../controller/events-controller");
 const router = express.Router();
 
 // Read Event
-router.get("/read-event", eventController.viewEventPage);
+// router.get("/read-event", eventController.viewEventPage);
 
 // Show page + RSVP route
 router.get("/", eventController.renderEventsPage);
