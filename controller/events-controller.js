@@ -1,7 +1,6 @@
 const Event = require("../models/event-models");
 const RSVP = require("../models/rsvp-models");
-
-
+const { deleteEventCascade } = require("../services/eventServices");
 
 // // Read (user sees all the available events on a particular date)
 // exports.viewEventPage = async (req, res) => {
@@ -389,8 +388,7 @@ exports.deleteEvent = async (req, res) => {
             }
         }
 
-        await Event.deleteMany({ _id: { $in: deleteEvent } }); // $in in MongoDB operator means match any value in this array
-
+        await deleteEventCascade(deleteEvent)
         res.redirect("/events?success=true");
     } catch (err) {
         console.log(err)

@@ -1,4 +1,3 @@
-// /services/userService.js
 const User = require("../models/user-models");
 const Event = require("../models/event-models");
 const RSVP = require("../models/rsvp-models");
