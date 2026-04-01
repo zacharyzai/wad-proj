@@ -9,12 +9,62 @@ exports.showDashboard = async (req, res) => {
     const events = await Event.find();
     const totalRSVPs = events.reduce((sum, e) => sum + e.attendees.length, 0);
 
+    // User role distribution
+    const usersByRole = { student: 0, organizer: 0, admin: 0 };
+    users.forEach(u => { usersByRole[u.role] = (usersByRole[u.role] || 0) + 1; });
+
+    // Events by category
+    const categoryList = ['General', 'Sports', 'Festivals', 'Hackathons', 'Discussions', 'Networking', 'Others'];
+    const eventsByCategory = {};
+    categoryList.forEach(c => { eventsByCategory[c] = 0; });
+    events.forEach(e => {
+      (e.category || []).forEach(c => {
+        if (eventsByCategory[c] !== undefined) eventsByCategory[c]++;
+      });
+    });
+
+    // Top 5 events by attendance
+    const topEvents = [...events]
+      .sort((a, b) => b.attendees.length - a.attendees.length)
+      .slice(0, 5)
+      .map(e => ({ title: e.title, count: e.attendees.length }));
+
+    // Event status: upcoming vs past
+    const now = new Date();
+    let upcomingCount = 0, pastCount = 0;
+    events.forEach(e => {
+      if (e.date >= now) upcomingCount++;
+      else pastCount++;
+    });
+
+    // Events created per month (last 6 months)
+    const monthLabels = [];
+    const monthCounts = [];
+    for (let i = 5; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(1);
+      d.setMonth(d.getMonth() - i);
+      monthLabels.push(d.toLocaleString('default', { month: 'short', year: '2-digit' }));
+      const count = events.filter(e => {
+        const created = new Date(e.createdAt);
+        return created.getFullYear() === d.getFullYear() && created.getMonth() === d.getMonth();
+      }).length;
+      monthCounts.push(count);
+    }
+
     res.render("admin/dashboard", {
       users,
       events,
       totalRSVPs,
       userName: req.session.userName,
       currentUserId: req.session.userId.toString(),
+      usersByRole,
+      eventsByCategory,
+      topEvents,
+      upcomingCount,
+      pastCount,
+      monthLabels,
+      monthCounts,
     });
   } catch (err) {
     console.error(err);
