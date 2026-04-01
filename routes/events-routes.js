@@ -28,10 +28,10 @@ router.get("/delete-event", isOrganizer, eventController.renderDeletePage);
 router.post("/delete-event", isOrganizer, eventController.deleteEvent);
 
 // Organizer Analytics
-router.get("/organizer-analytics", isOrganizer, eventController.organizerAnalyticsPage);
+router.get("/organizer-analytics", isOrganizer, eventController.getOrganizerAnalytics);
 
-// RSVP Page
-router.get("/my-rsvps", isAuthenticated, eventController.myRsvpsPage);
+// My RSVPs
+router.get("/my-rsvps", eventController.getMyRsvps);
 
 // View Event Details 
 router.get("/:id", eventController.viewEventDetails);

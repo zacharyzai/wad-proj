@@ -25,7 +25,7 @@
         </tr>
         <tr>
             <th>Category</th>
-            <td><%= event.category || "N/A" %></td>
+            <td><%= event.category.length > 0 ? event.category.join(', ') : "N/A" %></td>
         </tr>
         <tr>
             <th>Description</th>
@@ -67,7 +67,7 @@
                                     <a href="/events/<%= event._id %>/review/<%= review._id %>/edit">
                                         <button>✏️ Edit</button>
                                     </a>
-                                    <form method="POST" action="/events/<%= event._id %>/review/<%= review._id %>/delete-own"
+                                    <form method="POST" action="/events/<%= event._id %>/review/<%= review._id %>/delete"
                                         style="display:inline;">
                                         <button type="submit" onclick="return confirm('Delete your review?')">
                                             🗑️ Delete

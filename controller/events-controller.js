@@ -399,6 +399,31 @@ exports.deleteEvent = async (req, res) => {
     }
 }
 
+// My RSVPs — all events the logged-in user has RSVP'd to
+exports.getMyRsvps = async (req, res) => {
+    try {
+        const events = await Event.find({ attendees: req.session.userId });
+        res.render("my-rsvps", { events });
+    } catch (err) {
+        res.status(500).send(err.message);
+    }
+};
+
+// Organizer Analytics — attendee breakdown for events the organiser created
+exports.getOrganizerAnalytics = async (req, res) => {
+    try {
+        let events;
+        if (req.session.role === 'admin') {
+            events = await Event.find().populate('attendees', 'name email');
+        } else {
+            events = await Event.find({ organiser: req.session.userId }).populate('attendees', 'name email');
+        }
+        res.render("organizer-analytics", { events });
+    } catch (err) {
+        res.status(500).send(err.message);
+    }
+};
+
 // View Extra details of the event
 exports.viewEventDetails = async (req, res) => {
     try {

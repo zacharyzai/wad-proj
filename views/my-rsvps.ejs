@@ -11,7 +11,7 @@
     <center>
         <br>
         <h1>🎟️ My RSVPs</h1>
-        <p>Here are all the events you have RSVP’d for.</p>
+        <p>Here are all the events you have RSVP'd for.</p>
 
         <nav>
             <p>
@@ -23,56 +23,38 @@
 
         <hr width="85%">
 
-        <% if (!rsvps || rsvps.length===0) { %>
-            <p>You have not RSVP’d to any events yet.</p>
-            <% } else { %>
-                <table border="1" cellpadding="10" width="85%">
-                    <thead>
-                        <tr bgcolor="#eeeeee">
-                            <th>Event Name</th>
-                            <th>Date & Time</th>
-                            <th>Location</th>
-                            <th>RSVP Status</th>
-                            <th>RSVP Date</th>
-                            <th>Action</th>
-                            <th>Un-RSVP</th>
+        <% if (!events || events.length === 0) { %>
+            <p>You have not RSVP'd to any events yet.</p>
+        <% } else { %>
+            <table border="1" cellpadding="10" width="85%">
+                <thead>
+                    <tr bgcolor="#eeeeee">
+                        <th>Event Name</th>
+                        <th>Date & Time</th>
+                        <th>Location</th>
+                        <th>Category</th>
+                        <th>Action</th>
+                        <th>Un-RSVP</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% events.forEach(event => { %>
+                        <tr>
+                            <td><strong><%= event.title %></strong></td>
+                            <td><%= event.date.toLocaleString('en-SG', { dateStyle: 'medium', timeStyle: 'short' }) %></td>
+                            <td><%= event.location %></td>
+                            <td><%= event.category.length > 0 ? event.category.join(', ') : 'N/A' %></td>
+                            <td><a href="/events/<%= event._id %>">View Event</a></td>
+                            <td>
+                                <form action="/events/<%= event._id %>/unrsvp" method="POST">
+                                    <button type="submit">Un-RSVP</button>
+                                </form>
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        <% rsvps.forEach(rsvp=> { %>
-                            <% if (rsvp.event) { %>
-                                <tr>
-                                    <td><strong>
-                                            <%= rsvp.event.title %>
-                                        </strong></td>
-                                    <td>
-                                        <%= rsvp.event.date.toLocaleString('en-SG', { dateStyle: 'medium' ,
-                                            timeStyle: 'short' }) %>
-                                    </td>
-                                    <td>
-                                        <%= rsvp.event.location %>
-                                    </td>
-                                    <td>
-                                        <%= rsvp.status %>
-                                    </td>
-                                    <td>
-                                        <%= rsvp.createdAt.toLocaleString('en-SG', { dateStyle: 'medium' ,
-                                            timeStyle: 'short' }) %>
-                                    </td>
-                                    <td>
-                                        <a href="/events/<%= rsvp.event._id %>">View Event</a>
-                                    </td>
-                                    <td>
-                                        <form action="/events/<%= rsvp.event._id %>/unrsvp" method="POST">
-                                            <button type="submit">Un-RSVP</button>
-                                        </form>
-                                    </td>
-                                </tr>
-                                <% } %>
-                                    <% }) %>
-                    </tbody>
-                </table>
-                <% } %>
+                    <% }) %>
+                </tbody>
+            </table>
+        <% } %>
     </center>
 </body>
 

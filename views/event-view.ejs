@@ -140,7 +140,7 @@
                                                 <a href="/events/<%= event._id %>">View</a>
                                             </td>
                                             <td>
-                                                <% if (event.attendees.includes(userId)) { %>
+                                                <% if (event.attendees.some(id => id.toString() === String(userId))) { %>
                                                     Already RSVP'd
                                                     <% } else if (event.date < new Date()) { %>
                                                         Event Ended
