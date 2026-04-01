@@ -1,5 +1,6 @@
 const User = require("../models/user-models");
 const { deleteUserCascade } = require("../services/userServices");
+const Review = require("../models/review-models")
 
 //View Profile
 exports.getProfile = async (req, res) => {
@@ -108,6 +109,19 @@ exports.deleteProfile = async (req, res) => {
     }
     
     await deleteUserCascade(userId);
+
+        // 1. Get the IDs first
+    const userReviews = await Review.find({ user: userId }).select('_id');
+    const reviewIds = userReviews.map(r => r._id);
+
+    // 2. Now clean up
+    await Review.deleteMany({ user: userId });
+    await Event.updateMany({}, { $pull: { reviews: { $in: reviewIds } } });
+    await Event.deleteMany({ organiser: userId });
+    await Event.updateMany({ attendees: userId }, { $pull: { attendees: userId } });
+
+
+    await User.findByIdAndDelete(userId);
 
     // Destroy session after deletion
     req.session.destroy((err) => {

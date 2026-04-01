@@ -6,7 +6,7 @@ exports.registerGet = (req, res) => {
 }
 
 exports.registerPost = async (req, res) => {
-    const { name, email, password, role } = req.body;
+    const { name, email, password, role, bio } = req.body;
     const errors = [];
 
     if (!name || name.trim().length === 0) {
@@ -26,7 +26,7 @@ exports.registerPost = async (req, res) => {
     }
     try {
         const passwordHash = await bcrypt.hash(password, 10);
-        await User.create({ name, email, passwordHash, role: role || 'student', studentId: '', faculty: '', bio: '' });
+        await User.create({ name, email, passwordHash, role: role || 'student', studentId: '', faculty: '', bio: bio || '' });
         res.redirect('/auth/login');
     } catch (err) {
         console.error(err);
