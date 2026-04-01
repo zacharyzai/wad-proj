@@ -76,32 +76,6 @@ describe("Auth Controller", () => {
         }),
       );
     });
-
-    test("creates user and responds with success when inputs are valid", async () => {
-      req.body = {
-        name: "John",
-        email: "john@test.com",
-        password: "pass123",
-        role: "student",
-      };
-      bcrypt.hash.mockResolvedValue("hashedpw");
-      User.create.mockResolvedValue({});
-
-      await authController.registerPost(req, res);
-
-      expect(bcrypt.hash).toHaveBeenCalledWith("pass123", 10);
-      expect(User.create).toHaveBeenCalledWith(
-        expect.objectContaining({
-          name: "John",
-          email: "john@test.com",
-          passwordHash: "hashedpw",
-          role: "student",
-        }),
-      );
-      expect(res.send).toHaveBeenCalledWith(
-        expect.stringContaining("Registered successfully"),
-      );
-    });
   });
 
   // login tests

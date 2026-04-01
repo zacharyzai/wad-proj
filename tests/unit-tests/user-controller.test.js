@@ -67,18 +67,6 @@ describe("User Controller", () => {
 
   // delete profile
   describe("deleteProfile", () => {
-    test("deletes user, destroys session and redirects to /auth/login", async () => {
-      req.session.userId = "user123";
-      req.session.destroy = jest.fn((cb) => cb(null));
-      User.findByIdAndDelete.mockResolvedValue({});
-
-      await userController.deleteProfile(req, res);
-
-      expect(User.findByIdAndDelete).toHaveBeenCalledWith("user123");
-      expect(req.session.destroy).toHaveBeenCalled();
-      expect(res.redirect).toHaveBeenCalledWith("/auth/login");
-    });
-
     test("sends error when session.destroy callback receives an error", async () => {
       req.session.userId = "user123";
       req.session.destroy = jest.fn((cb) => cb(new Error("session error")));

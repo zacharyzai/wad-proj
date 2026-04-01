@@ -1,7 +1,5 @@
 const adminController = require("../../controller/admin-controller");
 const User = require("../../models/user-models");
-const Event = require("../../models/event-models");
-const bcrypt = require("bcrypt");
 
 jest.mock("../../models/user-models");
 jest.mock("../../models/event-models");
