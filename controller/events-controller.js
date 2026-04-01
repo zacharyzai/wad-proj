@@ -2,16 +2,17 @@ const Event = require("../models/event-models");
 
 
 
-// Read (user sees all the available events on a particular date)
-exports.viewEventPage = async (req, res) => {
-    try {
-        const events = await Event.find(); // fetch from MongoDB
-        res.json(events);
-    } catch (error) {
-        res.status(500).json({ message: error.message })
-    }
-    ;
-}
+// // Read (user sees all the available events on a particular date)
+// exports.viewEventPage = async (req, res) => {
+//     try {
+//         const events = await Event.find(); // fetch from MongoDB
+//         res.json(events);
+//     } catch (error) {
+//         res.status(500).json({ message: error.message })
+//     }
+//     ;
+// }
+
 // Render (what user sees when clicked into one event)
 exports.renderEventsPage = async (req, res) => {
     try {
@@ -52,15 +53,17 @@ exports.renderEventsPage = async (req, res) => {
         }
 
         let events;
+        let totalPages;
         if (sort === "popular") {
             const allEvents = await Event.find(filter); // Get all events
             allEvents.sort((a,b) => (b.attendees?.length || 0) - (a.attendees?.length || 0)); // Sort ALL by attendance
+            totalPages = Math.ceil(allEvents.length / limit);
             events = allEvents.slice(skip, skip + limit); // Cut out 5 just for the first page
         } else {
             events = await Event.find(filter).sort({date:1}).skip(skip).limit(limit);
+            totalPages = Math.ceil((await Event.countDocuments(filter))/ limit);
         }
 
-        const totalPages = Math.ceil((await Event.countDocuments(filter)) / limit);
         const myEvents = await Event.find({ attendees: req.session.userId, date: { $gte: new Date() } }); // Now users will only see upcoming events
         const success = req.query.success;
         const role = req.session.role;
@@ -112,6 +115,9 @@ exports.renderEventsPage = async (req, res) => {
 exports.rsvpEvent = async (req, res) => {
     try {
         const event = await Event.findById(req.params.id);
+        if (!event) {
+            return res.status(404).redirect("/events");
+        }
 
         if (event.attendees && event.attendees.includes(req.session.userId)) {
             return res.redirect("/events"); // To prevent duplicate RSVP 
@@ -208,7 +214,6 @@ exports.createEvent = async (req, res) => {
         };
 
         let result = await Event.create(newEvent);
-        console.log("My Log:", result);
 
         res.redirect("/events?success=true")
     } catch (err) {
@@ -304,7 +309,7 @@ exports.updateEvent = async (req, res) => {
 
 exports.renderDeletePage = async (req, res) => {
     try {
-        let allEvents = await Event.find();
+        let allEvents;
         if (req.session.role === 'admin') {
             allEvents = await Event.find();
         } else {

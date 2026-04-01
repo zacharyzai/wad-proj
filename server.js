@@ -13,7 +13,6 @@ app.set('views', path.join(__dirname, 'views'));
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(express.static(path.join(__dirname)));
 
 // Enables session handling for user authentication.
 app.use(session({
@@ -34,7 +33,7 @@ async function connectDB() {
   };
 
   // middlewares
-const { isAuthenticated, isAdmin } = require('./middleware/authMiddleware');
+const { isAuthenticated, isAdmin, isOrganizer } = require('./middleware/authMiddleware');
 
 // import routes
 const authRoutes = require('./routes/auth-routes');

@@ -58,7 +58,6 @@ exports.editReviewPageUser = async (req, res) => {
             return res.send("Unauthorized: You can only edit your own reviews.");
         }
 
-        const event = await Event.findById(req.params.id);
         res.render("edit-review", { review, eventId: req.params.id });
     } catch (err) {
         console.error(err);
