@@ -27,10 +27,13 @@ exports.registerPost = async (req, res) => {
     try {
         const passwordHash = await bcrypt.hash(password, 10);
         await User.create({ name, email, passwordHash, role: role || 'student', studentId: '', faculty: '', bio: '' });
-        res.send('Registered successfully! <a href="/auth/login">Login</a>');
+        res.redirect('/auth/login');
     } catch (err) {
         console.error(err);
-        res.send("Registration failed: " + err.message)
+        if (err.code === 11000) {
+            return res.render('register', { errors: ['An account with that email already exists.'], formData: req.body });
+        }
+        res.render('register', { errors: ['Registration failed. Please try again.'], formData: req.body });
     }
 }
 
