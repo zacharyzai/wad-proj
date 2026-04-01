@@ -20,7 +20,7 @@
                     <a href="/admin/dashboard">🛠️ Admin Dashboard</a> |
                     <% } %>
                         <a href="/profile">👤 My Profile</a> |
-                        <a href="/events/my-rsvps">🎟️ My RSVPs</a> |
+                        <a href="/rsvp/my-rsvps">🎟️ My RSVPs</a> |
                         <% if (role==='organizer' ) { %>
                             <a href="/organizer/organizer-analytics">📊 Organizer Analytics</a> |
                         <% } %>
@@ -151,7 +151,7 @@
                                                             event.maxAttendees) { %>
                                                             Event Full
                                                             <% } else { %>
-                                                                <form action="/events/<%= event._id %>/rsvp"
+                                                                <form action="/rsvp/<%= event._id %>/rsvp"
                                                                     method="post">
                                                                     <input type="hidden" name="sort" value="<%= selectedSort %>">
                                                                     <input type="hidden" name="page" value="<%= page %>">
@@ -218,7 +218,7 @@
                         <a href="/events/<%= event._id %>">View</a>
                     </td>
                     <td>
-                        <form action="/events/<%= event._id %>/rsvp" method="post">
+                        <form action="/rsvp/<%= event._id %>/rsvp" method="post">
                             <button type="submit">RSVP</button>
                         </form>
                     </td>

@@ -16,23 +16,23 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Enables session handling for user authentication.
 app.use(session({
-  secret: process.env.SESSION_SECRET,
-  resave: false,
+    secret: process.env.SESSION_SECRET,
+    resave: false,
   saveUninitialized: false
 }));
 
 // Database Connection
 async function connectDB() {
-    try {
-        await mongoose.connect(process.env.DB);
-        console.log("MongoDB connected successfully");
-    } catch (error) {
-        console.error("MongoDB connection failed:", error.message);
-        process.exit(1);
-    }
+  try {
+    await mongoose.connect(process.env.DB);
+    console.log("MongoDB connected successfully");
+  } catch (error) {
+    console.error("MongoDB connection failed:", error.message);
+    process.exit(1);
+  }
   };
 
-  // middlewares
+// middlewares
 const { isAuthenticated, isAdmin, isOrganizer } = require('./middleware/authMiddleware');
 
 // import routes
@@ -42,30 +42,32 @@ const userRoutes = require('./routes/user-routes');
 const adminRoutes = require('./routes/admin-routes');
 const reviewRoutes = require('./routes/review-routes');
 const organizerRoutes = require('./routes/organizer-routes');
+const rsvpRoutes = require('./routes/rsvp-routes');
 
 // mount routes
 app.use('/auth', authRoutes);
 app.use('/organizer', isOrganizer, organizerRoutes)
 app.use('/events', isAuthenticated, reviewRoutes);
+app.use("/rsvp", isAuthenticated, rsvpRoutes);
 app.use('/events', isAuthenticated, eventRoutes);
 app.use('/profile', isAuthenticated, userRoutes);
 app.use('/admin', isAdmin, adminRoutes);
 
 
 app.get('/', (req, res) => {
-    if (req.session && req.session.userId) {
-        // If they are already logged in, show them the events!
+  if (req.session && req.session.userId) {
+    // If they are already logged in, show them the events!
         res.redirect('/events');
-    } else {
-        // Otherwise, make them log in first
+  } else {
+    // Otherwise, make them log in first
         res.redirect('/auth/login');
-    }
+  }
 });
 
 // Start Server
 const PORT = process.env.PORT || 8000;
 connectDB().then(() => {
-    app.listen(PORT, () => {
-        console.log(`Server is running on http://localhost:${PORT}`);
-    });
+  app.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}`);
+  });
 });
