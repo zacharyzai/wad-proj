@@ -6,6 +6,7 @@
     <title>Document</title>
 </head>
 <body>
+    <%- include('../partials/navbar') %>
     <hr>
     <h2>Leave a Review</h2>
     <form action="/events/<%= event._id %>/review" method="POST">
