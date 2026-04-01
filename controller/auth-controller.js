@@ -67,7 +67,7 @@ exports.loginPost = async (req, res) => {
   }
 
   if (errors.length > 0) {
-    return res.render("login", { errors });
+    return res.render("auth/login", { errors });
   }
 
   try {
