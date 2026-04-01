@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Notifications</title>
+</head>
+<body align="center">
+    <center>
+
+        <h1>🔔 My Notifications</h1>
+
+        <hr>
+
+        <!-- HAPPENING TODAY -->
+        <h2>📍 Happening Today</h2>
+
+        <% if (happeningToday.length === 0) { %>
+            <p>No events today.</p>
+        <% } else { %>
+            <% happeningToday.forEach(rsvp => { %>
+                <p>
+                    <strong><%= rsvp.event.title %></strong><br>
+                    <%= rsvp.event.date.toLocaleString() %><br>
+                    <%= rsvp.event.location %>
+                </p>
+                <hr width="50%">
+            <% }) %>
+        <% } %>
+
+        <!-- ENDED TODAY -->
+        <h2>⌛ Ended Today</h2>
+
+        <% if (endedToday.length === 0) { %>
+            <p>No events ended today.</p>
+        <% } else { %>
+            <% endedToday.forEach(rsvp => { %>
+                <p>
+                    <strong><%= rsvp.event.title %></strong><br>
+                    <%= rsvp.event.date.toLocaleString() %><br>
+                    <%= rsvp.event.location %>
+                </p>
+                <hr width="50%">
+            <% }) %>
+        <% } %>
+
+        <!-- RSVP ACTIVITY -->
+        <h2>📝 My RSVP Activity</h2>
+
+        <% if (rsvps.length === 0) { %>
+            <p>No activity yet.</p>
+        <% } else { %>
+            <% rsvps.forEach(rsvp => { %>
+                <p>
+                    <strong><%= rsvp.event.title %></strong><br>
+                    Status: <%= rsvp.status %><br>
+                    RSVP Date: <%= rsvp.createdAt.toLocaleString() %>
+                </p>
+                <hr width="50%">
+            <% }) %>
+        <% } %>
+
+    </center>
+</body>
+</html>

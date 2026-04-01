@@ -42,6 +42,7 @@ const userRoutes = require('./routes/user-routes');
 const adminRoutes = require('./routes/admin-routes');
 const reviewRoutes = require('./routes/review-routes');
 const organizerRoutes = require('./routes/organizer-routes');
+const notificationsRoutes = require('./routes/notifications-routes');
 
 // mount routes
 app.use('/auth', authRoutes);
@@ -50,6 +51,7 @@ app.use('/events', isAuthenticated, reviewRoutes);
 app.use('/events', isAuthenticated, eventRoutes);
 app.use('/profile', isAuthenticated, userRoutes);
 app.use('/admin', isAdmin, adminRoutes);
+app.use('/notifications', isAuthenticated, notificationsRoutes);
 
 
 app.get('/', (req, res) => {
