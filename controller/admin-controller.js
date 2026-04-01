@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 const User = require("../models/user-models");
 const Event = require("../models/event-models");
+const { deleteUserCascade } = require("../services/userServices");
 
 exports.showDashboard = async (req, res) => {
   try {
@@ -64,14 +65,14 @@ exports.handleEditUser = async (req, res) => {
   }
 
   try {
-    await User.findByIdAndUpdate(req.params.id, { 
-      name, 
-      email, 
-      role, 
+    await User.findByIdAndUpdate(req.params.id, {
+      name,
+      email,
+      role,
       studentId,
       faculty
     });
-    
+
     res.redirect("/admin/dashboard");
   } catch (err) {
     console.error(err);
@@ -109,7 +110,9 @@ exports.handleCreateUser = async (req, res) => {
   try {
     const existing = await User.findOne({ email });
     if (existing) {
-      return res.render("admin/create-user", { errors: ["Email is already in use."] });
+      return res.render("admin/create-user", {
+        errors: ["Email is already in use."],
+      });
     }
 
     const passwordHash = await bcrypt.hash(password, 10);
@@ -128,11 +131,10 @@ exports.deleteUser = async (req, res) => {
       return res.redirect("/admin/dashboard");
     }
 
-    await User.findByIdAndDelete(req.params.id);
+    await deleteUserCascade(req.params.id);
     res.redirect("/admin/dashboard");
   } catch (err) {
     console.error(err);
     res.send("Error deleting user.");
   }
 };
-
