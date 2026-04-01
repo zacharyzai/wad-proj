@@ -1,5 +1,6 @@
 const User = require("../models/user-models");
 const Event = require("../models/event-models");
+const Review = require("../models/review-models")
 
 //View Profile
 exports.getProfile = async (req, res) => {
@@ -107,11 +108,16 @@ exports.deleteProfile = async (req, res) => {
       return res.send("Unauthorized");
     }
 
-    await Event.deleteMany({ organiser: userId });           // delete events they organised
-    await Event.updateMany(                                  // remove them from all attendee lists
-      { attendees: userId },
-      { $pull: { attendees: userId } }
-    );
+        // 1. Get the IDs first
+    const userReviews = await Review.find({ user: userId }).select('_id');
+    const reviewIds = userReviews.map(r => r._id);
+
+    // 2. Now clean up
+    await Review.deleteMany({ user: userId });
+    await Event.updateMany({}, { $pull: { reviews: { $in: reviewIds } } });
+    await Event.deleteMany({ organiser: userId });
+    await Event.updateMany({ attendees: userId }, { $pull: { attendees: userId } });
+
 
     await User.findByIdAndDelete(userId);
 
