@@ -2,16 +2,17 @@ const Event = require("../models/event-models");
 
 
 
-// Read (user sees all the available events on a particular date)
-exports.viewEventPage = async (req, res) => {
-    try {
-        const events = await Event.find(); // fetch from MongoDB
-        res.json(events);
-    } catch (error) {
-        res.status(500).json({ message: error.message })
-    }
-    ;
-}
+// // Read (user sees all the available events on a particular date)
+// exports.viewEventPage = async (req, res) => {
+//     try {
+//         const events = await Event.find(); // fetch from MongoDB
+//         res.json(events);
+//     } catch (error) {
+//         res.status(500).json({ message: error.message })
+//     }
+//     ;
+// }
+
 // Render (what user sees when clicked into one event)
 exports.renderEventsPage = async (req, res) => {
     try {
@@ -20,7 +21,7 @@ exports.renderEventsPage = async (req, res) => {
         const skip = (page - 1) * limit;
 
         const category = req.query.category;
-        const sort = req.query.sort;
+        const sort = req.query.sort !== undefined ? req.query.sort : "upcoming";
 
         let filter = {};
         let selectedCategories = [];
@@ -43,24 +44,67 @@ exports.renderEventsPage = async (req, res) => {
             filter.date = { $lt: new Date() };
         }
 
-        let events = await Event.find(filter).sort({ date: 1 }).skip(skip).limit(limit);
-
-        if (sort === "popular") {
-            events = events.sort((a, b) => (b.attendees?.length || 0) - (a.attendees?.length || 0));
+        const search = req.query.search || "";
+        if (search) {
+            filter.$or = [ // $or means match title or location 
+                { title: { $regex: search, $options: "i" } },  // $regex is MongoDB's pattern matching like SQL LIKE
+                { location: { $regex: search, $options: "i" } } // $options: 'i' make it case-insensitive
+            ];
         }
 
-        const totalPages = Math.ceil((await Event.countDocuments(filter)) / limit);
-        const myEvents = await Event.find({ attendees: req.session.userId });
+        let events;
+        let totalPages;
+        if (sort === "popular") {
+            const allEvents = await Event.find(filter); // Get all events
+            allEvents.sort((a,b) => (b.attendees?.length || 0) - (a.attendees?.length || 0)); // Sort ALL by attendance
+            totalPages = Math.ceil(allEvents.length / limit);
+            events = allEvents.slice(skip, skip + limit); // Cut out 5 just for the first page
+        } else {
+            events = await Event.find(filter).sort({date:1}).skip(skip).limit(limit);
+            totalPages = Math.ceil((await Event.countDocuments(filter))/ limit);
+        }
+
+        const myEvents = await Event.find({ attendees: req.session.userId, date: { $gte: new Date() } }); // Now users will only see upcoming events
         const success = req.query.success;
         const role = req.session.role;
         const categories = ['General', 'Sports', 'Festivals', 'Hackathons', 'Discussions', 'Networking', 'Others'];
 
+        let allCategories = []; // Used to recommend users events based on their past attendance 
+        for (let event of myEvents) {
+            for (let cat of event.category) {
+                allCategories.push(cat);
+            };
+        };
+
+        let attendedCategories = [];
+        for (let cat of allCategories) {
+            if (!attendedCategories.includes(cat)) {
+                attendedCategories.push(cat);
+            };
+        };
+
+        let recommendedEvents;
+        if (attendedCategories.length > 0) {
+            recommendedEvents = await Event.find({
+                category: { $in: attendedCategories },
+                attendees: { $ne: req.session.userId },
+                date: { $gte: new Date() }
+            }).limit(3);
+        } else {
+            recommendedEvents = await Event.find({
+                category: { $in: ['General'] },
+                date: { $gte: new Date() }
+            }).limit(3);
+        }
+        
         res.render("event-view", {
             events, success, role, myEvents, page, totalPages,
             userId: req.session.userId,
             categories,
             selectedCategories: category || "all",
-            selectedSort: sort || ""
+            selectedSort: sort,
+            recommendedEvents,
+            selectedSearch: search
         });
     } catch (error) {
         res.status(500).send(error.message);
@@ -71,6 +115,9 @@ exports.renderEventsPage = async (req, res) => {
 exports.rsvpEvent = async (req, res) => {
     try {
         const event = await Event.findById(req.params.id);
+        if (!event) {
+            return res.status(404).redirect("/events");
+        }
 
         if (event.attendees && event.attendees.includes(req.session.userId)) {
             return res.redirect("/events"); // To prevent duplicate RSVP 
@@ -147,6 +194,14 @@ exports.createEvent = async (req, res) => {
         });
     };
 
+    if (new Date(date) < new Date()) {
+        return res.render("create-event", {
+            error: "Event date cannot be in the past.",
+            title, category, description, location, date, maxAttendees // Admin OR Organisers cannot create events in the past.
+        });
+    };
+    
+
     try {
         const newEvent = {
             title: title,
@@ -158,8 +213,7 @@ exports.createEvent = async (req, res) => {
             organiser: req.session.userId
         };
 
-        let result = await Event.create(newEvent);
-        console.log("My Log:", result);
+        await Event.create(newEvent);
 
         res.redirect("/events?success=true")
     } catch (err) {
@@ -240,7 +294,7 @@ exports.updateEvent = async (req, res) => {
 
 
 
-        const updatedEvent = await Event.findByIdAndUpdate(
+        await Event.findByIdAndUpdate(
             targetId,
             { title, description, date, location, maxAttendees, category }
         )
@@ -255,7 +309,7 @@ exports.updateEvent = async (req, res) => {
 
 exports.renderDeletePage = async (req, res) => {
     try {
-        let allEvents = await Event.find();
+        let allEvents;
         if (req.session.role === 'admin') {
             allEvents = await Event.find();
         } else {
@@ -272,7 +326,7 @@ exports.deleteEvent = async (req, res) => {
     try {
         let deleteEvent = req.body.deleteEventIds;
         if (!deleteEvent) {
-            const allEvents = await Event.find();
+            let allEvents = await Event.find();
             if (req.session.role === 'admin') {
                 allEvents = await Event.find();
             } else {
@@ -328,17 +382,6 @@ exports.viewEventDetails = async (req, res) => {
 };
 
 
-exports.getEventDetails = async (req, res) => {
-    try {
-        const event = await Event.findById(req.params.id)
-            .populate("reviews"); // if you want reviews shown
-
-        res.render("event-view", { event });
-    } catch (err) {
-        console.error(err);
-        res.send("Error loading event");
-    }
-};
 
 
 // Organizer Analytics Page

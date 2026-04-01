@@ -1,4 +1,5 @@
 const User = require("../models/user-models");
+const Event = require("../models/event-models");
 
 //View Profile
 exports.getProfile = async (req, res) => {
@@ -67,6 +68,20 @@ exports.updateProfile = async (req, res) => {
       });
     }
 
+    const existingUser = await User.findOne({email, _id: { $ne: req.session.userId }});
+    if (existingUser) {
+      errors.push("That email is already in use by another account.")
+      return res.render("edit-profile", {user: {
+        name,
+        email, 
+        studentId, 
+        faculty,
+        bio,
+        role: user.role
+      }, errors
+    })
+    };
+
     await User.findByIdAndUpdate(req.session.userId, {
       name,
       email,
@@ -91,6 +106,12 @@ exports.deleteProfile = async (req, res) => {
     if (!userId) {
       return res.send("Unauthorized");
     }
+
+    await Event.deleteMany({ organiser: userId });           // delete events they organised
+    await Event.updateMany(                                  // remove them from all attendee lists
+      { attendees: userId },
+      { $pull: { attendees: userId } }
+    );
 
     await User.findByIdAndDelete(userId);
 

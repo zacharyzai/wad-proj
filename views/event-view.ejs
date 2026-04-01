@@ -37,6 +37,11 @@
                 <!-- Filter Bar -->
                 <form method="GET" action="/events">
                     <div>
+                        <strong>Search:</strong>
+                        <input type="text" name="search" value="<%= selectedSearch %>" placeholder="Search by title">
+                    </div>
+                    <br>
+                    <div>
                         <strong>Category:</strong><br>
                         <% categories.forEach(cat=> { %>
                             <label>
@@ -50,11 +55,10 @@
                     <div>
                         <strong>Sort by:</strong>
                         <select name="sort" id="sort">
-                            <option value="" <%=selectedSort==='' ? 'selected' : '' %>>All</option>
                             <option value="upcoming" <%=selectedSort==='upcoming' ? 'selected' : '' %>>Upcoming</option>
                             <option value="past" <%=selectedSort==='past' ? 'selected' : '' %>>Past</option>
-                            <option value="popular" <%=selectedSort==='popular' ? 'selected' : '' %>>Most Popular
-                            </option>
+                            <option value="popular" <%=selectedSort==='popular' ? 'selected' : '' %>>Most Popular</option>
+                            <option value="" <%=selectedSort==='' ? 'selected' : '' %>>All</option>
                         </select>
                         <button type="submit">Apply</button>
                         <a href="/events">Reset</a>
@@ -165,15 +169,18 @@
                             </table>
 
                             <p>
-                                <% if (page> 1) { %>
-                                    <button type="submit"><a href="/events?page=<%= page-1 %>">Previous</a></button>
+                                <% let paginationBase = '/events?sort=' + selectedSort; //builds: "/events?sort=past" to remember the filter after clicking next page
+                                if (Array.isArray(selectedCategories)) {
+                                    selectedCategories.forEach(cat => { paginationBase += '&category=' + cat; }); // specifically for categories
+                                    } %>
+                                    <% if (page > 1) { %>
+                                        <button><a href="<%= paginationBase %>&page=<%= page-1 %>">Previous</a></button>
                                     <% } %>
-                                        Page <%= page %> of <%= totalPages %>
-                                                <% if (page>= 1 && page < totalPages) { %>
-                                                        <button type="submit"><a
-                                                                href="/events?page=<%= page+1 %>">Next</a></button>
-                                                        <% } %>
-                            </p>
+                                    Page <%= page %> of <%= totalPages %>
+                                    <% if (page >= 1 && page < totalPages) { %>
+                                        <button><a href="<%= paginationBase %>&page=<%= page+1 %>">Next</a></button>
+                                    <% } %>
+
                             <% } else { %>
                                 <p>No events available at the moment.</p>
                                 <% } %>
@@ -181,7 +188,7 @@
                                     <!-- My Events Portion-->
                                     <br>
                                     <hr>
-                                    <h2>My Events</h2>
+                                    <h2>My Upcoming Events</h2>
                                     <% if (myEvents.length> 0) { %>
                                         <table border="1">
                                             <thead>
@@ -223,6 +230,49 @@
                                         <% } else { %>
                                             <p>You haven't RSVP'd to any events yet.</p>
                                             <% } %>
+<br>
+<hr>
+<h2>Recommended For You</h2>
+<% if (recommendedEvents.length> 0) { %>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Date & Time</th>
+                <th>Category</th>
+                <th>View Extra Information</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% recommendedEvents.forEach(event=> { %>
+                <tr>
+                    <td>
+                        <%= event.title %>
+                    </td>
+                    <td>
+                        <%= event.date.toLocaleString('en-SG', { dateStyle: 'medium' , timeStyle: 'short' }) %>
+                    </td>
+                    <td>
+                        <%= event.category.join(', ') %>
+                    </td>
+                    <td>
+                        <a href="/events/<%= event._id %>">View</a>
+                    </td>
+                    <td>
+                        <form action="/events/<%= event._id %>/rsvp" method="post">
+                            <button type="submit">RSVP</button>
+                        </form>
+                    </td>
+                </tr>
+            <% }) %>
+    </tbody>
+</table>
+
+    <% } else { %>
+        <p>No Events Available to Recommend</p>
+    <% } %>
+
     </center>
 </body>
 
