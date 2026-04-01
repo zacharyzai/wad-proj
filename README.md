@@ -1,50 +1,40 @@
 # Campus Event Board
 
-A full-stack web application for managing and attending campus events, 
-built with Express.js, MongoDB, and EJS templates using MVC architecture.
+A full-stack web application for managing and attending campus events.
+Built with Express.js, MongoDB, Mongoose, EJS templates, and role-based access control.
 
-## Features
+## What this repo contains
+- User registration and login (`/auth/register`, `/auth/login`)
+- Student events browsing and RSVP management
+- Organizer event CRUD (create, update, delete)
+- Admin dashboard for user and event management
+- Reviews on events with owner/admin permissions
+- Profile management (view/edit/delete)
 
-- **Event Listings**: Browse and filter campus events by category
-- **Event Management**: Organizers can create, edit, and delete their own events
-- **RSVP System**: Students can RSVP to events, update their status, and cancel
-- **User Profiles**: View, edit and delete your personal profile and see your RSVPs
-- **Admin Dashboard**: Admins can manage all users and events
-- **Authentication**: Secure login and registration with password hashing
-- **Authorization**: Role-based access control for students, organizers, and admins
+## Setup (local)
 
-## Tech Stack
+1. Clone and `cd` into project:
 
-- **Backend**: Express.js with MVC architecture
-- **Database**: MongoDB with Mongoose ODM
-- **Frontend**: HTML with EJS templating
-- **Authentication**: bcrypt for password hashing, express-session for sessions
-- **Environment**: Node.js
+```bash
+git clone <your-repo-url> && cd wad-proj
+```
 
-## Setup Instructions
+2. Install dependencies:
 
-### 1. Install Node.js
-Make sure you have Node.js installed on your machine.
-Download it from https://nodejs.org if needed.
-
-### 2. Install dependencies
-Open a terminal in the project root folder and run:
 ```bash
 npm install
 ```
 
-### 3. Set up the environment file
-Create a file named `config.env` in the project root folder.
-Add the following lines to it:
-```
-DB=mongodb+srv://your-connection-string-here
-SESSION_SECRET=anysecretstringhere
+3. Create `config.env` in project root with:
+
+```env
+DB=<your-mongodb-connection-string>
+SESSION_SECRET=<secret-key>
+PORT=8000
 ```
 
-Replace `mongodb+srv://your-connection-string-here` with the 
-actual MongoDB Atlas connection string.
+4. Start app:
 
-### 4. Run the application
 ```bash
 nodemon server.js
 ```
@@ -54,126 +44,84 @@ Or if you do not have nodemon installed:
 node server.js
 ```
 
-### 5. Open your browser
+5. Open browser:
+
+```txt
+http://localhost:8000
 ```
-http://localhost:8000/index.html
-```
 
-This will load the home page and redirect you with links to the login and admin page.
+6. Login/register:
+- Register new user: `/auth/register`
+- Login: `/auth/login`
 
-## Test Accounts
+> No built-in account seeding is in this code. Create your own user(s) through signup or through MongoDB directly if needed.
 
-These accounts are already in the database and ready to use:
+## Authentication / roles
+- Roles: `student`, `organizer`, `admin`
+- Default registration role: `student`
+- Organizer-only routes under `/organizer` and `/events` create/update/delete
+- Admin-only routes under `/admin`
 
-| Name | Email | Password | Role |
-|---|---|---|---|
-| student1 | student@test.com | password | student |
-| organizer1 | organizer@test.com | password | organizer |
-| admin1 | admin@test.com | password | admin |
-
-You can also register a new account at `/auth/register`.
-New accounts are assigned the student role by default.
-To create an organizer account, select Organizer from the 
-role dropdown during registration.
-
----
-
-## Usage
-
-### As a Student
-1. Register or log in at `http://localhost:8000/auth/login`
-2. Browse all events at `/events/list`
-3. Filter events by category using the dropdown
-4. Click on an event to view details and RSVP
-5. View and manage your RSVPs on your profile page at `/profile`
-6. Delete your own profile
-
-### As an Organizer
-1. Log in with an organizer account
-2. Create a new event at `/events/create`
-3. Edit or delete your own events from the event detail page
-4. You cannot edit or delete events created by other organizers
-5. Delete your own profile
-
-### As an Admin
-1. Log in with the admin account
-2. Access the dashboard at `/admin/dashboard`
-3. View all registered users and all events
-4. Edit any user's details including their role
-5. Delete any user or event from the dashboard
-
----
-
-## API Endpoints
+## 📌 Main routes (current)
 
 ### Auth
-| Method | URL | Description |
-|---|---|---|
-| GET | `/auth/register` | Show register form |
-| POST | `/auth/register` | Submit register form |
-| GET | `/auth/login` | Show login form |
-| POST | `/auth/login` | Submit login form |
-| GET | `/auth/logout` | Logout |
+- GET `/auth/register`
+- POST `/auth/register`
+- GET `/auth/login`
+- POST `/auth/login`
+- GET `/auth/logout`
 
-### Events
-| Method | URL | Description |
-|---|---|---|
-| GET | `/events/list` | View all events |
-| GET | `/events/detail/:id` | View one event |
-| GET | `/events/create` | Show create form (organizer only) |
-| POST | `/events/create` | Submit new event (organizer only) |
-| GET | `/events/edit/:id` | Show edit form (owner only) |
-| POST | `/events/edit/:id` | Submit event edit (owner only) |
-| POST | `/events/delete/:id` | Delete event (owner only) |
+### Events (Auth required)
+- GET `/events` (all events page)
+- GET `/events/create-event` (organizer only)
+- POST `/events/create-event` (organizer only)
+- GET `/events/update-event` (organizer only, query contains `id`)
+- POST `/events/update-event` (organizer only)
+- GET `/events/delete-event` (organizer only, query contains `id`)
+- POST `/events/delete-event` (organizer only)
+- GET `/events/:id` (event detail)
 
-### RSVP
-| Method | URL | Description |
-|---|---|---|
-| POST | `/rsvp/create/:eventId` | RSVP to an event |
-| POST | `/rsvp/update/:rsvpId` | Update RSVP status |
-| POST | `/rsvp/cancel/:rsvpId` | Cancel RSVP |
+### Reviews (Auth required)
+- GET `/events/:id/review` (add review form)
+- POST `/events/:id/review`
+- GET `/events/:id/review/:reviewId/edit`
+- POST `/events/:id/review/:reviewId/edit`
+- POST `/events/:id/review/:reviewId/delete` (admin only)
 
-### Profile
-| Method | URL | Description |
-|---|---|---|
-| GET | `/profile` | View your profile |
-| GET | `/profile/edit` | Show edit form |
-| POST | `/profile/edit` | Submit profile changes |
-| POST | `/profile/delete` | Delete own profile |
+### RSVP (Auth required)
+- POST `/rsvp/:id/rsvp`
+- POST `/rsvp/:id/unrsvp`
+- GET `/rsvp/my-rsvps`
+
+### Profile (Auth required)
+- GET `/profile`
+- GET `/profile/edit`
+- POST `/profile/edit`
+- POST `/profile/delete`
+
+### Organizer
+- GET `/organizer/organizer-analytics`
 
 ### Admin
-| Method | URL | Description |
-|---|---|---|
-| GET | `/admin/dashboard` | View all users and events |
-| GET | `/admin/edit-user/:id` | Show edit user form |
-| POST | `/admin/edit-user/:id` | Submit user edits |
-| POST | `/admin/delete-user/:id` | Delete a user |
+- GET `/admin/dashboard`
+- GET `/admin/create-user`
+- POST `/admin/create-user`
+- GET `/admin/edit-user/:id`
+- POST `/admin/edit-user/:id`
+- POST `/admin/delete-user/:id`
 
----
+## Views (EJS)
+- `views/auth/login.ejs`, `views/auth/register.ejs`
+- `views/events/*` (event list, detail, create, update, delete)
+- `views/review/*` (create/edit review)
+- `views/rsvp/my-rsvps.ejs`
+- `views/profile/*`
+- `views/admin/*`, `views/organizer/*`
 
-## Database Schemas
+## Tests
 
-### User
-- name: String (required)
-- email: String (required, unique)
-- passwordHash: String (required)
-- role: String (student / organizer / admin)
-- studentId: String
-- faculty: String
-- bio: String (max 200 characters)
+Run unit tests:
 
-### Event
-- title: String (required)
-- description: String (required)
-- date: Date (required)
-- location: String (required)
-- category: String
-- organiser: ObjectId → User (required)
-- attendees: [ObjectId → User]
-
-### RSVP
-- event: ObjectId → Event (required)
-- user: ObjectId → User (required)
-- status: String (attending / maybe / not attending)
-- rsvpDate: Date
-- notes: String (max 200 characters)
+```bash
+npm test
+```
