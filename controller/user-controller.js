@@ -1,5 +1,5 @@
 const User = require("../models/user-models");
-const Event = require("../models/event-models");
+const { deleteUserCascade } = require("../services/userServices");
 const Review = require("../models/review-models")
 
 //View Profile
@@ -107,6 +107,8 @@ exports.deleteProfile = async (req, res) => {
     if (!userId) {
       return res.send("Unauthorized");
     }
+    
+    await deleteUserCascade(userId);
 
         // 1. Get the IDs first
     const userReviews = await Review.find({ user: userId }).select('_id');
