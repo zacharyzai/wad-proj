@@ -3,7 +3,12 @@
   <a href="/events">🔍 Browse Events</a> |
   <a href="/profile">👤 Profile</a> |
   <a href="/rsvp/my-rsvps">🎟️ My RSVPs</a> |
-  <a href="/organizer/organizer-analytics">📊 Organizer Analytics</a> |
-  <a href="/admin/dashboard">🛠️ Admin Dashboard</a> |
+  <% if (userRole === 'organizer' || userRole === 'admin') { %>
+    <a href="/organizer/organizer-analytics">📊 Organizer Analytics</a> |
+  <% } %>
+  <% if (userRole === 'admin') { %>
+    <a href="/admin/dashboard">🛠️ Admin Dashboard</a> |
+  <% } %>
+  <a href="/notifications">🔔 Notifications (<%= unreadNotifications %>)</a> |
   <a href="/auth/logout">🚪 Logout</a>
 </nav>
