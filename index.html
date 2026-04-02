@@ -1,21 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Campus Event Board</title>
   </head>
-  
+
   <body align="center">
     <center>
-      <br>
+      <br />
       <h1>📅 Campus Event Board 🎓</h1>
-      <p>
-        <em
-          >"The central hub for discovering, managing, and reviewing campus
-          activities."</em
-        >
-      </p>
+      <p><em>"The central hub for discovering, managing, and reviewing campus activities."</em></p>
 
       <nav>
         <p>
@@ -28,27 +23,119 @@
       <br><br>
       <img src="/smu-image.jpg" alt="SMU Logo" width="300">
 
-      <hr/>
-        <h2>What can you do here? 🚀</h2>
-        <table border="0" cellpadding="10">
-          <tr>
-            <td>
-              <strong>👨‍🎓 Students</strong><br />
-              Browse events, RSVP to attend, <br />
-              and manage your personal profile.
-            </td>
-            <td>
-              <strong>💼 Organizers</strong><br />
-              Create, edit, and manage <br />
-              your own campus events.
-            </td>
-            <td>
-              <strong>⭐ Community</strong><br />
-              Read and write reviews <br />
-              for events you've attended!
-            </td>
-          </tr>
-        </table>
+      <br />
+      <hr width="600" />
+
+      <h2>Who is it for? 🚀</h2>
+
+      <table border="1" cellpadding="14" cellspacing="0" width="700">
+        <tr bgcolor="#f0f0f0">
+          <th>👨‍🎓 Students</th>
+          <th>💼 Organizers</th>
+          <th>🛡️ Admins</th>
+        </tr>
+        <tr valign="top">
+          <td align="left">
+            <ul>
+              <li>Browse &amp; search all campus events</li>
+              <li>Filter by category (Sports, Hackathons, etc.)</li>
+              <li>Sort events by upcoming, past, or popularity</li>
+              <li>RSVP to events (capacity-checked)</li>
+              <li>Cancel your RSVP at any time</li>
+              <li>Write, edit &amp; delete your reviews</li>
+              <li>Rate events 1–5 stars</li>
+              <li>Get personalized event recommendations</li>
+              <li>Receive notifications for event changes</li>
+              <li>Manage your profile (bio, faculty, ID)</li>
+            </ul>
+          </td>
+          <td align="left">
+            <ul>
+              <li>Create events with title, date &amp; location</li>
+              <li>Set event category and max attendees</li>
+              <li>Edit your existing events</li>
+              <li>Delete events (attendees auto-notified)</li>
+              <li>View full attendee list (names &amp; emails)</li>
+              <li>Get notified when someone RSVPs</li>
+              <li>Get notified when reviews are posted</li>
+              <li>Track engagement via analytics dashboard</li>
+            </ul>
+          </td>
+          <td align="left">
+            <ul>
+              <li>View platform-wide statistics dashboard</li>
+              <li>See user counts broken down by role</li>
+              <li>Monitor events by category</li>
+              <li>View top 5 most attended events</li>
+              <li>See events created per month (chart)</li>
+              <li>Create, edit &amp; delete any user account</li>
+              <li>Assign and change user roles</li>
+              <li>Delete any review on the platform</li>
+              <li>View total RSVP counts across all events</li>
+            </ul>
+          </td>
+        </tr>
+      </table>
+
+      <br />
+      <hr width="600" />
+
+      <h2>Core Features ✨</h2>
+
+      <table border="1" cellpadding="12" cellspacing="0" width="700">
+        <tr bgcolor="#f0f0f0">
+          <th>Feature</th>
+          <th>Description</th>
+        </tr>
+        <tr>
+          <td><strong>🔐 Authentication</strong></td>
+          <td align="left">Secure registration and login with bcrypt password hashing and session management. Role-based access (student / organizer / admin) enforced throughout the application.</td>
+        </tr>
+        <tr>
+          <td><strong>📋 Event Discovery</strong></td>
+          <td align="left">Browse paginated events (5 per page). Filter by category, sort by upcoming / past / popular, and search by event title or location.</td>
+        </tr>
+        <tr>
+          <td><strong>✅ RSVP System</strong></td>
+          <td align="left">Reserve your spot at any event. The system enforces capacity limits and prevents duplicate RSVPs. Cancel attendance at any time.</td>
+        </tr>
+        <tr>
+          <td><strong>⭐ Reviews &amp; Ratings</strong></td>
+          <td align="left">Rate events 1–5 stars and leave a titled review with a comment. Only verified attendees can post reviews. Reviews can be edited or deleted by their author or an admin.</td>
+        </tr>
+        <tr>
+          <td><strong>🔔 Notifications</strong></td>
+          <td align="left">In-app notifications keep everyone informed — organizers are alerted on new RSVPs and reviews; attendees are notified when their event is updated or cancelled.</td>
+        </tr>
+        <tr>
+          <td><strong>📊 Admin Analytics</strong></td>
+          <td align="left">Visual dashboard (Chart.js) showing events per month, user role breakdown, category distribution, total RSVPs, and the top 5 most attended events.</td>
+        </tr>
+        <tr>
+          <td><strong>🎯 Recommendations</strong></td>
+          <td align="left">Personalised event suggestions based on each student's past RSVP and attendance history.</td>
+        </tr>
+        <tr>
+          <td><strong>👤 User Profiles</strong></td>
+          <td align="left">Each user has a profile with name, email, student ID, faculty, and a short bio (up to 200 characters). Accounts can be fully deleted, cascading to all associated reviews, RSVPs, and events.</td>
+        </tr>
+      </table>
+
+      <br />
+      <hr width="600" />
+
+      <h2>Event Categories 🏷️</h2>
+      <p>
+        &nbsp;🏫 General &nbsp;|&nbsp;
+        ⚽ Sports &nbsp;|&nbsp;
+        🎉 Festivals &nbsp;|&nbsp;
+        💻 Hackathons &nbsp;|&nbsp;
+        💬 Discussions &nbsp;|&nbsp;
+        🤝 Networking &nbsp;|&nbsp;
+        📌 Others
+      </p>
+
+      <br /><br />
     </center>
   </body>
 </html>
