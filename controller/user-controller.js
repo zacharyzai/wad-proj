@@ -71,14 +71,6 @@ exports.updateProfile = async (req, res) => {
         errors
       });
     }
-
-    await User.findByIdAndUpdate(req.session.userId, {
-      name,
-      email,
-      studentId,
-      faculty,
-      bio
-    });
     
     await User.findByIdAndUpdate(req.session.userId, {
       name,
