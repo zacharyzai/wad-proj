@@ -1,12 +1,17 @@
+const mongoose = require("mongoose");
 const User = require("../models/user-models");
 const Event = require("../models/event-models");
 const RSVP = require("../models/rsvp-models");
 const Review = require("../models/review-models");
 
 exports.deleteUserCascade = async (userId) => {
-    // Delete all reviews created by the user
-    try{
-    await Review.deleteMany({ user: userId });
+    try {
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
+            throw new Error("Invalid user ID format");
+        }
+
+        // Delete all reviews created by the user
+        await Review.deleteMany({ user: userId });
 
     // Find all events organized by the user
     const events = await Event.find({ organiser: userId });

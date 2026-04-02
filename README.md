@@ -141,3 +141,7 @@ Run unit tests:
 ```bash
 npm test
 ```
+
+## AI Usage Declaration
+
+AI was used for writing (83/113) unit test cases, Chart.js styling and seed data.

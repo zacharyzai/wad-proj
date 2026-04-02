@@ -14,7 +14,7 @@ describe("Auth Controller", () => {
     jest.clearAllMocks();
   });
 
-  // registartion tests
+  // registration tests
   describe("registerPost", () => {
     test("errors when name is missing", async () => {
       req.body = { email: "test@test.com", password: "pass123" };
@@ -76,10 +76,64 @@ describe("Auth Controller", () => {
         }),
       );
     });
+
+    test("errors when password is only whitespace below minimum length", async () => {
+      req.body = { name: "John", email: "john@test.com", password: "     " };
+      await authController.registerPost(req, res);
+      expect(res.render).toHaveBeenCalledWith(
+        "auth/register",
+        expect.objectContaining({
+          errors: expect.arrayContaining([
+            "Passwords requires minimum of 6 characters",
+          ]),
+        }),
+      );
+    });
+
+    test("redirects to /auth/login on successful registration", async () => {
+      req.body = { name: "John", email: "john@test.com", password: "pass123" };
+      bcrypt.hash.mockResolvedValue("hashedpass");
+      User.create.mockResolvedValue({});
+
+      await authController.registerPost(req, res);
+
+      expect(res.redirect).toHaveBeenCalledWith("/auth/login");
+    });
+
+    test("renders error when email is already registered (duplicate key error)", async () => {
+      req.body = { name: "John", email: "john@test.com", password: "pass123" };
+      bcrypt.hash.mockResolvedValue("hashedpass");
+      User.create.mockRejectedValue({ code: 11000 });
+
+      await authController.registerPost(req, res);
+
+      expect(res.render).toHaveBeenCalledWith(
+        "auth/register",
+        expect.objectContaining({
+          errors: expect.arrayContaining([
+            "An account with that email already exists.",
+          ]),
+        }),
+      );
+    });
+
+    test("renders generic error on unexpected database failure", async () => {
+      req.body = { name: "John", email: "john@test.com", password: "pass123" };
+      bcrypt.hash.mockResolvedValue("hashedpass");
+      User.create.mockRejectedValue(new Error("DB failure"));
+
+      await authController.registerPost(req, res);
+
+      expect(res.render).toHaveBeenCalledWith(
+        "auth/register",
+        expect.objectContaining({
+          errors: expect.arrayContaining(["Registration failed. Please try again."]),
+        }),
+      );
+    });
   });
 
   // login tests
-
   describe("loginPost", () => {
     test("errors when email is missing", async () => {
       req.body = { password: "pass123" };
@@ -157,6 +211,38 @@ describe("Auth Controller", () => {
       bcrypt.compare.mockResolvedValue(true);
       await authController.loginPost(req, res);
       expect(res.redirect).toHaveBeenCalledWith("/events");
+    });
+
+    test("sets session userId, userName and role on successful login", async () => {
+      req.body = { email: "stu@test.com", password: "pass123" };
+      const mockUser = {
+        _id: "stuId",
+        name: "Stu",
+        role: "student",
+        passwordHash: "hash",
+      };
+      User.findOne.mockResolvedValue(mockUser);
+      bcrypt.compare.mockResolvedValue(true);
+
+      await authController.loginPost(req, res);
+
+      expect(req.session.userId).toBe(mockUser._id);
+      expect(req.session.userName).toBe(mockUser.name);
+      expect(req.session.role).toBe(mockUser.role);
+    });
+
+    test("renders generic error on database failure during login", async () => {
+      req.body = { email: "stu@test.com", password: "pass123" };
+      User.findOne.mockRejectedValue(new Error("DB failure"));
+
+      await authController.loginPost(req, res);
+
+      expect(res.render).toHaveBeenCalledWith(
+        "auth/login",
+        expect.objectContaining({
+          errors: expect.arrayContaining(["Login failed. Please try again."]),
+        }),
+      );
     });
   });
 
