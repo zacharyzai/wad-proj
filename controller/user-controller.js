@@ -53,7 +53,11 @@ exports.updateProfile = async (req, res) => {
     if (bio && bio.length > 200) {
       errors.push("Bio cannot exceed 200 characters");
     }
-
+    
+    const existingUser = await User.findOne({email, _id: { $ne: req.session.userId }});
+    if (existingUser) {
+      errors.push("That email is already in use by another account.")};
+  
     if (errors.length > 0) {
       return res.render("user/edit-profile", {
         user: {
@@ -68,20 +72,14 @@ exports.updateProfile = async (req, res) => {
       });
     }
 
-    const existingUser = await User.findOne({email, _id: { $ne: req.session.userId }});
-    if (existingUser) {
-      errors.push("That email is already in use by another account.")
-      return res.render("user/edit-profile", {user: {
-        name,
-        email, 
-        studentId, 
-        faculty,
-        bio,
-        role: user.role
-      }, errors
-    })
-    };
-
+    await User.findByIdAndUpdate(req.session.userId, {
+      name,
+      email,
+      studentId,
+      faculty,
+      bio
+    });
+    
     await User.findByIdAndUpdate(req.session.userId, {
       name,
       email,
