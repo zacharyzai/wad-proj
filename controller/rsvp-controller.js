@@ -1,5 +1,6 @@
 const Event = require("../models/event-models");
 const RSVP = require("../models/rsvp-models");
+const Notification = require("../models/notification-models");
 
 // RSVP
 exports.rsvpEvent = async (req, res) => {
@@ -40,6 +41,13 @@ exports.rsvpEvent = async (req, res) => {
     await Event.findByIdAndUpdate(req.params.id, {
       $addToSet: { attendees: req.session.userId },
     });
+
+    if (event.organiser && event.organiser.toString() !== req.session.userId) {
+      await Notification.create({
+        recipient: event.organiser,
+        message: `Someone RSVPed to your event: ${event.title}`
+      });
+    }
 
     const sort = req.body.sort || "upcoming";
     const page = req.body.page || 1;

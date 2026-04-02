@@ -34,6 +34,9 @@ async function connectDB() {
 
 // middlewares
 const { isAuthenticated, isAdmin, isOrganizer } = require('./middleware/authMiddleware');
+const { attachUnreadCount } = require('./middleware/notificationMiddleware');
+
+app.use(attachUnreadCount);
 
 // import routes
 const authRoutes = require('./routes/auth-routes');
@@ -43,6 +46,7 @@ const adminRoutes = require('./routes/admin-routes');
 const reviewRoutes = require('./routes/review-routes');
 const organizerRoutes = require('./routes/organizer-routes');
 const rsvpRoutes = require('./routes/rsvp-routes');
+const notificationRoutes = require('./routes/notification-routes');
 
 // mount routes
 app.use('/auth', authRoutes);
@@ -52,6 +56,7 @@ app.use("/rsvp", isAuthenticated, rsvpRoutes);
 app.use('/events', isAuthenticated, eventRoutes);
 app.use('/profile', isAuthenticated, userRoutes);
 app.use('/admin', isAdmin, adminRoutes);
+app.use('/notifications', isAuthenticated, notificationRoutes);
 
 
 app.get('/', (req, res) => {

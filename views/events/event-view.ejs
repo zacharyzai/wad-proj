@@ -12,21 +12,7 @@
         <br>
         <h1>📅 Campus Event Directory 🎓</h1>
         <p>Discover hackathons, concerts, and club meetings happening around SMU.</p>
-
-        <nav>
-            <p>
-                <a href="/">🏠 Home</a> |
-                <% if (role==='admin' ) { %>
-                    <a href="/admin/dashboard">🛠️ Admin Dashboard</a> |
-                    <% } %>
-                        <a href="/profile">👤 My Profile</a> |
-                        <a href="/rsvp/my-rsvps">🎟️ My RSVPs</a> |
-                        <% if (role==='organizer' ) { %>
-                            <a href="/organizer/organizer-analytics">📊 Organizer Analytics</a> |
-                        <% } %>
-                        <a href="/auth/logout">🚪 Logout</a>
-            </p>
-        </nav>
+        <%- include('../partials/navbar') %>
 
         <hr width="90%">
         <% if (typeof(success) !=='undefined' && success) { %>

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Notifications</title>
+</head>
+
+<body align="center">
+    <br>
+    <h1>🔔 Notifications</h1>
+    <p>View latest notifications on the app.</p>
+    <%- include('../partials/navbar') %>
+
+    <% if (notifications.length === 0) { %>
+      <p>No notifications.</p>
+    <% } else { %>
+      <div style="text-align: left; display: inline-block;">
+        <ul>
+          <% notifications.forEach(notification => { %>
+            <li>
+              <% if (!notification.isRead) { %><strong><% } %>
+              <%= notification.message %>
+              <% if (!notification.isRead) { %></strong><% } %>
+              <small>(<%= notification.createdAt.toLocaleString() %>)</small>
+            </li>
+          <% }) %>
+        </ul>
+      </div>
+    <% } %>
+</body>
+</html>

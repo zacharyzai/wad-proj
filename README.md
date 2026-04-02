@@ -7,8 +7,10 @@ Built with Express.js, MongoDB, Mongoose, EJS templates, and role-based access c
 - User registration and login (`/auth/register`, `/auth/login`)
 - Student events browsing and RSVP management
 - Organizer event CRUD (create, update, delete)
-- Admin dashboard for user and event management
+- Organizer analytics — attendee names and emails per event
+- Admin dashboard with stats and Chart.js analytics charts
 - Reviews on events with owner/admin permissions
+- In-app notifications for organizers and attendees
 - Profile management (view/edit/delete)
 
 ## Setup (local)
@@ -98,6 +100,20 @@ http://localhost:8000
 - GET `/profile/edit`
 - POST `/profile/edit`
 - POST `/profile/delete`
+
+### Notifications (Auth required)
+
+- GET `/notifications` — view all notifications (marks all as read)
+- POST `/notifications/:id/read` — mark a single notification as read
+
+Notifications are automatically created when:
+
+- A student RSVPs to an event → organizer is notified
+- An organizer updates an event → all attendees are notified
+- An organizer deletes an event → all attendees are notified
+- A student posts a review → organizer is notified
+
+Unread count is shown in the navbar via middleware on every page.
 
 ### Organizer
 - GET `/organizer/organizer-analytics`

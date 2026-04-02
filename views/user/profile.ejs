@@ -9,16 +9,7 @@
         <h1>👤 My Personal Profile</h1>
         <p>Welcome back, <strong><%= user.name %></strong>! Here is your current campus information.</p>
         
-        <nav>
-            <p>
-                <a href="/">🏠 Home</a> | 
-                <% if (user.role === 'admin') { %>
-                    <a href="/admin/dashboard">🛠️ Admin Dashboard</a> | 
-                <% } %>
-                <a href="/events">🔍 Browse Events</a> | 
-                <a href="/auth/logout">🚪 Logout</a>
-            </p>
-        </nav>
+        <%- include('../partials/navbar') %>
 
         <hr width="70%">
 

@@ -1,5 +1,6 @@
 const Review = require("../models/review-models"); // added for review
 const Event = require("../models/event-models");
+const Notification = require("../models/notification-models");
 
 
 // To view the Add Review Page
@@ -38,6 +39,14 @@ exports.addReview = async (req, res) => {
         await Event.findByIdAndUpdate(req.params.id, {
             $push: { reviews: review._id }
         });
+
+        const event = await Event.findById(req.params.id);
+        if (event && event.organiser && event.organiser.toString() !== req.session.userId) {
+            await Notification.create({
+                recipient: event.organiser,
+                message: `A new review was posted on your event: ${event.title}`
+            });
+        }
 
         res.redirect("/events/" + req.params.id);
     } catch (err) {
