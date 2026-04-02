@@ -45,7 +45,11 @@ exports.updateProfile = async (req, res) => {
     let errors=[];
 
     const user = await User.findById(req.session.userId);
-
+    
+    if (!user) {
+      return res.send("User not found");
+    }
+    
     if (!name || !email) {
       errors.push("Name and Email are required");
     }
