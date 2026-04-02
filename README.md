@@ -21,13 +21,13 @@ Built with Express.js, MongoDB, Mongoose, EJS templates, and role-based access c
 git clone <your-repo-url> && cd wad-proj
 ```
 
-2. Install dependencies:
+1. Install dependencies:
 
 ```bash
 npm install
 ```
 
-3. Create `config.env` in project root with:
+1. Create `config.env` in project root with:
 
 ```env
 DB=<your-mongodb-connection-string>
@@ -35,7 +35,7 @@ SESSION_SECRET=<secret-key>
 PORT=8000
 ```
 
-4. Start app:
+1. Start app:
 
 ```bash
 nodemon server.js
@@ -46,17 +46,43 @@ Or if you do not have nodemon installed:
 node server.js
 ```
 
-5. Open browser:
+1. Open browser:
 
 ```txt
 http://localhost:8000
 ```
 
-6. Login/register:
+1. Seed the database with sample data (optional):
+
+```bash
+npm run seed
+```
+
+To clear all data without re-seeding:
+
+```bash
+npm run clear
+```
+
+1. Login/register:
+
 - Register new user: `/auth/register`
 - Login: `/auth/login`
 
-> No built-in account seeding is in this code. Create your own user(s) through signup or through MongoDB directly if needed.
+### Seeded accounts (all passwords: `password123`)
+
+| Role      | Email                             |
+|-----------|-----------------------------------|
+| admin     | `admin@smu.edu.sg`                |
+| organizer | `techclub@smu.edu.sg`             |
+| organizer | `sportsclub@smu.edu.sg`           |
+| organizer | `bizclub@smu.edu.sg`              |
+| student   | `alice.tan.2023@smu.edu.sg`       |
+| student   | `bob.lim.2023@smu.edu.sg`         |
+| student   | `clara.ng.2022@smu.edu.sg`        |
+| student   | `david.koh.2024@smu.edu.sg`       |
+| student   | `emma.wong.2022@smu.edu.sg`       |
+| student   | `faris.malik.2023@smu.edu.sg`     |
 
 ## Authentication / roles
 - Roles: `student`, `organizer`, `admin`
@@ -144,4 +170,4 @@ npm test
 
 ## AI Usage Declaration
 
-AI was used for writing (91/113) unit test cases, Chart.js styling and seed data.
+AI was used for writing 91 out of 113 of the unit test cases, and generating seed (mock) data, and clearing of database data.
