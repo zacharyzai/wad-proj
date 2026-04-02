@@ -6,7 +6,7 @@ exports.getNotificationsPage = async (req, res) => {
       recipient: req.session.userId
     }).sort({ createdAt: -1 });
 
-    // mark all notificationsi as read after viewing
+    // mark all unread notifications as read
     await Notification.updateMany(
       { recipient: req.session.userId, isRead: false },
       { isRead: true }

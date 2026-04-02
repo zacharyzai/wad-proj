@@ -57,7 +57,7 @@ exports.renderEventsPage = async (req, res) => {
     let events;
     let totalPages;
     if (sort === "popular") {
-      const allEvents = await Event.find(filter); // Get all events
+      const allEvents = await Event.find(filter);
       allEvents.sort(
         (a, b) => (b.attendees?.length || 0) - (a.attendees?.length || 0),
       );
@@ -272,9 +272,9 @@ exports.updateEventPage = async (req, res) => {
     }
 
     // Conversion of "datetime-local" to a format that is compatible with HTML
-    const sgtOffset = 8 * 60 * 60 * 1000; // 8 hours in milliseconds
-    const sgtDate = new Date(eventToEdit.date.getTime() + sgtOffset); // getTime() returns milliseconds --> need add 8 hrs as toISOString() always return UTC Time
-    let formattedDateForHTML = sgtDate.toISOString().slice(0, 16); // slice away the seconds + ISOString() --> converts JS Date object into standardised string format, needed to allow HTML to recognise the data
+    const sgtOffset = 8 * 60 * 60 * 1000;
+    const sgtDate = new Date(eventToEdit.date.getTime() + sgtOffset);
+    let formattedDateForHTML = sgtDate.toISOString().slice(0, 16);
     res.render("events/update-event", {
       targetId,
       title: eventToEdit.title,

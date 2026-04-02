@@ -62,7 +62,7 @@ exports.rsvpEvent = async (req, res) => {
 exports.unrsvpEvent = async (req, res) => {
   try {
     await Event.findByIdAndUpdate(req.params.id, {
-      $pull: { attendees: req.session.userId }, // $pull function is the opposite $push. It removes all instances of a matching value from the array
+      $pull: { attendees: req.session.userId },
     });
 
     const existingRsvp = await RSVP.findOne({
