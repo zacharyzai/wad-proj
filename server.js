@@ -59,14 +59,12 @@ app.use('/admin', isAdmin, adminRoutes);
 app.use('/notifications', isAuthenticated, notificationRoutes);
 
 
+app.get('/index.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+
 app.get('/', (req, res) => {
-  if (req.session && req.session.userId) {
-    // If they are already logged in, show them the events!
-        res.redirect('/events');
-  } else {
-    // Otherwise, make them log in first
-        res.redirect('/auth/login');
-  }
+  res.redirect('/index.html');
 });
 
 // Start Server
