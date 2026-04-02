@@ -47,9 +47,10 @@ exports.renderEventsPage = async (req, res) => {
 
     const search = req.query.search || "";
     if (search) {
+      const escapedSearch = search.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
       filter.$or = [
-        { title: { $regex: search, $options: "i" } },
-        { location: { $regex: search, $options: "i" } },
+        { title: { $regex: escapedSearch, $options: "i" } },
+        { location: { $regex: escapedSearch, $options: "i" } },
       ];
     }
 
@@ -171,10 +172,17 @@ exports.createEvent = async (req, res) => {
     category = [category];
   }
 
-  // To ensure all the fields are present, else, render them back to the same link + error shown
-  if (!title || category.length === 0 || !description || !location || !date) {
+  // Field-level validation
+  const errors = [];
+  if (!title) errors.push("Title is required");
+  if (!description) errors.push("Description is required");
+  if (!date) errors.push("Date and time is required");
+  if (!location) errors.push("Location is required");
+  if (category.length === 0) errors.push("At least one category must be selected");
+
+  if (errors.length > 0) {
     return res.render("events/create-event", {
-      error: "All fields are required",
+      errors,
       title,
       category,
       description,
@@ -182,6 +190,21 @@ exports.createEvent = async (req, res) => {
       date,
       maxAttendees,
     });
+  }
+
+  if (maxAttendees !== undefined) {
+    const num = Number(maxAttendees);
+    if (!Number.isInteger(num) || num < 1) {
+      return res.render("events/create-event", {
+        errors: ["Maximum capacity must be a whole number of at least 1, or leave it blank for unlimited"],
+        title,
+        category,
+        description,
+        location,
+        date,
+        maxAttendees,
+      });
+    }
   }
 
   if (new Date(date) < new Date()) {
@@ -244,6 +267,10 @@ exports.updateEventPage = async (req, res) => {
 
     let eventToEdit = await Event.findById(targetId);
 
+    if (!eventToEdit) {
+      return res.send("Event not found. It may have already been deleted.");
+    }
+
     // Conversion of "datetime-local" to a format that is compatible with HTML
     const sgtOffset = 8 * 60 * 60 * 1000; // 8 hours in milliseconds
     const sgtDate = new Date(eventToEdit.date.getTime() + sgtOffset); // getTime() returns milliseconds --> need add 8 hrs as toISOString() always return UTC Time
@@ -287,9 +314,16 @@ exports.updateEvent = async (req, res) => {
       category = [category];
     }
 
-    if (!title || !description || !date || !location || category.length === 0) {
+    const errors = [];
+    if (!title) errors.push("Title is required");
+    if (!description) errors.push("Description is required");
+    if (!date) errors.push("Date and time is required");
+    if (!location) errors.push("Location is required");
+    if (category.length === 0) errors.push("At least one category must be selected");
+
+    if (errors.length > 0) {
       return res.render("events/update-event", {
-        error: "All fields are required",
+        errors,
         targetId,
         title,
         description,
@@ -298,6 +332,22 @@ exports.updateEvent = async (req, res) => {
         category,
         maxAttendees,
       });
+    }
+
+    if (maxAttendees !== undefined) {
+      const num = Number(maxAttendees);
+      if (!Number.isInteger(num) || num < 1) {
+        return res.render("events/update-event", {
+          errors: ["Maximum capacity must be a whole number of at least 1, or leave it blank for unlimited"],
+          targetId,
+          title,
+          description,
+          date,
+          location,
+          category,
+          maxAttendees,
+        });
+      }
     }
 
     const updatedEvent = await Event.findByIdAndUpdate(targetId, {
@@ -411,6 +461,9 @@ exports.viewEventDetails = async (req, res) => {
       userId: req.session.userId,
     });
   } catch (err) {
+    if (err.name === "CastError") {
+      return res.send("Event not found.");
+    }
     console.error(err);
     res.send("Error loading event details.");
   }

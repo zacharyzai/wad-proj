@@ -10,7 +10,13 @@
     <h1>Create an Event</h1>
     <p><a href="/events">← Back to Events</a></p>
 
-    <% if (typeof(error) !== 'undefined' && error) { %>
+    <% if (typeof errors !== 'undefined' && errors && errors.length > 0) { %>
+        <ul style="color: red; font-weight: bold;">
+            <% errors.forEach(error => { %>
+                <li><%= error %> </li>
+            <% }) %>
+        </ul>
+    <% } else if (typeof error !== 'undefined' && error) { %>
         <p style="color: red; font-weight: bold;"><%= error %></p>
     <% } %>
 

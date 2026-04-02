@@ -32,7 +32,7 @@ describe("Events Controller", () => {
 
   // create event tests
   describe("createEvent", () => {
-    test("renders error when title is missing", async () => {
+    test("renders error listing 'Title is required' when title is missing", async () => {
       req.body = {
         description: "Desc",
         date: "2030-01-01",
@@ -43,12 +43,12 @@ describe("Events Controller", () => {
       expect(res.render).toHaveBeenCalledWith(
         "events/create-event",
         expect.objectContaining({
-          error: "All fields are required",
+          errors: expect.arrayContaining(["Title is required"]),
         }),
       );
     });
 
-    test("renders error when description is missing", async () => {
+    test("renders error listing 'Description is required' when description is missing", async () => {
       req.body = {
         title: "Fest",
         date: "2030-01-01",
@@ -59,12 +59,12 @@ describe("Events Controller", () => {
       expect(res.render).toHaveBeenCalledWith(
         "events/create-event",
         expect.objectContaining({
-          error: "All fields are required",
+          errors: expect.arrayContaining(["Description is required"]),
         }),
       );
     });
 
-    test("renders error when category array is empty", async () => {
+    test("renders error listing 'At least one category must be selected' when category is empty", async () => {
       req.body = {
         title: "Fest",
         description: "Fun festival",
@@ -76,12 +76,12 @@ describe("Events Controller", () => {
       expect(res.render).toHaveBeenCalledWith(
         "events/create-event",
         expect.objectContaining({
-          error: "All fields are required",
+          errors: expect.arrayContaining(["At least one category must be selected"]),
         }),
       );
     });
 
-    test("renders error when location is missing", async () => {
+    test("renders error listing 'Location is required' when location is missing", async () => {
       req.body = {
         title: "Fest",
         description: "Fun festival",
@@ -93,7 +93,24 @@ describe("Events Controller", () => {
       expect(res.render).toHaveBeenCalledWith(
         "events/create-event",
         expect.objectContaining({
-          error: "All fields are required",
+          errors: expect.arrayContaining(["Location is required"]),
+        }),
+      );
+    });
+
+    test("renders multiple specific errors when several fields are missing at once", async () => {
+      req.body = { category: [] };
+      await eventController.createEvent(req, res);
+      expect(res.render).toHaveBeenCalledWith(
+        "events/create-event",
+        expect.objectContaining({
+          errors: expect.arrayContaining([
+            "Title is required",
+            "Description is required",
+            "Date and time is required",
+            "Location is required",
+            "At least one category must be selected",
+          ]),
         }),
       );
     });
@@ -115,6 +132,66 @@ describe("Events Controller", () => {
       );
     });
 
+    test("renders error when maxAttendees is 0", async () => {
+      req.body = {
+        title: "Fest",
+        description: "Fun",
+        date: "2030-01-01",
+        location: "Campus",
+        category: ["General"],
+        maxAttendees: "0",
+      };
+      await eventController.createEvent(req, res);
+      expect(res.render).toHaveBeenCalledWith(
+        "events/create-event",
+        expect.objectContaining({
+          errors: expect.arrayContaining([
+            "Maximum capacity must be a whole number of at least 1, or leave it blank for unlimited",
+          ]),
+        }),
+      );
+    });
+
+    test("renders error when maxAttendees is negative", async () => {
+      req.body = {
+        title: "Fest",
+        description: "Fun",
+        date: "2030-01-01",
+        location: "Campus",
+        category: ["General"],
+        maxAttendees: "-5",
+      };
+      await eventController.createEvent(req, res);
+      expect(res.render).toHaveBeenCalledWith(
+        "events/create-event",
+        expect.objectContaining({
+          errors: expect.arrayContaining([
+            "Maximum capacity must be a whole number of at least 1, or leave it blank for unlimited",
+          ]),
+        }),
+      );
+    });
+
+    test("renders error when maxAttendees is a decimal number", async () => {
+      req.body = {
+        title: "Fest",
+        description: "Fun",
+        date: "2030-01-01",
+        location: "Campus",
+        category: ["General"],
+        maxAttendees: "10.5",
+      };
+      await eventController.createEvent(req, res);
+      expect(res.render).toHaveBeenCalledWith(
+        "events/create-event",
+        expect.objectContaining({
+          errors: expect.arrayContaining([
+            "Maximum capacity must be a whole number of at least 1, or leave it blank for unlimited",
+          ]),
+        }),
+      );
+    });
+
     test("creates event and redirects on valid input", async () => {
       req.body = {
         title: "Hackathon",
@@ -129,6 +206,22 @@ describe("Events Controller", () => {
       await eventController.createEvent(req, res);
 
       expect(Event.create).toHaveBeenCalled();
+      expect(res.redirect).toHaveBeenCalledWith("/events?success=true");
+    });
+
+    test("blank maxAttendees is allowed (unlimited)", async () => {
+      req.body = {
+        title: "Fest",
+        description: "Fun",
+        date: "2030-06-01",
+        location: "Campus",
+        category: ["General"],
+        maxAttendees: "",
+      };
+      Event.create.mockResolvedValue({ _id: "evt101" });
+
+      await eventController.createEvent(req, res);
+
       expect(res.redirect).toHaveBeenCalledWith("/events?success=true");
     });
 
@@ -173,7 +266,7 @@ describe("Events Controller", () => {
 
   // update event tests
   describe("updateEvent", () => {
-    test("renders error when title is missing", async () => {
+    test("renders error listing 'Title is required' when title is missing", async () => {
       req.query.eventId = "evt1";
       req.body = {
         description: "Desc",
@@ -190,12 +283,12 @@ describe("Events Controller", () => {
       expect(res.render).toHaveBeenCalledWith(
         "events/update-event",
         expect.objectContaining({
-          error: "All fields are required",
+          errors: expect.arrayContaining(["Title is required"]),
         }),
       );
     });
 
-    test("renders error when category is empty", async () => {
+    test("renders error listing category message when category is empty", async () => {
       req.query.eventId = "evt1";
       req.body = {
         title: "Event",
@@ -213,7 +306,59 @@ describe("Events Controller", () => {
       expect(res.render).toHaveBeenCalledWith(
         "events/update-event",
         expect.objectContaining({
-          error: "All fields are required",
+          errors: expect.arrayContaining(["At least one category must be selected"]),
+        }),
+      );
+    });
+
+    test("renders error when maxAttendees is 0 on update", async () => {
+      req.query.eventId = "evt1";
+      req.body = {
+        title: "Fest",
+        description: "Fun",
+        date: "2030-01-01",
+        location: "Campus",
+        category: ["General"],
+        maxAttendees: "0",
+      };
+      Event.findById.mockResolvedValue({
+        _id: "evt1",
+        organiser: { toString: () => "64f29c83c8f1f7a2d8e394f0" },
+        attendees: [],
+      });
+      await eventController.updateEvent(req, res);
+      expect(res.render).toHaveBeenCalledWith(
+        "events/update-event",
+        expect.objectContaining({
+          errors: expect.arrayContaining([
+            "Maximum capacity must be a whole number of at least 1, or leave it blank for unlimited",
+          ]),
+        }),
+      );
+    });
+
+    test("renders error when maxAttendees is negative on update", async () => {
+      req.query.eventId = "evt1";
+      req.body = {
+        title: "Fest",
+        description: "Fun",
+        date: "2030-01-01",
+        location: "Campus",
+        category: ["General"],
+        maxAttendees: "-3",
+      };
+      Event.findById.mockResolvedValue({
+        _id: "evt1",
+        organiser: { toString: () => "64f29c83c8f1f7a2d8e394f0" },
+        attendees: [],
+      });
+      await eventController.updateEvent(req, res);
+      expect(res.render).toHaveBeenCalledWith(
+        "events/update-event",
+        expect.objectContaining({
+          errors: expect.arrayContaining([
+            "Maximum capacity must be a whole number of at least 1, or leave it blank for unlimited",
+          ]),
         }),
       );
     });
@@ -255,7 +400,7 @@ describe("Events Controller", () => {
       };
       Event.findById.mockResolvedValue({
         _id: "evt1",
-        organiser: { toString: () => "userId1" }, // same as session
+        organiser: { toString: () => "userId1" },
         attendees: [],
       });
       Event.findByIdAndUpdate.mockResolvedValue({
@@ -403,6 +548,23 @@ describe("Events Controller", () => {
       expect(res.send).toHaveBeenCalledWith("Event not found.");
     });
 
+    test("sends 'Event not found.' on invalid ObjectId (CastError)", async () => {
+      req.params.id = "notanid";
+      const castError = new Error("Cast to ObjectId failed");
+      castError.name = "CastError";
+      Event.findById.mockReturnValue({
+        populate: jest.fn().mockReturnValue({
+          populate: jest.fn().mockReturnValue({
+            populate: jest.fn().mockRejectedValue(castError),
+          }),
+        }),
+      });
+
+      await eventController.viewEventDetails(req, res);
+
+      expect(res.send).toHaveBeenCalledWith("Event not found.");
+    });
+
     test("renders event details when event is found", async () => {
       req.params.id = "evt1";
       const mockEvent = {
@@ -428,7 +590,7 @@ describe("Events Controller", () => {
       );
     });
 
-    test("sends error on database failure", async () => {
+    test("sends error on unexpected database failure", async () => {
       req.params.id = "evt1";
       Event.findById.mockReturnValue({
         populate: jest.fn().mockReturnValue({
