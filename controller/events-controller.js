@@ -1,5 +1,6 @@
 const Event = require("../models/event-models");
 const RSVP = require("../models/rsvp-models");
+const Notification = require("../models/notification-models");
 const { deleteEventCascade } = require("../services/eventServices");
 
 // // Read (user sees all the available events on a particular date)
@@ -299,14 +300,27 @@ exports.updateEvent = async (req, res) => {
       });
     }
 
-    await Event.findByIdAndUpdate(targetId, {
+    const updatedEvent = await Event.findByIdAndUpdate(targetId, {
       title,
       description,
       date,
       location,
       maxAttendees,
       category,
-    });
+    }, { new: true });
+
+    if (updatedEvent && updatedEvent.attendees.length > 0) {
+      const notifications = updatedEvent.attendees
+        .filter(attendeeId => attendeeId.toString() !== req.session.userId)
+        .map(attendeeId => ({
+          recipient: attendeeId,
+          message: `An event you RSVPed to has been updated: ${updatedEvent.title}`
+        }));
+      if (notifications.length > 0) {
+        await Notification.insertMany(notifications);
+      }
+    }
+
     res.redirect("/events?success=true"); // ? is a query string and success = true is used to display message whether the update is confirmed under events page
   } catch (err) {
     console.error("Error saving the update:", err);
@@ -357,6 +371,19 @@ exports.deleteEvent = async (req, res) => {
         if (e.organiser.toString() !== req.session.userId) {
           return res.send("Unauthorized: You can only delete your own events.");
         }
+      }
+    }
+
+    const eventsToDelete = await Event.find({ _id: { $in: deleteEvent } });
+    for (const evt of eventsToDelete) {
+      const notifications = evt.attendees
+        .filter(attendeeId => attendeeId.toString() !== req.session.userId)
+        .map(attendeeId => ({
+          recipient: attendeeId,
+          message: `An event you RSVPed to has been cancelled: ${evt.title}`
+        }));
+      if (notifications.length > 0) {
+        await Notification.insertMany(notifications);
       }
     }
 
