@@ -74,9 +74,8 @@
                                             🗑️ Delete
                                         </button>
                                     </form>
-                                <% } %>
                                 <!-- Admin delete button (separate from owner delete) -->
-                                <% if (role === 'admin') { %>
+                                <% } else if (role === 'admin') { %>
                                     <form method="POST" action="/events/<%= event._id %>/review/<%= review._id %>/delete"
                                         style="display:inline;">
                                         <button type="submit" onclick="return confirm('Admin: Delete this review?')">
