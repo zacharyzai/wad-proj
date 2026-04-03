@@ -28,7 +28,7 @@
                         <td><%= event.date.toLocaleString('en-SG', { dateStyle: 'medium', timeStyle: 'short' }) %></td>
                         <td><%= event.location %></td>
                         <td>
-                            <a href="/events/<%= action %>-event?eventId=<%= event._id %>">
+                            <a href="/events/update-event?eventId=<%= event._id %>">
                                 <button>Edit</button>
                             </a>
                         </td>
