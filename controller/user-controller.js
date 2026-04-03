@@ -34,7 +34,7 @@ exports.getEditProfile = async (req, res) => {
   }
 };
 
-//Update profile (CRUD)
+// Update profile 
 exports.updateProfile = async (req, res) => {
   try {
     const name = req.body.name;
@@ -83,7 +83,7 @@ exports.updateProfile = async (req, res) => {
       faculty,
       bio
     });
-    
+
     res.redirect("/profile");
   } catch (err) {
     console.error(err)
@@ -91,7 +91,7 @@ exports.updateProfile = async (req, res) => {
   }
 };
 
-//Delete profile (CRUD)
+// Delete profile
 exports.deleteProfile = async (req, res) => {
   try {
     const userId = req.session.userId;

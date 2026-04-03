@@ -3,7 +3,7 @@ const RSVP = require("../models/rsvp-models");
 const Notification = require("../models/notification-models");
 const { deleteEventCascade } = require("../services/eventServices");
 
-// Render (what user sees when clicked into one event)
+// Render Event Page
 exports.renderEventsPage = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
@@ -123,8 +123,7 @@ exports.renderEventsPage = async (req, res) => {
   }
 };
 
-// Create Event (Have a button visible to admins only to create an event)
-
+// Create Event 
 exports.createEventPage = (req, res) => {
   try {
     res.render("events/create-event", {
@@ -228,7 +227,7 @@ exports.createEvent = async (req, res) => {
   }
 };
 
-// Update Event (Have a button visible to admins only to allow them to UPDATE an event)
+// Update Event Page
 exports.updateEventPage = async (req, res) => {
   try {
     let targetId = req.query.eventId; 
@@ -276,7 +275,6 @@ exports.updateEvent = async (req, res) => {
     let title = req.body.title;
     const event = await Event.findById(targetId);
 
-    // Allow if admin OR if the organiser owns this event
     if (
       req.session.role !== "admin" &&
       event.organiser.toString() !== req.session.userId
@@ -365,7 +363,7 @@ exports.updateEvent = async (req, res) => {
   }
 };
 
-// Delete Event (Have a button visible to admins only to allow them to DELETE an event)
+// Delete Event Page
 exports.renderDeletePage = async (req, res) => {
   try {
     let allEvents;

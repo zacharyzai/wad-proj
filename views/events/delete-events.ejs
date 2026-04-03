@@ -19,7 +19,6 @@
             <p>No events to be deleted.</p>
         <% } else { %>
             <form action="/events/delete-event" method="post">
-                <!-- Delete an event. Make it with checkbox so admin can delete multiple events easily -->
                 <table border="1">
                     <thead>
                         <tr>
@@ -27,7 +26,6 @@
                             <th>Delete?</th>
                         </tr>
                     </thead>
-
                     <tbody>
                         <% events.forEach(event => { %>
                         <tr>

@@ -55,7 +55,7 @@ exports.addReview = async (req, res) => {
     }
 };
 
-// Edit Review Page (FOR USER TO EDIT THEIR OWN REVIEWS)
+// Edit Review Page 
 exports.editReviewPageUser = async (req, res) => {
     try {
         const review = await Review.findById(req.params.reviewId);
@@ -74,7 +74,7 @@ exports.editReviewPageUser = async (req, res) => {
     }
 };
 
-// Update Review (only review owner) check
+// Update Review 
 exports.editReview = async (req, res) => {
     try {
         const review = await Review.findById(req.params.reviewId);

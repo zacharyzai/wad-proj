@@ -54,7 +54,6 @@
         <tr>
             <th>Reviews</th>
             <td>
-                <!-- scrollable review section -->
                 <div style="max-height: 300px; overflow-y: auto;">
                     <% if (event.reviews && event.reviews.length > 0) { %>
                         <% event.reviews.forEach(review => { %>
@@ -62,8 +61,6 @@
                                 <strong><%= review.title %></strong> - <%= review.rating %>/5
                                 <br>
                                 <p><%= review.comment %></p>
-                                <!--show edit/delete only to review owner-->
-
                                 <% if (review.user && review.user.toString() === String(userId)) { %>      
                                     <a href="/events/<%= event._id %>/review/<%= review._id %>/edit">
                                         <button>✏️ Edit</button>
@@ -74,7 +71,6 @@
                                             🗑️ Delete
                                         </button>
                                     </form>
-                                <!-- Admin delete button (separate from owner delete) -->
                                 <% } else if (role === 'admin') { %>
                                     <form method="POST" action="/events/<%= event._id %>/review/<%= review._id %>/delete"
                                         style="display:inline;">
