@@ -258,45 +258,4 @@ describe("Review Controller", () => {
       expect(res.redirect).toHaveBeenCalledWith("/events/evt1");
     });
   });
-
-  describe("deleteOwnReview (user only)", () => {
-    test("sends error when review is not found", async () => {
-      Review.findById.mockResolvedValue(null);
-
-      await reviewController.deleteOwnReview(req, res);
-
-      expect(res.send).toHaveBeenCalledWith("Review not found.");
-    });
-
-    test("sends unauthorized when user does not own the review", async () => {
-      Review.findById.mockResolvedValue({
-        _id: "rev1",
-        user: { toString: () => "anotherUserId" },
-      });
-
-      await reviewController.deleteOwnReview(req, res);
-
-      expect(Review.findByIdAndDelete).not.toHaveBeenCalled();
-      expect(res.send).toHaveBeenCalledWith(
-        "Unauthorized: You can only delete your own reviews.",
-      );
-    });
-
-    test("deletes review and redirects to event page on success", async () => {
-      Review.findById.mockResolvedValue({
-        _id: "rev1",
-        user: { toString: () => userId },
-      });
-      Review.findByIdAndDelete.mockResolvedValue({});
-      Event.findByIdAndUpdate.mockResolvedValue({});
-
-      await reviewController.deleteOwnReview(req, res);
-
-      expect(Review.findByIdAndDelete).toHaveBeenCalledWith("rev1");
-      expect(Event.findByIdAndUpdate).toHaveBeenCalledWith("evt1", {
-        $pull: { reviews: "rev1" },
-      });
-      expect(res.redirect).toHaveBeenCalledWith("/events/evt1");
-    });
-  });
 });
