@@ -5,6 +5,9 @@ const Notification = require("../models/notification-models");
 // RSVP
 exports.rsvpEvent = async (req, res) => {
   try {
+    const sort = req.body.sort !== undefined ? req.body.sort : "upcoming";
+    const page = req.body.page || 1;
+
     const event = await Event.findById(req.params.id);
 
     const existingRsvp = await RSVP.findOne({
@@ -23,20 +26,22 @@ exports.rsvpEvent = async (req, res) => {
       });
     }
     if (!event) {
-      return res.status(404).redirect("/events?sort=upcoming");
+      return res.status(404).redirect(`/events?sort=${sort}&page=${page}`);
     }
 
     if (event.attendees && event.attendees.includes(req.session.userId)) {
-      return res.redirect("/events?sort=upcoming");
+      return res.redirect(`/events?sort=${sort}&page=${page}`);
     }
 
     if (event.date < new Date()) {
-      return res.redirect("/events?sort=upcoming");
+      return res.redirect(`/events?sort=${sort}&page=${page}`);
     }
 
+
     if (event.maxAttendees && event.attendees.length >= event.maxAttendees) {
-      return res.redirect("/events?sort=upcoming&error=full");
+      return res.redirect(`/events?sort=${sort}&page=${page}&error=full`);
     }
+
 
     await Event.findByIdAndUpdate(req.params.id, {
       $addToSet: { attendees: req.session.userId },
@@ -48,9 +53,6 @@ exports.rsvpEvent = async (req, res) => {
         message: `Someone RSVPed to your event: ${event.title}`
       });
     }
-
-    const sort = req.body.sort || "upcoming";
-    const page = req.body.page || 1;
 
     res.redirect(`/events?sort=${sort}&page=${page}`);
   } catch (error) {
