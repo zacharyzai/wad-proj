@@ -3,6 +3,8 @@ const User = require("../models/user-models");
 const Event = require("../models/event-models");
 const RSVP = require("../models/rsvp-models");
 const Review = require("../models/review-models");
+const Notification = require("../models/notification-models");
+
 
 exports.deleteUserCascade = async (userId) => {
     try {
@@ -41,6 +43,9 @@ exports.deleteUserCascade = async (userId) => {
 
     //Delete all RSVPs made by the user
     await RSVP.deleteMany({ user: userId });
+
+    //Delete all notifications sent to the user
+    await Notification.deleteMany({ recipient: userId });
 
     //Finally, delete the user record
     await User.findByIdAndDelete(userId);
