@@ -35,7 +35,7 @@ describe("RSVP Controller", () => {
       await rsvpController.rsvpEvent(req, res);
 
       expect(res.status).toHaveBeenCalledWith(404);
-      expect(res.redirect).toHaveBeenCalledWith("/events?sort=upcoming");
+      expect(res.redirect).toHaveBeenCalledWith("/events?sort=upcoming&page=1");
     });
 
     test("redirects without updating attendees when user is already attending", async () => {
@@ -53,7 +53,7 @@ describe("RSVP Controller", () => {
       await rsvpController.rsvpEvent(req, res);
 
       expect(Event.findByIdAndUpdate).not.toHaveBeenCalled();
-      expect(res.redirect).toHaveBeenCalledWith("/events?sort=upcoming");
+      expect(res.redirect).toHaveBeenCalledWith("/events?sort=upcoming&page=1");
     });
 
     test("redirects without updating attendees when event date is in the past", async () => {
@@ -71,7 +71,7 @@ describe("RSVP Controller", () => {
       await rsvpController.rsvpEvent(req, res);
 
       expect(Event.findByIdAndUpdate).not.toHaveBeenCalled();
-      expect(res.redirect).toHaveBeenCalledWith("/events?sort=upcoming");
+      expect(res.redirect).toHaveBeenCalledWith("/events?sort=upcoming&page=1");
     });
 
     test("redirects with error=full when event has reached max capacity", async () => {
@@ -89,7 +89,7 @@ describe("RSVP Controller", () => {
       await rsvpController.rsvpEvent(req, res);
 
       expect(Event.findByIdAndUpdate).not.toHaveBeenCalled();
-      expect(res.redirect).toHaveBeenCalledWith("/events?sort=upcoming&error=full");
+      expect(res.redirect).toHaveBeenCalledWith("/events?sort=upcoming&page=1&error=full");
     });
 
     test("updates existing cancelled RSVP back to attending", async () => {
