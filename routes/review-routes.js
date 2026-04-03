@@ -12,10 +12,8 @@ router.post("/:id/review", isAuthenticated, reviewController.addReview);
 router.get("/:id/review/:reviewId/edit", isAuthenticated, reviewController.editReviewPageUser);
 router.post("/:id/review/:reviewId/edit", isAuthenticated, reviewController.editReview);
 
-// // Delete Review (owner only)
-// router.post("/:id/review/:reviewId/delete-own", isAuthenticated, reviewController.deleteOwnReview);
 
-// Delete Review (admin only)
+// Delete Review 
 router.post("/:id/review/:reviewId/delete", isAuthenticated, reviewController.deleteReview);
 
 module.exports = router;

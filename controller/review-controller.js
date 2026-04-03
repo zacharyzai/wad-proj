@@ -126,24 +126,3 @@ exports.deleteReview = async (req, res) => {
     }
 };
 
-// Delete Review (user) check
-exports.deleteOwnReview = async (req, res) => {
-    try {
-        const { id, reviewId } = req.params;
-        const review = await Review.findById(reviewId);
-
-        if (!review) return res.send("Review not found.");
-
-        if (review.user.toString() !== req.session.userId) {
-            return res.send("Unauthorized: You can only delete your own reviews.");
-        }
-
-        await Review.findByIdAndDelete(reviewId);
-        await Event.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
-
-        res.redirect("/events/" + id);
-    } catch (err) {
-        console.error(err);
-        res.send("Error deleting review.");
-    }
-};
