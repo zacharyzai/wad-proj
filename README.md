@@ -21,13 +21,13 @@ Built with Express.js, MongoDB, Mongoose, EJS templates, and role-based access c
 git clone <your-repo-url> && cd wad-proj
 ```
 
-1. Install dependencies:
+2. Install dependencies:
 
 ```bash
 npm install
 ```
 
-1. Create `config.env` in project root with:
+3. Create `config.env` in project root with:
 
 ```env
 DB=<your-mongodb-connection-string>
@@ -35,24 +35,24 @@ SESSION_SECRET=<secret-key>
 PORT=8000
 ```
 
-1. Start app:
+4. Start app:
 
 ```bash
-nodemon server.js
+npm run dev
 ```
 
-Or if you do not have nodemon installed:
+Or without nodemon:
 ```bash
-node server.js
+npm start
 ```
 
-1. Open browser:
+5. Open browser:
 
 ```txt
 http://localhost:8000
 ```
 
-1. Seed the database with sample data (optional):
+6. Seed the database with sample data (optional):
 
 ```bash
 npm run seed
@@ -64,7 +64,7 @@ To clear all data without re-seeding:
 npm run clear
 ```
 
-1. Login/register:
+7. Login/register:
 
 - Register new user: `/auth/register`
 - Login: `/auth/login`
@@ -114,7 +114,7 @@ npm run clear
 - POST `/events/:id/review`
 - GET `/events/:id/review/:reviewId/edit`
 - POST `/events/:id/review/:reviewId/edit`
-- POST `/events/:id/review/:reviewId/delete` (admin only)
+- POST `/events/:id/review/:reviewId/delete` (owner or admin)
 
 ### RSVP (Auth required)
 - POST `/rsvp/:id/rsvp`
@@ -170,4 +170,4 @@ npm test
 
 ## AI Usage Declaration
 
-AI was used for writing 91 out of 113 of the unit test cases, and generating seed (mock) data, and clearing of database data.
+AI was used for writing 91 out of 113 of the unit test cases, and generating seed (mock) data
