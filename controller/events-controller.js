@@ -330,6 +330,13 @@ exports.updateEvent = async (req, res) => {
       }
     }
 
+    if (new Date(date) < new Date()) {
+      return res.render("events/update-event", {
+        errors: ["Event date cannot be in the past."],
+        targetId, title, description, date, location, category, maxAttendees,
+      });
+    }
+
     const updatedEvent = await Event.findByIdAndUpdate(targetId, {
       title,
       description,
