@@ -33,7 +33,7 @@ exports.registerPost = async (req, res) => {
       role: role || "student",
       studentId: "",
       faculty: "",
-      bio: "",
+      bio: req.body.bio || "",
     });
     res.redirect("/auth/login");
   } catch (err) {

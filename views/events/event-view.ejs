@@ -159,9 +159,8 @@
 
                             <p>
                                 <% let paginationBase = '/events?sort=' + selectedSort; //builds: "/events?sort=past" to remember the filter after clicking next page
-                                if (Array.isArray(selectedCategories)) {
-                                    selectedCategories.forEach(cat => { paginationBase += '&category=' + cat; }); // specifically for categories
-                                    } %>
+                                <% const cats = Array.isArray(selectedCategories) ? selectedCategories : (selectedCategories && selectedCategories !== 'all' ? [selectedCategories] : []);
+                                cats.forEach(cat => { paginationBase += '&category=' + cat; }); %>
                                     <% if (page > 1) { %>
                                         <button><a href="<%= paginationBase %>&page=<%= page-1 %>">Previous</a></button>
                                     <% } %>
