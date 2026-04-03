@@ -113,6 +113,12 @@ exports.handleEditUser = async (req, res) => {
       return res.send("Error reloading form.");
     }
   }
+  const existing = await User.findOne({ email, _id: { $ne: req.params.id } });
+  if (existing) {
+    const user = await User.findById(req.params.id);
+    return res.render("admin/edit-user", { user, errors: ["That email is already in use."] });
+  }
+
 
   try {
     await User.findByIdAndUpdate(req.params.id, {
