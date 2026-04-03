@@ -90,7 +90,7 @@ npm run clear
 - Organizer-only routes under `/organizer` and `/events` create/update/delete
 - Admin-only routes under `/admin`
 
-## 📌 Main routes (current)
+## Main routes (current)
 
 ### Auth
 - GET `/auth/register`
