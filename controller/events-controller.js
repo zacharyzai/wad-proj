@@ -3,17 +3,6 @@ const RSVP = require("../models/rsvp-models");
 const Notification = require("../models/notification-models");
 const { deleteEventCascade } = require("../services/eventServices");
 
-// // Read (user sees all the available events on a particular date)
-// exports.viewEventPage = async (req, res) => {
-//     try {
-//         const events = await Event.find(); // fetch from MongoDB
-//         res.json(events);
-//     } catch (error) {
-//         res.status(500).json({ message: error.message })
-//     }
-//     ;
-// }
-
 // Render (what user sees when clicked into one event)
 exports.renderEventsPage = async (req, res) => {
   try {
@@ -30,14 +19,6 @@ exports.renderEventsPage = async (req, res) => {
       selectedCategories = Array.isArray(category) ? category : [category];
       filter.category = { $in: selectedCategories };
     }
-
-    // if (sort === "popular") {
-    //     events = events.sort((a, b) => (b.attendees?.length || 0) - (a.attendees?.length || 0));
-    // } else if (sort === "newest") {
-    //     events = await Event.find(filter).sort({ date: -1 }).skip(skip).limit(limit);
-    // } else if (sort === "oldest") {
-    //     events = await Event.find(filter).sort({ date: 1 }).skip(skip).limit(limit);
-    // }
 
     if (sort === "upcoming") {
       filter.date = { $gte: new Date() };
@@ -215,7 +196,7 @@ exports.createEvent = async (req, res) => {
       description,
       location,
       date,
-      maxAttendees, // Admin OR Organisers cannot create events in the past.
+      maxAttendees, 
     });
   }
 
@@ -250,8 +231,7 @@ exports.createEvent = async (req, res) => {
 // Update Event (Have a button visible to admins only to allow them to UPDATE an event)
 exports.updateEventPage = async (req, res) => {
   try {
-    let targetId = req.query.eventId; // need to get from events viewing page when use click the specific event
-    // No eventId — show list of selectable events
+    let targetId = req.query.eventId; 
     if (!targetId) {
       let myEvents;
       if (req.session.role === "admin") {
@@ -371,7 +351,7 @@ exports.updateEvent = async (req, res) => {
       }
     }
 
-    res.redirect("/events?success=true"); // ? is a query string and success = true is used to display message whether the update is confirmed under events page
+    res.redirect("/events?success=true"); 
   } catch (err) {
     console.error("Error saving the update:", err);
     res.send("Error occurred while trying to update the event.");
@@ -379,7 +359,6 @@ exports.updateEvent = async (req, res) => {
 };
 
 // Delete Event (Have a button visible to admins only to allow them to DELETE an event)
-
 exports.renderDeletePage = async (req, res) => {
   try {
     let allEvents;
@@ -390,7 +369,7 @@ exports.renderDeletePage = async (req, res) => {
     }
     res.render("events/delete-events", { events: allEvents });
   } catch (err) {
-    console.log(err);
+    console.error(err);
     res.send("An error occurred while trying to delete the event(s).");
   }
 };
@@ -399,7 +378,7 @@ exports.deleteEvent = async (req, res) => {
   try {
     let deleteEvent = req.body.deleteEventIds;
     if (!deleteEvent) {
-      let allEvents = await Event.find();
+      let allEvents;
       if (req.session.role === "admin") {
         allEvents = await Event.find();
       } else {
@@ -440,7 +419,7 @@ exports.deleteEvent = async (req, res) => {
     await deleteEventCascade(deleteEvent);
     res.redirect("/events?success=true");
   } catch (err) {
-    console.log(err);
+    console.error(err);
     res.send("An error occurred while trying to delete the event(s).");
   }
 };

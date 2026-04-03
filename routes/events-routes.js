@@ -1,11 +1,9 @@
 const express = require('express');
-const { isAdmin, isAuthenticated, isOrganizer } = require('../middleware/authMiddleware');
+const {isAuthenticated, isOrganizer } = require('../middleware/authMiddleware');
 const eventController = require("./../controller/events-controller");
 
 const router = express.Router();
 
-// Read Event
-// router.get("/read-event", eventController.viewEventPage);
 
 // Show page + RSVP route
 router.get("/", eventController.renderEventsPage);

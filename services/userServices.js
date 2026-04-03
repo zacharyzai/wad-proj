@@ -51,6 +51,6 @@ exports.deleteUserCascade = async (userId) => {
     await User.findByIdAndDelete(userId);
     }
     catch(err){
-        console.log(err)
+        console.error(err)
     }
 };

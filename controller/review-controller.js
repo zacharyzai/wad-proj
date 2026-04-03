@@ -1,4 +1,4 @@
-const Review = require("../models/review-models"); // added for review
+const Review = require("../models/review-models"); 
 const Event = require("../models/event-models");
 const Notification = require("../models/notification-models");
 

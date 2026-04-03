@@ -1,5 +1,5 @@
 const express = require('express');
-const { isAdmin, isAuthenticated } = require('../middleware/authMiddleware');
+const { isAuthenticated } = require('../middleware/authMiddleware');
 const reviewController = require("./../controller/review-controller");
 
 const router = express.Router();

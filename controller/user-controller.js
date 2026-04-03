@@ -13,7 +13,7 @@ exports.getProfile = async (req, res) => {
 
     res.render("user/profile", { user });
   } catch (err) {
-    console.log(err)
+    console.error(err)
     res.send("Error loading profile");
   }
 };
@@ -29,7 +29,7 @@ exports.getEditProfile = async (req, res) => {
 
     res.render("user/edit-profile", { user });
   } catch (err) {
-    console.log(err)
+    console.error(err)
     res.send("Error loading edit page");
   }
 };
@@ -83,11 +83,10 @@ exports.updateProfile = async (req, res) => {
       faculty,
       bio
     });
-
-    // Redirect back to profile page after update
+    
     res.redirect("/profile");
   } catch (err) {
-    console.log(err)
+    console.error(err)
     res.send("Error updating profile");
   }
 };
@@ -112,7 +111,7 @@ exports.deleteProfile = async (req, res) => {
     });
     
   } catch (err) {
-    console.log(err)
+    console.error(err)
     res.send("Error deleting profile");
   }
 };
