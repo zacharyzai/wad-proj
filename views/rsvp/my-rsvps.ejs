@@ -28,7 +28,7 @@
                                 <th>RSVP Status</th>
                                 <th>RSVP Date</th>
                                 <th>Action</th>
-                                <th>Un-RSVP</th>
+                                <th>Un-RSVP/Remove</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -57,14 +57,16 @@
                                         </td>
                                         <td>
                                             <% if (rsvp.event.date < new Date()) { %>
-                                                Event Ended
-                                                <% } else { %>
-                                                    <form action="/rsvp/<%= rsvp.event._id %>/unrsvp" method="POST">
-                                                        <button type="submit">Un-RSVP</button>
-                                                    </form>
-                                                    <% } %>
+                                                Event Ended —
+                                                <form action="/rsvp/<%= rsvp.event._id %>/unrsvp" method="POST" style="display:inline;">
+                                                    <button type="submit">Remove</button>
+                                                </form>
+                                            <% } else { %>
+                                                <form action="/rsvp/<%= rsvp.event._id %>/unrsvp" method="POST">
+                                                    <button type="submit">Un-RSVP</button>
+                                                </form>
+                                            <% } %>
                                         </td>
-
                                     </tr>
                                     <% } %>
                                         <% }) %>
