@@ -21,7 +21,7 @@
               <% if (!notification.isRead) { %><strong><% } %>
               <%= notification.message %>
               <% if (!notification.isRead) { %></strong><% } %>
-              <small>(<%= notification.createdAt.toLocaleString() %>)</small>
+              <small>(<%= notification.createdAt.toLocaleString('en-SG') %>)</small>
             </li>
           <% }) %>
         </ul>
