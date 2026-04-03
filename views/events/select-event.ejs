@@ -6,7 +6,7 @@
 </head>
 <body>
     <%- include('../partials/navbar') %>
-    <h1>Select an Event to <%= action === 'update' ? 'Update' : 'Delete' %></h1>
+    <h1>Select an Event to Update</h1>
     <p><a href="/events">← Back to Events</a></p>
 
     <% if (events.length === 0) { %>
@@ -29,7 +29,7 @@
                         <td><%= event.location %></td>
                         <td>
                             <a href="/events/<%= action %>-event?eventId=<%= event._id %>">
-                                <button><%= action === 'update' ? 'Edit' : 'Delete' %></button>
+                                <button>Edit</button>
                             </a>
                         </td>
                     </tr>

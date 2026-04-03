@@ -23,7 +23,6 @@
     <p><a href="/events">← Back to Events</a></p>
 
         <form action="/events/update-event?eventId=<%= targetId ? targetId : '' %>" method="post"> 
-            <!-- <input type="hidden" name="eventId" value="<%= targetId %>"> -->
 
             Title:<br>
             <input type="text" name="title" value="<%= title ? title : "" %>" style="width:640px; font-size:18px; padding:8px;">
