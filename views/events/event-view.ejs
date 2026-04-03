@@ -14,195 +14,209 @@
         <p>Discover hackathons, concerts, and club meetings happening around SMU.</p>
         <%- include('../partials/navbar') %>
 
-        <hr width="90%">
-        <% if (typeof(success) !=='undefined' && success) { %>
-            <p style="color: green; font-weight: bold;">Action completed successfully!</p>
-            <% } %>
-                <!--Added success message when update/delete/create is successful-->
+            <hr width="90%">
+            <% if (typeof(success) !=='undefined' && success) { %>
+                <p style="color: green; font-weight: bold;">Action completed successfully!</p>
+                <% } %>
+                    <!--Added success message when update/delete/create is successful-->
 
-                <h1>Event List</h1>
-                <!-- Filter Bar -->
-                <form method="GET" action="/events">
-                    <div>
-                        <strong>Search:</strong>
-                        <input type="text" name="search" value="<%= selectedSearch %>" placeholder="Search by title">
-                    </div>
+                    <h1>Event List</h1>
+                    <!-- Filter Bar -->
+                    <form method="GET" action="/events">
+                        <div>
+                            <strong>Search:</strong>
+                            <input type="text" name="search" value="<%= selectedSearch %>"
+                                placeholder="Search by title">
+                        </div>
+                        <br>
+                        <div>
+                            <strong>Category:</strong><br>
+                            <% categories.forEach(cat=> { %>
+                                <label>
+                                    <input type="checkbox" name="category" value="<%= cat %>"
+                                        <%=selectedCategories.includes(cat) ? 'checked' : '' %>>
+                                    <%= cat %>
+                                </label>
+                                <% }) %>
+                        </div>
+                        <br>
+                        <div>
+                            <strong>Sort by:</strong>
+                            <select name="sort" id="sort">
+                                <option value="upcoming" <%=selectedSort==='upcoming' ? 'selected' : '' %>>Upcoming
+                                </option>
+                                <option value="past" <%=selectedSort==='past' ? 'selected' : '' %>>Past</option>
+                                <option value="popular" <%=selectedSort==='popular' ? 'selected' : '' %>>Most Popular
+                                </option>
+                                <option value="" <%=selectedSort==='' ? 'selected' : '' %>>All</option>
+                            </select>
+                            <button type="submit">Apply</button>
+                            <a href="/events">Reset</a>
+                        </div>
+                    </form>
                     <br>
-                    <div>
-                        <strong>Category:</strong><br>
-                        <% categories.forEach(cat=> { %>
-                            <label>
-                                <input type="checkbox" name="category" value="<%= cat %>"
-                                    <%=selectedCategories.includes(cat) ? 'checked' : '' %>>
-                                <%= cat %>
-                            </label>
-                            <% }) %>
-                    </div>
-                    <br>
-                    <div>
-                        <strong>Sort by:</strong>
-                        <select name="sort" id="sort">
-                            <option value="upcoming" <%=selectedSort==='upcoming' ? 'selected' : '' %>>Upcoming</option>
-                            <option value="past" <%=selectedSort==='past' ? 'selected' : '' %>>Past</option>
-                            <option value="popular" <%=selectedSort==='popular' ? 'selected' : '' %>>Most Popular</option>
-                            <option value="" <%=selectedSort==='' ? 'selected' : '' %>>All</option>
-                        </select>
-                        <button type="submit">Apply</button>
-                        <a href="/events">Reset</a>
-                    </div>
-                </form>
-                <br>
-                <% if (role==='admin' || role==='organizer' ) { %>
-                    <table border="0" cellpadding="10">
-                        <tr>
-                            <td>
-                                <strong>Organizer Tools:</strong>
-                                <a href="/events/create-event"><button type="button">➕ Create New Event</button></a>
-                                <% if (role==='organizer' ) { %>
-                                    <a href="/events/update-event"><button type="button">✏️ Update My Event</button></a>
-                                    <a href="/events/delete-event"><button type="button">🗑️ Delete My
-                                            Event</button></a>
-                                    <% } %>
+                    <% if (role==='admin' || role==='organizer' ) { %>
+                        <table border="0" cellpadding="10">
+                            <tr>
+                                <td>
+                                    <strong>Organizer Tools:</strong>
+                                    <a href="/events/create-event"><button type="button">➕ Create New Event</button></a>
+                                    <% if (role==='organizer' ) { %>
+                                        <a href="/events/update-event"><button type="button">✏️ Update My
+                                                Event</button></a>
+                                        <a href="/events/delete-event"><button type="button">🗑️ Delete My
+                                                Event</button></a>
+                                        <% } %>
 
-                                        <% if (role==='admin' ) { %>
-                                            <a href="/events/delete-event"><button type="button">🗑️ Bulk Delete
-                                                    (Admin)</button></a>
-                                            <% } %>
-
-                            </td>
-                        </tr>
-                    </table>
-                    <br>
-                    <% } %>
-                        <% if (events.length> 0) { %>
-                            <table border="1">
-                                <thead>
-                                    <tr>
-                                        <th>Title</th>
-                                        <th>Status</th>
-                                        <th>Date & Time</th>
-                                        <th>Category</th>
-                                        <th>Location</th>
-                                        <th>Attendees</th>
-                                        <th>View Extra Information</th>
-                                        <th>Action</th>
-                                        <% if (role==='admin' ) { %>
-                                            <th>Update Event Details</th>
-                                            <% } %>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <% events.forEach(event=> { %>
-                                        <tr>
-                                            <td>
-                                                <%= event.title %>
-                                            </td>
-                                            <td>
-                                                <% const today=new Date(); const eventDate=new Date(event.date); let
-                                                    status; if (eventDate.toDateString()===today.toDateString()) {
-                                                    status="Ongoing" ; } else if (eventDate> today) {
-                                                    status = "Upcoming";
-                                                    } else {
-                                                    status = "Past";
-                                                    }
-                                                    %>
-                                                    <%= status %>
-                                            </td>
-                                            <td>
-                                                <%= event.date.toLocaleString('en-SG', { dateStyle: 'medium' ,
-                                                    timeStyle: 'short' }) %>
-                                            </td>
-                                            <!-- toLocaleString is used to format numbers, date to make it readable. 'en-SG' -> specific to SG time. 
-                                        dateStyle -> make the appearance of the date clean. timeStyle -> trim GMT -->
-                                            <td>
-                                                <%= event.category.length> 0 ? event.category.join(', ') : "N/A" %>
-                                            </td>
-                                            <td>
-                                                <%= event.location %>
-                                            </td>
-
-                                            <td>
-                                                <%= event.attendees.length %> / <%= event.maxAttendees ?
-                                                        event.maxAttendees : "Unlimited" %>
-                                            </td>
-                                            <td>
-                                                <a href="/events/<%= event._id %>">View</a>
-                                            </td>
-                                            <td>
-                                                <% if (event.attendees.includes(userId)) { %>
-                                                    Already RSVP'd
-                                                    <% } else if (event.date < new Date()) { %>
-                                                        Event Ended
-                                                        <% } else if (event.attendees.length>= event.maxAttendees &&
-                                                            event.maxAttendees) { %>
-                                                            Event Full
-                                                            <% } else { %>
-                                                                <form action="/rsvp/<%= event._id %>/rsvp"
-                                                                    method="post">
-                                                                    <input type="hidden" name="sort" value="<%= selectedSort %>">
-                                                                    <input type="hidden" name="page" value="<%= page %>">
-                                                                    <button type="submit">RSVP</button>
-                                                                </form>
-                                                                <% } %>
-                                            </td>
                                             <% if (role==='admin' ) { %>
-                                                <td>
-                                                    <a href="/events/update-event?eventId=<%= event._id %>"><button>Update
-                                                            Event</button></a>
-                                                </td>
+                                                <a href="/events/delete-event"><button type="button">🗑️ Bulk Delete
+                                                        (Admin)</button></a>
+                                                <% } %>
+
+                                </td>
+                            </tr>
+                        </table>
+                        <br>
+                        <% } %>
+                            <% if (events.length> 0) { %>
+                                <table border="1">
+                                    <thead>
+                                        <tr>
+                                            <th>Title</th>
+                                            <th>Status</th>
+                                            <th>Date & Time</th>
+                                            <th>Category</th>
+                                            <th>Location</th>
+                                            <th>Attendees</th>
+                                            <th>View Extra Information</th>
+                                            <th>Action</th>
+                                            <% if (role==='admin' ) { %>
+                                                <th>Update Event Details</th>
                                                 <% } %>
                                         </tr>
-                                        <%}) %>
+                                    </thead>
+                                    <tbody>
+                                        <% events.forEach(event=> { %>
+                                            <tr>
+                                                <td>
+                                                    <%= event.title %>
+                                                </td>
+                                                <td>
+                                                    <% const today=new Date(); const eventDate=new Date(event.date); let
+                                                        status; if (eventDate.toDateString()===today.toDateString()) {
+                                                        status="Ongoing" ; } else if (eventDate> today) {
+                                                        status = "Upcoming";
+                                                        } else {
+                                                        status = "Past";
+                                                        }
+                                                        %>
+                                                        <%= status %>
+                                                </td>
+                                                <td>
+                                                    <%= event.date.toLocaleString('en-SG', { dateStyle: 'medium' ,
+                                                        timeStyle: 'short' }) %>
+                                                </td>
+                                                <!-- toLocaleString is used to format numbers, date to make it readable. 'en-SG' -> specific to SG time. 
+                                        dateStyle -> make the appearance of the date clean. timeStyle -> trim GMT -->
+                                                <td>
+                                                    <%= event.category.length> 0 ? event.category.join(', ') : "N/A" %>
+                                                </td>
+                                                <td>
+                                                    <%= event.location %>
+                                                </td>
 
-                                </tbody>
-                            </table>
+                                                <td>
+                                                    <%= event.attendees.length %> / <%= event.maxAttendees ?
+                                                            event.maxAttendees : "Unlimited" %>
+                                                </td>
+                                                <td>
+                                                    <a href="/events/<%= event._id %>">View</a>
+                                                </td>
+                                                <td>
+                                                    <% if (event.attendees.includes(userId)) { %>
+                                                        Already RSVP'd
+                                                        <% } else if (event.date < new Date()) { %>
+                                                            Event Ended
+                                                            <% } else if (event.attendees.length>= event.maxAttendees &&
+                                                                event.maxAttendees) { %>
+                                                                Event Full
+                                                                <% } else { %>
+                                                                    <form action="/rsvp/<%= event._id %>/rsvp"
+                                                                        method="post">
+                                                                        <input type="hidden" name="sort"
+                                                                            value="<%= selectedSort %>">
+                                                                        <input type="hidden" name="page"
+                                                                            value="<%= page %>">
+                                                                        <button type="submit">RSVP</button>
+                                                                    </form>
+                                                                    <% } %>
+                                                </td>
+                                                <% if (role==='admin' ) { %>
+                                                    <td>
+                                                        <a href="/events/update-event?eventId=<%= event._id %>"><button>Update
+                                                                Event</button></a>
+                                                    </td>
+                                                    <% } %>
+                                            </tr>
+                                            <%}) %>
 
-                            <p>
-                                <% let cats=[]; 
-                                if (Array.isArray(selectedCategories)) { c
-                                    ats=selectedCategories; 
-                                } else if (selectedCategories && selectedCategories !=='all' ) { 
-                                    cats.push(selectedCategories); 
-                                } for (let i=0; i < cats.length; i++) {
-                                    paginationBase +='&category=' + cats[i]; } %>
-                                    
-                                    <% if (page > 1) { %>
-                                        <button><a href="<%= paginationBase %>&page=<%= page-1 %>">Previous</a></button>
-                                    <% } %>
-                                    Page <%= page %> of <%= totalPages %>
-                                    <% if (page >= 1 && page < totalPages) { %>
-                                        <button><a href="<%= paginationBase %>&page=<%= page+1 %>">Next</a></button>
-                                    <% } %>
+                                    </tbody>
+                                </table>
 
-                            <% } else { %>
-                                <p>No events available at the moment.</p>
-                                <% } %>
+                                <p>
+                                    <% let paginationBase='/events?sort=' + selectedSort; let cats=[]; if
+                                        (Array.isArray(selectedCategories)) { cats=selectedCategories; } else if
+                                        (selectedCategories && selectedCategories !=='all' ) {
+                                        cats.push(selectedCategories); } for (let i=0; i < cats.length; i++) {
+                                        paginationBase +='&category=' + cats[i]; } %>
 
-<br>
-<hr>
-<h2>Recommended For You</h2>
-<% if (recommendedEvents.length> 0) { %>
-    <table border="1">
-        <thead>
-            <tr>
-                <th>Title</th>
-                <th>Date & Time</th>
-                <th>Category</th>
-                <th>View Extra Information</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            <% recommendedEvents.forEach(event=> { %>
-                <tr>
-                    <td>
-                        <%= event.title %>
-                    </td>
-                    <td>
-                        <%= event.date.toLocaleString('en-SG', { dateStyle: 'medium' , timeStyle: 'short' }) %>
-                    </td>
-                    <td>
-                        <%= event.category.join(', ') %>
+                                        <% if (page> 1) { %>
+                                            <button><a
+                                                    href="<%= paginationBase %>&page=<%= page-1 %>">Previous</a></button>
+                                            <% } %>
+                                                Page <%= page %> of <%= totalPages %>
+                                                        <% if (page>= 1 && page < totalPages) { %>
+                                                                <button><a
+                                                                        href="<%= paginationBase %>&page=<%= page+1 %>">Next</a></button>
+                                                                <% } %>
+
+                                                                    <% } else { %>
+                                                                        <p>No events available at the moment.</p>
+                                                                        <% } %>
+
+                                                                            <br>
+                                                                            <hr>
+                                                                            <h2>Recommended For You</h2>
+                                                                            <% if (recommendedEvents.length> 0) { %>
+                                                                                <table border="1">
+                                                                                    <thead>
+                                                                                        <tr>
+                                                                                            <th>Title</th>
+                                                                                            <th>Date & Time</th>
+                                                                                            <th>Category</th>
+                                                                                            <th>View Extra Information
+                                                                                            </th>
+                                                                                            <th>Action</th>
+                                                                                        </tr>
+                                                                                    </thead>
+                                                                                    <tbody>
+                                                                                        <%
+                                                                                            recommendedEvents.forEach(event=>
+                                                                                            { %>
+                                                                                            <tr>
+                                                                                                <td>
+                                                                                                    <%= event.title %>
+                                                                                                </td>
+                                                                                                <td>
+                                                                                                    <%= event.date.toLocaleString('en-SG',
+                                                                                                        {
+                                                                                                        dateStyle: 'medium'
+                                                                                                        ,
+                                                                                                        timeStyle: 'short'
+                                                                                                        }) %>
+                                                                                                </td>
+                                                                                                <td>
+                                                                                                    <%= event.category.join(', ') %>
                     </td>
                     <td>
                         <a href="/events/<%= event._id %>">View</a>
